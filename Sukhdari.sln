@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31729.503
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sukhdari_Server", "Sukhdari_Server\Sukhdari_Server.csproj", "{35E25F24-F40A-4504-8B38-4FA5B61C4F51}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Business", "Business\Business.csproj", "{072ADE3E-EF4B-4720-B34C-242FF0641B68}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{35E25F24-F40A-4504-8B38-4FA5B61C4F51}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{35E25F24-F40A-4504-8B38-4FA5B61C4F51}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{35E25F24-F40A-4504-8B38-4FA5B61C4F51}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{35E25F24-F40A-4504-8B38-4FA5B61C4F51}.Release|Any CPU.Build.0 = Release|Any CPU
+		{072ADE3E-EF4B-4720-B34C-242FF0641B68}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{072ADE3E-EF4B-4720-B34C-242FF0641B68}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{072ADE3E-EF4B-4720-B34C-242FF0641B68}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{072ADE3E-EF4B-4720-B34C-242FF0641B68}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {80A1B06A-0F04-49B7-8695-FDA4A62F0D80}
+	EndGlobalSection
+EndGlobal
