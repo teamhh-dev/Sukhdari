@@ -9,6 +9,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Sukhdari_Server.Data;
+using Sukhdari_Server.Service;
+using Sukhdari_Server.Service.IService;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,14 +35,14 @@ namespace Sukhdari_Server
             options.UseSqlServer(Configuration.GetConnectionString("HamzaConnection")));
 
             services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
-
+            services.AddScoped<IDbInitializer, DbInitializer>();
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddSingleton<WeatherForecastService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env,IDbInitializer dbInitializer)
         {
             if (env.IsDevelopment())
             {
@@ -60,6 +62,7 @@ namespace Sukhdari_Server
 
             app.UseAuthentication();
             app.UseAuthorization();
+            dbInitializer.Initalize();
 
             app.UseEndpoints(endpoints =>
             {
