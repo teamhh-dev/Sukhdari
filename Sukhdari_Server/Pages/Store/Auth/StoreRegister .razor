@@ -1,0 +1,71 @@
+﻿@page "/store/register"
+@using Business.IRepo
+@using Models
+@inject IStoreAdminRepo signUpRepo
+<div class="container col-10" style="height:80%; margin-top:5%;">
+    <div class="row rounded rounded-circle d-flex flex-column-reverse flex-md-row p-1">
+        <div class="col-12 col-md-6 p-5" style="background-color:gainsboro;">
+            <h1>Sign Up</h1>
+            <EditForm Model="StoreSignUp" OnValidSubmit="SignUpAdmin">
+                <div class="container">
+                    <DataAnnotationsValidator />
+                </div>
+
+                <div>
+                    <label for="name" class="col-12 p-0">OWNER NAME</label>
+                    <input @bind="StoreSignUp.UserName" type="text" placeholder="Name" class="text-xl-left col-11 form-control" />
+                    <ValidationMessage For="()=>StoreSignUp.UserName"></ValidationMessage>
+                </div>
+                <br />
+                <div>
+                    <label for="phone" class="col-12 p-0">PHONE#</label>
+                    <input @bind="StoreSignUp.phone" type="tel" placeholder="(+92)03xxxxxxxxx" class="text-xl-left col-11 form-control" />
+                </div>
+                <br />
+                <div>
+                    <label for="email" class="col-12 p-0">EMAIL</label>
+                    <input @bind="StoreSignUp.Email" type="email" placeholder="name@domin.com" class="text-xl-left col-11 form-control" />
+                </div>
+                <br />
+                <div>
+                    <label for="country" class="col-12 p-0">COUNTRY</label>
+                    <input @bind="StoreSignUp.Country" type="text" placeholder="Pakistan" class="text-xl-left col-11 form-control" />
+                </div>
+                <br />
+                <div>
+                    <label for="storeName" class="col-12 p-0">STORE NAME</label>
+                    <input @bind="StoreSignUp.StoreName" type="text" placeholder="Sukhdari Tech" class="text-xl-left col-11 form-control" />
+                </div>
+                <br />
+                <div>
+                    <label for="type" class="col-12 p-0">STORE TYPE</label>
+                    <input @bind="StoreSignUp.StoreType" type="text" placeholder="Technology" class="text-xl-left col-11 form-control" />
+                </div>
+                <br />
+                <div>
+                    <label for="password" class="col-12 p-0">PASSWORD</label>
+                    <input @bind="StoreSignUp.Password" type="password" class="text-xl-left col-11 form-control" />
+                </div>
+                <br />
+                <button type="submit" class="btn btn-dark col-11">Please Create My Store</button>
+            </EditForm>
+        </div>
+        <div class="col-12 col-md-6 p-5" style="background-color:black; color:white;">
+            <h1>Welcome to Sign Up</h1>
+            <span class="text-xl-center">Already have a Store?</span>
+            <a href="store/login" class="txt2">Go to Store</a>
+        </div>
+    </div>
+</div>
+
+
+@code {
+
+    public StoreSignUpDTO StoreSignUp { get; set; } = new StoreSignUpDTO();
+
+
+    private async Task SignUpAdmin()
+    {
+        await signUpRepo.SignUpAdmin(StoreSignUp);
+    }
+}

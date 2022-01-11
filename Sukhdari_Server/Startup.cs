@@ -1,3 +1,5 @@
+using Business;
+using Business.IRepo;
 using DataAccess.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Components;
@@ -36,6 +38,7 @@ namespace Sukhdari_Server
 
             services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
             services.AddScoped<IDbInitializer, DbInitializer>();
+            services.AddScoped<IStoreAdminRepo, StoreAdminRepo>();
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddSingleton<WeatherForecastService>();
