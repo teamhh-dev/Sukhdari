@@ -1,0 +1,80 @@
+﻿@page "/addProduct"
+@layout StoreAdminLayout
+
+<h1>Add Products</h1>
+
+<form class="form-horizontal">
+
+
+    <div class="form-group">
+        <label class="col-md-7 control-label" for="product_name">PRODUCT NAME</label>
+        <div class="col-md-7">
+            <input id="product_name" name="product_name" placeholder="PRODUCT NAME" class="form-control input-md" required="" type="text">
+
+        </div>
+    </div>
+
+
+    <div class="form-group">
+        <label class="col-md-7 control-label" for="product_categorie">PRODUCT CATEGORY</label>
+        <div class="col-md-7">
+            <select id="product_categorie" name="product_categorie" class="form-control">
+            </select>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-md-7 control-label" for="available_quantity">AVAILABLE QUANTITY</label>
+        <div class="col-md-7">
+            <input id="available_quantity" name="available_quantity" placeholder="AVAILABLE QUANTITY" class="form-control input-md" required="" type="text">
+
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-md-7 control-label" for="product_weight">PRODUCT WEIGHT</label>
+        <div class="col-md-7">
+            <input id="product_weight" name="product_weight" placeholder="PRODUCT WEIGHT" class="form-control input-md" required="" type="text">
+
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-md-7 control-label" for="product_description">PRODUCT DESCRIPTION</label>
+        <div class="col-md-7">
+            <textarea class="form-control" id="product_description" name="product_description"></textarea>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-md-7 control-label" for="percentage_discount">PERCENTAGE DISCOUNT</label>
+        <div class="col-md-7">
+            <input id="percentage_discount" name="percentage_discount" placeholder="PERCENTAGE DISCOUNT" class="form-control input-md" required="" type="text">
+
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-md-7 control-label" for="product_tag">PRODUCT SEARCH TAGS</label>
+        <div class="col-md-7">
+            <textarea class="form-control" id="product_tag" name="product_tag"></textarea>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-md-7 control-label" for="filebutton">IMAGE</label>
+        <div class="col-md-7">
+            <input id="filebutton" name="filebutton" class="input-file" type="file">
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-md-7">
+            <button id="singlebutton" name="addBtn" class="btn btn-dark">Add Product</button>
+        </div>
+    </div>
+</form>
+
+	@code {
+
+	}
