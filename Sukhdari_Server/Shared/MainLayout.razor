@@ -8,11 +8,13 @@
     <div class="main">
         <AuthorizeView>
             <NotAuthorized>
-                <div class="top-row px-4">
-                    <a href="Identity/Account/Register">Register</a>
-                </div>
-                <div class="top-row px-4">
+                <div class="top-row d-flex justify-content-end">
+                    <div class="col-1 mr-3">
+                        <a href="Identity/Account/Register">Register</a>
+                    </div>
+                    <div class="col-1 mr-3">
                     <a href="Identity/Account/Login">Login</a>
+                    </div>
                 </div>
             </NotAuthorized>
             <Authorized>
