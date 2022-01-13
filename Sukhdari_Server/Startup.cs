@@ -34,11 +34,11 @@ namespace Sukhdari_Server
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<ApplicationDbContext>(options =>
-            options.UseSqlServer(Configuration.GetConnectionString("HamzaConnection")));
-
-            services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
-            services.AddScoped<IDbInitializer, DbInitializer>();
-            services.AddScoped<IStoreAdminRepo, StoreAdminRepo>();
+            options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            
+            services.AddIdentity<IdentityUser, IdentityRole>()
+                .AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders()
+                .AddDefaultUI();
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddSingleton<WeatherForecastService>();
@@ -65,8 +65,6 @@ namespace Sukhdari_Server
 
             app.UseAuthentication();
             app.UseAuthorization();
-            dbInitializer.Initalize();
-
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapRazorPages();
