@@ -9,6 +9,5 @@ namespace Business.IRepo
 {
     public interface IStoreAdminRepo
     {
-        public Task<int> SignUpAdmin(StoreSignUpDTO storeSignUpDTO);
     }
 }

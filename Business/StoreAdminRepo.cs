@@ -25,15 +25,6 @@ namespace Business
             _userManager = userManager;
             _roleManager = roleManager;
         }
-        public async Task<int> SignUpAdmin(StoreSignUpDTO storeSignUpDTO)
-        {
-            IdentityUser user = new IdentityUser() { UserName = storeSignUpDTO.UserName,Email=storeSignUpDTO.Email, PhoneNumber = storeSignUpDTO.phone};
-            await _userManager.CreateAsync(user, storeSignUpDTO.Password);
-            IdentityUser userForRole = await _userManager.FindByEmailAsync(storeSignUpDTO.Email);
-            await _userManager.AddToRoleAsync(userForRole, StaticDetails.Role_StoreAdmin);
-            var id = userForRole.Id;
-            await _db.Stores.AddAsync(new Store() { StoreName = storeSignUpDTO.StoreName, StoreType = storeSignUpDTO.StoreType, Country = storeSignUpDTO.Country, User = id });
-            return  _db.SaveChanges();
-        }
+       
     }
 }

@@ -39,6 +39,7 @@ namespace Sukhdari_Server
             services.AddIdentity<IdentityUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders()
                 .AddDefaultUI();
+            services.AddScoped<IDbInitializer, DbInitializer>();
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddSingleton<WeatherForecastService>();
@@ -65,6 +66,8 @@ namespace Sukhdari_Server
 
             app.UseAuthentication();
             app.UseAuthorization();
+
+            dbInitializer.Initalize();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapRazorPages();

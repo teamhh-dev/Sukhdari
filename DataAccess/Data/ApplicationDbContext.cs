@@ -15,6 +15,5 @@ namespace DataAccess.Data
         { }
 
 
-        public DbSet<Store> Stores { get; set; }
     }
 }
