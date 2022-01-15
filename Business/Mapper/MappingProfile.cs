@@ -14,7 +14,8 @@ namespace Business.Mapper
         public MappingProfile()
         {
             CreateMap<Store, StoreDTO>().ReverseMap();
-            
+            CreateMap<Product, ProductDTO>().ReverseMap();
+
         }
     }
 }
