@@ -1,0 +1,36 @@
+﻿@page "/addCategory"
+@layout StoreAdminLayout
+@attribute [Authorize]
+
+<h1>Add Category</h1>
+
+<form class="form-horizontal">
+
+
+    <div class="form-group">
+        <label class="col-md-7 control-label" for="category_name">CATEGORY NAME</label>
+        <div class="col-md-7">
+            <input id="category_name" name="category_name" placeholder="CATEGORY NAME" class="form-control input-md" required="" type="text">
+
+        </div>
+    </div>
+
+
+
+    <div class="form-group">
+        <label class="col-md-7 control-label" for="category_description">CATEGORY DESCRIPTION</label>
+        <div class="col-md-7">
+            <textarea class="form-control" id="category_description" name="category_description"></textarea>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-md-7">
+            <button id="singlebutton" name="addBtn" class="btn btn-dark">Please Add Category</button>
+        </div>
+    </div>
+</form>
+
+@code {
+
+}

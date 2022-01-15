@@ -1,0 +1,35 @@
+﻿@page "/category"
+@layout StoreAdminLayout
+@attribute [Authorize]
+
+<div class="row">
+    <h2 class="col-10">All Categories</h2>
+    <a class="btn btn-dark col mr-4" href="/addCategory">Add Category</a>
+</div>
+
+<div class="table-responsive mt-2">
+    <table class="table">
+        <caption>List of All Categories</caption>
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">Name</th>
+                <th scope="col">Description</th>
+                <th scope="col">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Dummy Name</td>
+                <td>It is a dummy data just to check the working of table. if you know you know</td>
+                <td>
+                    <a class="btn btn-primary">Edit</a>
+                    <a class="btn btn-danger">Delete</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+@code {
+
+}
