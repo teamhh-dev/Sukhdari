@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace DataAccess.Migrations
 {
-    public partial class AddIdentityAuth : Migration
+    public partial class AddingIdentityAuthTables : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

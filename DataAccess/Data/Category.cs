@@ -8,18 +8,15 @@ using System.Threading.Tasks;
 
 namespace DataAccess.Data
 {
-    public class Store
+    public class Category
     {
         [Key]
         public int Id { get; set; }
-
-        [Required]
+        public int StoreId { get; set; }
+        [Required(ErrorMessage = "Category Name Required!")]
         public string Name { get; set; }
-        [Required]
-        public string Type { get; set; }
-        [Required]
-        public string Country { get; set; }
-        //[ForeignKey("UserId")]
-        public int UserId { get; set; }
+        [ForeignKey("StoreId")]
+        public virtual Store store { get; set; }
+
     }
 }

@@ -1,25 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DataAccess.Data
+namespace Models
 {
-    public class Store
+    public class StoreDTO
     {
-        [Key]
         public int Id { get; set; }
 
-        [Required]
+        [Required(ErrorMessage ="Please Enter Store Name")]
         public string Name { get; set; }
-        [Required]
+        [Required(ErrorMessage ="Enter Your Store Type")]
         public string Type { get; set; }
-        [Required]
+        [Required(ErrorMessage ="Enter Country Name")]
         public string Country { get; set; }
-        //[ForeignKey("UserId")]
-        public int UserId { get; set; }
+        
+        
     }
 }

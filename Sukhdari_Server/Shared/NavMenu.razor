@@ -1,5 +1,8 @@
 ﻿<div class="top-row pl-4 navbar navbar-dark">
-    <a class="navbar-brand" style="color:white;" @*href=""*@>Dashboard</a>
+    @*<a class="navbar-brand" style="color:white;" >Dashboard</a>*@
+    <NavLink class="navbar-brand" href="/store/dashboard" Match="NavLinkMatch.All">
+        <span class="oi oi-dashboard" style="margin-top: 5px;" aria-hidden="true"></span> Dashboard
+    </NavLink>
     <button class="navbar-toggler" @onclick="ToggleNavMenu">
         <span class="navbar-toggler-icon"></span>
     </button>
@@ -8,33 +11,55 @@
 <div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
     <ul class="nav flex-column">
         <li class="nav-item px-3">
-            <NavLink class="nav-link" href="">
-                <span class="oi oi-person" aria-hidden="true"></span> Profile
+            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+
+                <span class="oi oi-person" aria-hidden="true"></span>
+                Profile
             </NavLink>
         </li>
         <li class="nav-item px-3">
-            <NavLink class="nav-link" href="">
+            <NavLink class="nav-link" href="/category" Match="NavLinkMatch.All">
                 <span class="oi oi-tag" aria-hidden="true"></span> Categories
             </NavLink>
         </li>
         <li class="nav-item px-3">
-            <NavLink class="nav-link" href="">
-                <span class="oi oi-grid-three-up" aria-hidden="true"></span> All Products
+            <NavLink class="nav-link" href="/products" Match="NavLinkMatch.All">
+                    <span class="oi oi-grid-three-up" aria-hidden="true"></span> Products
             </NavLink>
+            @*<div class="btn-group">
+                <NavLink href="/products" class="nav-link" Match="NavLinkMatch.All">
+                    <span class="oi oi-grid-three-up" aria-hidden="true"></span>Products
+                </NavLink>
+                <a class="dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+
+                    <span class="sr-only">Toggle Dropdown</span>
+                </a>
+                <div class="dropdown-menu text-light bg-dark">
+                    <NavLink class="dropdown-item text-light bg-dark" href="/store/products/add">Add Product</NavLink>
+                    <NavLink class="dropdown-item text-light bg-dark" href="/store/products/delete">Delete Product</NavLink>
+                    <NavLink class="dropdown-item text-light bg-dark" href="/store/products/update">Update Product</NavLink>
+
+                </div>
+            </div>*@
         </li>
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="/addProduct">
-                <span class="oi oi-plus" aria-hidden="true"></span> Add Products
-            </NavLink>
-        </li>
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="/addCategory">
+        @*<li class="nav-item px-3">
+            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
                 <span class="oi oi-plus" aria-hidden="true"></span> Add Category
             </NavLink>
         </li>
         <li class="nav-item px-3">
-            <NavLink class="nav-link" href="">
+            <NavLink class="nav-link" href="/store/products/addProduct" Match="NavLinkMatch.All">
+                <span class="oi oi-plus" aria-hidden="true"></span> Add Products
+            </NavLink>
+        </li>*@
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
                 <span class="oi oi-cart" aria-hidden="true"></span> Orders
+            </NavLink>
+        </li>
+        <li class="nav-item px-3 d-sm-block d-md-none">
+            <NavLink class="nav-link" href="Identity/Account/Logout" Match="NavLinkMatch.All">
+                <span class="oi oi-account-logout" aria-hidden="true"></span> Logout
             </NavLink>
         </li>
     </ul>

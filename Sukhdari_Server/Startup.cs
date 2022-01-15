@@ -16,6 +16,7 @@ using Sukhdari_Server.Service.IService;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using AutoMapper;
 using System.Threading.Tasks;
 
 namespace Sukhdari_Server
@@ -38,10 +39,10 @@ namespace Sukhdari_Server
 
             services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
             services.AddScoped<IDbInitializer, DbInitializer>();
-            services.AddScoped<IStoreAdminRepo, StoreAdminRepo>();
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddSingleton<WeatherForecastService>();
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -65,8 +66,8 @@ namespace Sukhdari_Server
 
             app.UseAuthentication();
             app.UseAuthorization();
-            dbInitializer.Initalize();
 
+            dbInitializer.Initalize();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapRazorPages();
