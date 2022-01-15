@@ -1,10 +1,12 @@
 ﻿@page "/products"
 @layout StoreAdminLayout
+@inject IStoreRepo Store
+@inject NavigationManager Navigator
 @attribute [Authorize]
 
 <div class="row">
     <h2 class="col-10">All Products</h2>
-    <a class="btn btn-dark col mr-4" href="/addProduct">Add Product</a>
+    <a class="btn btn-dark col mr-4 h2" href="/addProduct">Add Product</a>
 </div>
 
 <div class="table-responsive mt-2">
@@ -31,9 +33,9 @@
                 <td>2</td>
                 <td>14</td>
                 <td>It is a dummy data just to check the working of table. if you know you know</td>
-                <td>
-                    <a class="btn btn-primary">Edit</a>
-                    <a class="btn btn-danger">Delete</a>
+                <td class="d-flex align-items-center justify-content-between flex-column flex-md-row">
+                    <a><span class="oi oi-eye"></span></a>
+                    <a><span class="oi oi-trash"></span></a>
                 </td>
             </tr>
         </tbody>
@@ -41,5 +43,17 @@
 </div>
 
 @code {
+    [CascadingParameter]
+    public Task<AuthenticationState> AuthenticationState { get; set; }
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationState;
+
+
+        if (Store.GetStoreByAdminName(authState.User.Identity.Name) == null)
+        {
+            Navigator.NavigateTo("/storeNotExist");
+        }
+    }
 
 }

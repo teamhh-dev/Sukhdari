@@ -1,6 +1,8 @@
 ﻿@page "/addProduct"
 @page "/store/products/add"
 @page "/store/products/update"
+@inject IStoreRepo Store
+@inject NavigationManager Navigator
 @layout StoreAdminLayout
 @attribute [Authorize]
 
@@ -87,5 +89,16 @@
 </form>
 
 @code {
+    [CascadingParameter]
+    public Task<AuthenticationState> AuthenticationState { get; set; }
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationState;
 
+
+        if (Store.GetStoreByAdminName(authState.User.Identity.Name) == null)
+        {
+            Navigator.NavigateTo("/storeNotExist");
+        }
+    }
 }
