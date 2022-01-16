@@ -21,14 +21,6 @@ namespace Business
         }
         public async Task<int> createCategory(CategoryDTO category)
         {
-            if (category.Id!=0)
-            {
-                var oldCategory = _db.Categories.FirstOrDefault(i => i.Id == category.Id);
-                oldCategory.Name = category.Name;
-                oldCategory.Description = category.Description;
-                return await _db.SaveChangesAsync();
-
-            }
             Category newCategory = _mapper.Map<CategoryDTO, Category>(category);
             await _db.Categories.AddAsync(newCategory);
             return await _db.SaveChangesAsync();
@@ -47,16 +39,9 @@ namespace Business
 
         }
 
-        public async Task<CategoryDTO> GetCategory(int id, int storeId)
-        {
-
-            var category = _db.Categories.FirstOrDefault(i => i.Id == id && i.StoreId == storeId);
-
-            return _mapper.Map<Category, CategoryDTO>(category);
-        }
         public async Task<IEnumerable<CategoryDTO>> GetAllCategories(int StoreId)
         {
-            IEnumerable<CategoryDTO> dto = _mapper.Map<IEnumerable<Category>, IEnumerable<CategoryDTO>>(_db.Categories.Where(i => i.StoreId == StoreId));
+            IEnumerable<CategoryDTO> dto = _mapper.Map<IEnumerable<Category>, IEnumerable<CategoryDTO>>(_db.Categories.Where(i=>i.StoreId==StoreId));
             return dto;
         }
 

@@ -1,22 +1,11 @@
 ﻿@page "/addCategory"
-@page "/category/update/{Id:int}"
-@page "/category/delete/{Id:int}"
 @layout StoreAdminLayout
 @inject IStoreRepo Store
 @inject ICategoryRepo Category
 @inject NavigationManager Navigator
 @attribute [Authorize]
 
-
-@if (Id != null)
-{
-    <div class="top-row d-flex justify-content-end">
-        <button @onclick="DeleteCategory" class="btn btn-dark text-white"><span class="oi oi-trash mr-0 mr-md-2" /><h5 class="d-md-inline-block d-none pt-1">Delete Category</h5></button>
-        
-    </div>
-}
-
-<h1>Add/Update Category</h1>
+<h1>Add Category</h1>
 
 <EditForm Model="CategoryDetails" OnValidSubmit="SaveCategory" class="form-horizontal">
 
@@ -43,14 +32,12 @@
 
     <div class="form-group">
         <div class="col-md-7">
-            <button type="submit" class="btn btn-dark text-white">Add/Update Category</button>
-
+            <button type="submit" class="btn btn-dark text-white">Please Add Category</button>
         </div>
     </div>
 </EditForm>
+
 @code {
-    [Parameter]
-    public int? Id { get; set; }
 
     [CascadingParameter]
     public Task<AuthenticationState> AuthenticationState { get; set; }
@@ -64,24 +51,13 @@
         var authState = await AuthenticationState;
 
         var store = Store.GetStoreByAdminName(authState.User.Identity.Name);
-        if (store == null)
+        if (store== null)
         {
             Navigator.NavigateTo("/storeNotExist");
         }
         else
         {
             CategoryDetails.StoreId = store.Id;
-            if (!authState.User.IsInRole(Common.StaticDetails.Role_StoreAdmin))
-            {
-                var uri = new Uri(Navigator.Uri);
-                Navigator.NavigateTo($"/identity/account/login?returnUrl={uri.LocalPath}");
-            }
-            if (Id != null)
-            {
-                //updating
-                var category = await Category.GetCategory(Id.Value, CategoryDetails.StoreId);
-                CategoryDetails = category;
-            }
         }
 
     }
@@ -89,17 +65,5 @@
     {
 
         await Category.createCategory(CategoryDetails);
-        CategoryDetails = new CategoryDTO();
-        StateHasChanged();
-        Navigator.NavigateTo("/category");
     }
-
-    private async void DeleteCategory()
-    {
-        await Category.deleteCategory(Id.Value);
-        StateHasChanged();
-        Navigator.NavigateTo("/category");
-
-    }
-
 }
