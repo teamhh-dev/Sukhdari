@@ -13,5 +13,7 @@ namespace Business.IRepo
         public Task<int> deleteCategory(int id);
         public Task<int> updateCategory(CategoryDTO category);
         public Task<IEnumerable<CategoryDTO>> GetAllCategories(int StoreId);
+        public Task<CategoryDTO> GetCategory(int id, int storeId);
+
     }
 }

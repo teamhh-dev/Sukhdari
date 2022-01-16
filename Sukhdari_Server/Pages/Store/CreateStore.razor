@@ -1,6 +1,8 @@
 ﻿@page "/createStore"
 @layout StoreAdminLayout
 @inject IStoreRepo Store
+@inject NavigationManager Navigator
+
 @attribute [Authorize]
 
 <h3>Create Store</h3>
@@ -11,24 +13,24 @@
         <label class="col-md-7 control-label" for="store_name">STORE NAME</label>
         <div class="col-md-7 d-flex flex-row">
             <InputText @bind-Value="StoreDetails.Name" @oninput="CheckStoreAvailability" id="store_name" name="store_name" placeholder="STORE NAME" class="@(StoreAvailability?"form-control input-md is-valid":"form-control input-md  is-invalid")" />
-            
-    @*@if (StoreAvailability)
-            {
-                <span class="oi oi-check" style="color:green" )></span>
 
-            }
-            else
-            {
-                <span class="oi oi-warning" style="color:red" )></span>
+            @*@if (StoreAvailability)
+                {
+                    <span class="oi oi-check" style="color:green" )></span>
 
-            }*@
-        <ValidationMessage For="()=>StoreDetails.Name"></ValidationMessage>
+                }
+                else
+                {
+                    <span class="oi oi-warning" style="color:red" )></span>
+
+                }*@
+            <ValidationMessage For="()=>StoreDetails.Name"></ValidationMessage>
         </div>
     </div>
     <div class="form-group">
         <label class="col-md-7 control-label" for="store_type">STORE TYPE</label>
         <div class="col-md-7">
-            <InputText @bind-Value="StoreDetails.Type"  id="store_type" name="store_type" placeholder="e.g. Technology,General" class="form-control input-md"/>
+            <InputText @bind-Value="StoreDetails.Type" id="store_type" name="store_type" placeholder="e.g. Technology,General" class="form-control input-md" />
             <ValidationMessage For="()=>StoreDetails.Type"></ValidationMessage>
 
         </div>
@@ -36,7 +38,7 @@
     <div class="form-group">
         <label class="col-md-7 control-label" for="store_type">Country</label>
         <div class="col-md-7">
-            <InputText @bind-Value="StoreDetails.Country"  id="store_type" name="store_type" placeholder="Pakistan" class="form-control input-md"/>
+            <InputText @bind-Value="StoreDetails.Country" id="store_type" name="store_type" placeholder="Pakistan" class="form-control input-md" />
             <ValidationMessage For="()=>StoreDetails.Country"></ValidationMessage>
 
         </div>
@@ -72,6 +74,8 @@
     {
 
         var result = await Store.createStore(StoreDetails);
+        Navigator.NavigateTo("/store/dashboard");
+
 
     }
 
