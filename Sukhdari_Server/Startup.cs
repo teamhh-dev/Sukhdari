@@ -43,6 +43,7 @@ namespace Sukhdari_Server
             services.AddScoped<IDbInitializer, DbInitializer>();
 
             services.AddScoped<IStoreRepo, StoreRepo>();
+            services.AddScoped<ICategoryRepo,CategoryRepo>();
 
             services.AddRazorPages();
             services.AddHttpContextAccessor();

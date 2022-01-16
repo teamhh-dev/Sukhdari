@@ -1,6 +1,7 @@
 ﻿@page "/category"
 @layout StoreAdminLayout
 @inject IStoreRepo Store
+@inject ICategoryRepo CategoryRepo
 @inject NavigationManager Navigator
 @attribute [Authorize]
 
@@ -20,6 +21,18 @@
             </tr>
         </thead>
         <tbody>
+            @foreach (var category in Categories)
+            {
+            <tr>
+                <td>@category.Name</td>
+                <td>@category.Description</td>
+                <td class="d-flex align-items-center justify-content-between flex-column flex-md-row">
+                    <a><span class="oi oi-eye"></span></a>
+                    <a><span class="oi oi-trash"></span></a>
+                </td>
+            </tr>
+
+            }
             <tr>
                 <td>Dummy Name</td>
                 <td>It is a dummy data just to check the working of table. if you know you know</td>
@@ -35,6 +48,8 @@
 @code {
     [CascadingParameter]
     public Task<AuthenticationState> AuthenticationState { get; set; }
+
+    public IEnumerable<CategoryDTO> Categories { get; set; }
     protected override async Task OnInitializedAsync()
     {
         var authState = await AuthenticationState;
@@ -43,6 +58,11 @@
         if (Store.GetStoreByAdminName(authState.User.Identity.Name) == null)
         {
             Navigator.NavigateTo("/storeNotExist");
+        }
+        else
+        {
+            var store = Store.GetStoreByAdminName(authState.User.Identity.Name);
+            Categories=await CategoryRepo.GetAllCategories(store.Id);
         }
     }
 }

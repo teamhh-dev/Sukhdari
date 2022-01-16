@@ -12,11 +12,11 @@ namespace DataAccess.Data
     {
         [Key]
         public int Id { get; set; }
-        public int StoreId { get; set; }
         [Required(ErrorMessage = "Category Name Required!")]
         public string Name { get; set; }
+        public string Description { get; set; }
         [ForeignKey("StoreId")]
-        public virtual Store store { get; set; }
+        public int StoreId { get; set; }
 
     }
 }

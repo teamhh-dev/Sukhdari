@@ -1,18 +1,20 @@
 ﻿@page "/addCategory"
 @layout StoreAdminLayout
 @inject IStoreRepo Store
+@inject ICategoryRepo Category
 @inject NavigationManager Navigator
 @attribute [Authorize]
 
 <h1>Add Category</h1>
 
-<form class="form-horizontal">
+<EditForm Model="CategoryDetails" OnValidSubmit="SaveCategory" class="form-horizontal">
 
-
+    <DataAnnotationsValidator></DataAnnotationsValidator>
     <div class="form-group">
         <label class="col-md-7 control-label" for="category_name">CATEGORY NAME</label>
         <div class="col-md-7">
-            <input id="category_name" name="category_name" placeholder="Category Name" class="form-control input-md" required="" type="text">
+            <InputText @bind-Value="CategoryDetails.Name" placeholder="Category Name" class="form-control input-md" />
+            <ValidationMessage For="()=>CategoryDetails.Name"></ValidationMessage>
 
         </div>
     </div>
@@ -22,32 +24,46 @@
     <div class="form-group">
         <label class="col-md-7 control-label" for="category_description">CATEGORY DESCRIPTION</label>
         <div class="col-md-7">
-            <textarea class="form-control" id="category_description" name="category_description"></textarea>
+            <InputTextArea @bind-Value="CategoryDetails.Description" class="form-control" />
+            <ValidationMessage For="()=>CategoryDetails.Description"></ValidationMessage>
+
         </div>
     </div>
 
     <div class="form-group">
         <div class="col-md-7">
-            <button id="singlebutton" name="addBtn" class="btn btn-dark">Please Add Category</button>
+            <button type="submit" class="btn btn-dark text-white">Please Add Category</button>
         </div>
     </div>
-</form>
+</EditForm>
 
 @code {
 
     [CascadingParameter]
     public Task<AuthenticationState> AuthenticationState { get; set; }
 
+    public CategoryDTO CategoryDetails { get; set; } = new CategoryDTO();
 
+    public String StoreName { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         var authState = await AuthenticationState;
 
-
-        if (Store.GetStoreByAdminName(authState.User.Identity.Name)==null)
+        var store = Store.GetStoreByAdminName(authState.User.Identity.Name);
+        if (store== null)
         {
             Navigator.NavigateTo("/storeNotExist");
         }
+        else
+        {
+            CategoryDetails.StoreId = store.Id;
+        }
+
+    }
+    private async void SaveCategory()
+    {
+
+        await Category.createCategory(CategoryDetails);
     }
 }
