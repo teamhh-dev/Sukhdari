@@ -57,6 +57,11 @@ namespace Business
             return _mapper.Map<IEnumerable<Product>, IEnumerable<ProductDTO>>(_db.Products.Where(i=>i.StoreId==storeId));
         }
 
+        public async Task<IEnumerable<ProductDTO>> getAllProducts()
+        {
+            return _mapper.Map<IEnumerable<Product>, IEnumerable<ProductDTO>>(_db.Products);
+        }
+
         public async Task<ProductDTO> GetProduct(int id, int storeId)
         {
             var product = _db.Products.FirstOrDefault(i => i.Id == id && i.StoreId == storeId);
