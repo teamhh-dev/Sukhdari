@@ -17,6 +17,6 @@ namespace DataAccess.Data
         public string Description { get; set; }
         [ForeignKey("StoreId")]
         public int StoreId { get; set; }
-
+        public List<Product> Products { get; set; }
     }
 }

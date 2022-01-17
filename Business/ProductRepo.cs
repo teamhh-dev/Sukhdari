@@ -22,6 +22,19 @@ namespace Business
         }
         public async Task<int> createProduct(ProductDTO product)
         {
+            if (product.Id != 0)
+            {
+                var oldCategory = _db.Products.FirstOrDefault(i => i.Id == product.Id);
+                oldCategory.Name = product.Name;
+                oldCategory.Price = product.Price;
+                oldCategory.Description = product.Description;
+                oldCategory.CategoryId = product.CategoryId;
+                oldCategory.Image = product.Image;
+                oldCategory.Quantity = product.Quantity;
+                return await _db.SaveChangesAsync();
+
+            }
+
             Product newProd = _mapper.Map<ProductDTO, Product>(product);
             await _db.Products.AddAsync(newProd);
             return await _db.SaveChangesAsync();
@@ -39,9 +52,16 @@ namespace Business
                 return 0;
         }
 
-        public async Task<IEnumerable<ProductDTO>> getAllProducts()
+        public async Task<IEnumerable<ProductDTO>> getAllProducts(int storeId)
         {
-            return _mapper.Map<IEnumerable<Product>, IEnumerable<ProductDTO>>(_db.Products);
+            return _mapper.Map<IEnumerable<Product>, IEnumerable<ProductDTO>>(_db.Products.Where(i=>i.StoreId==storeId));
+        }
+
+        public async Task<ProductDTO> GetProduct(int id, int storeId)
+        {
+            var product = _db.Products.FirstOrDefault(i => i.Id == id && i.StoreId == storeId);
+
+            return  _mapper.Map<Product, ProductDTO>(product);
         }
 
         public async Task<int> updateProduct(ProductDTO product)

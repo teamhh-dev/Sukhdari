@@ -44,6 +44,7 @@ namespace Sukhdari_Server
 
             services.AddScoped<IStoreRepo, StoreRepo>();
             services.AddScoped<ICategoryRepo,CategoryRepo>();
+            services.AddScoped<IProductRepo,ProductRepo>();
 
             services.AddRazorPages();
             services.AddHttpContextAccessor();
