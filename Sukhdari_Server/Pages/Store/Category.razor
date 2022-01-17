@@ -21,7 +21,7 @@
             </tr>
         </thead>
         <tbody>
-            @if (Categories.Any())
+            @if (Categories!=null&&Categories.Any())
             {
                 @foreach (var category in Categories)
                 {

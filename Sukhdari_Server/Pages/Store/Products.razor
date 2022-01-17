@@ -27,23 +27,27 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (var product in AllProducts)
+            @if (AllProducts != null && AllProducts.Any())
             {
 
+                @foreach (var product in AllProducts)
+                {
 
-                <tr>
-                    <td>@product.Name</td>
-                    <td>@getProductCategoryName(@product.CategoryId)</td>
-                    <td>@product.Price</td>
-                    @*<td>0</td>
-                        <td>2</td>*@
-                    <td>@product.Quantity</td>
-                    <td>@product.Description</td>
-                    <td class="d-flex align-items-center justify-content-center  flex-column flex-md-row">
-                        <a href="@($"/product/update/{product.Id}")"><span class="oi oi-eye"></span></a>
-                        <a href="@($"product/delete/{product.Id}")" class="ml-2"><span class="oi oi-trash"></span></a>
-                    </td>
-                </tr>
+
+                    <tr>
+                        <td>@product.Name</td>
+                        <td>@getProductCategoryName(@product.CategoryId)</td>
+                        <td>@product.Price</td>
+                        @*<td>0</td>
+                            <td>2</td>*@
+                        <td>@product.Quantity</td>
+                        <td>@product.Description</td>
+                        <td class="d-flex align-items-center justify-content-center  flex-column flex-md-row">
+                            <a href="@($"/product/update/{product.Id}")"><span class="oi oi-eye"></span></a>
+                            <a href="@($"product/delete/{product.Id}")" class="ml-2"><span class="oi oi-trash"></span></a>
+                        </td>
+                    </tr>
+                }
             }
 
         </tbody>

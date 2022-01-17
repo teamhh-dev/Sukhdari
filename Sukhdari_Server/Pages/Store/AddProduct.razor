@@ -20,12 +20,14 @@
 }
 
 <EditForm Model="ProductDetails" OnValidSubmit="SaveProduct" class="form-horizontal">
+    <DataAnnotationsValidator></DataAnnotationsValidator>
 
 
     <div class="form-group">
         <label class="col-md-7 control-label" for="product_name">PRODUCT NAME</label>
         <div class="col-md-7">
             <InputText @bind-Value="ProductDetails.Name" placeholder="PRODUCT NAME" class="form-control input-md" />
+            <ValidationMessage For="()=>ProductDetails.Name"></ValidationMessage>
 
         </div>
     </div>
@@ -40,6 +42,8 @@
                     <option value="@category.Id">@category.Name</option>
                 }
             </InputSelect>
+            <ValidationMessage For="()=>ProductDetails.CategoryId"></ValidationMessage>
+
         </div>
     </div>
 
@@ -47,6 +51,7 @@
         <label class="col-md-7 control-label" for="price">PRICE</label>
         <div class="col-md-7">
             <InputNumber @bind-Value="ProductDetails.Price" placeholder="Price" class="form-control input-md" />
+            <ValidationMessage For="()=>ProductDetails.Price"></ValidationMessage>
 
         </div>
     </div>
@@ -55,6 +60,7 @@
         <label class="col-md-7 control-label" for="available_quantity">AVAILABLE QUANTITY</label>
         <div class="col-md-7">
             <InputNumber @bind-Value="ProductDetails.Quantity" placeholder="AVAILABLE QUANTITY" class="form-control input-md" />
+            <ValidationMessage For="()=>ProductDetails.Quantity"></ValidationMessage>
 
         </div>
     </div>
@@ -63,30 +69,32 @@
         <label class="col-md-7 control-label" for="product_description">PRODUCT DESCRIPTION</label>
         <div class="col-md-7">
             <InputTextArea @bind-Value="ProductDetails.Description" class="form-control" name="product_description"></InputTextArea>
-        </div>
-    </div>
-
-    @*<div class="form-group">
-        <label class="col-md-7 control-label" for="percentage_discount">PERCENTAGE DISCOUNT</label>
-        <div class="col-md-7">
-            <InputNumber id="percentage_discount" name="percentage_discount" placeholder="PERCENTAGE DISCOUNT" class="form-control input-md" required="" type="text">
+            <ValidationMessage For="()=>ProductDetails.Description"></ValidationMessage>
 
         </div>
     </div>
 
-    <div class="form-group">
-        <label class="col-md-7 control-label" for="product_tag">PRODUCT SEARCH TAGS</label>
-        <div class="col-md-7">
-            <textarea class="form-control" id="product_tag" name="product_tag"></textarea>
+    @*<div class="form-group">
+            <label class="col-md-7 control-label" for="percentage_discount">PERCENTAGE DISCOUNT</label>
+            <div class="col-md-7">
+                <InputNumber id="percentage_discount" name="percentage_discount" placeholder="PERCENTAGE DISCOUNT" class="form-control input-md" required="" type="text">
+
+            </div>
         </div>
-    </div>*@
+
+        <div class="form-group">
+            <label class="col-md-7 control-label" for="product_tag">PRODUCT SEARCH TAGS</label>
+            <div class="col-md-7">
+                <textarea class="form-control" id="product_tag" name="product_tag"></textarea>
+            </div>
+        </div>*@
 
     @*<div class="form-group">
-        <label class="col-md-7 control-label" for="filebutton">IMAGE</label>
-        <div class="col-md-7">
-            <input id="filebutton" name="filebutton" class="input-file" type="file">
-        </div>
-    </div>*@
+            <label class="col-md-7 control-label" for="filebutton">IMAGE</label>
+            <div class="col-md-7">
+                <input id="filebutton" name="filebutton" class="input-file" type="file">
+            </div>
+        </div>*@
 
     <div class="form-group">
         <div class="col-md-7">
