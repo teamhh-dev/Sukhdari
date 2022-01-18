@@ -59,6 +59,11 @@ namespace Business
             IEnumerable<CategoryDTO> dto = _mapper.Map<IEnumerable<Category>, IEnumerable<CategoryDTO>>(_db.Categories.Where(i => i.StoreId == StoreId));
             return dto;
         }
+        public async Task<IEnumerable<CategoryDTO>> GetAllCategories()
+        {
+            IEnumerable<CategoryDTO> dto = _mapper.Map<IEnumerable<Category>, IEnumerable<CategoryDTO>>(_db.Categories);
+            return dto;
+        }
 
         public async Task<int> updateCategory(CategoryDTO category)
         {
