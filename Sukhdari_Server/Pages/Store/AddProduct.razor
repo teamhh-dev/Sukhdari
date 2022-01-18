@@ -9,12 +9,12 @@
 @layout StoreAdminLayout
 @attribute [Authorize]
 
-<h1>Add/Update Products</h1>
+<h1>@Title</h1>
 
 @if (Id != null)
 {
     <div class="top-row d-flex justify-content-end">
-        <button @onclick="DeleteProduct" class="btn btn-dark text-white"><span class="oi oi-trash mr-0 mr-md-2" /><h5 class="d-md-inline-block d-none pt-1">Delete Category</h5></button>
+        <button @onclick="DeleteProduct" class="btn btn-dark text-white"><span class="oi oi-trash mr-0 mr-md-2" /><h5 class="d-md-inline-block d-none pt-1">Delete Product</h5></button>
 
     </div>
 }
@@ -98,12 +98,14 @@
 
     <div class="form-group">
         <div class="col-md-7">
-            <button type="submit" class="btn btn-dark">Add/Delete Product</button>
+            <button type="submit" class="btn btn-dark">@btnName</button>
         </div>
     </div>
 </EditForm>
 
 @code {
+    private string Title { get; set; } = "Add Product";
+    private string btnName { get; set; } = "Add Product";
     [Parameter]
     public int? Id { get; set; }
 
@@ -135,6 +137,8 @@
             if (Id != null)
             {
                 //updating
+                Title = "Update Product";
+                btnName = "Update Product";
                 var product = await Product.GetProduct(Id.Value, ProductDetails.StoreId);
                 ProductDetails = product;
             }
