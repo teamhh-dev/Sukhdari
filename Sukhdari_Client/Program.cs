@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Sukhdari_Client.Service;
+using Sukhdari_Client.Service.IService;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -17,8 +19,9 @@ namespace Sukhdari_Client
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
             builder.RootComponents.Add<App>("#app");
 
-            builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
-
+            builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.Configuration.GetValue<string>("BaseApiUrl"))});
+            builder.Services.AddScoped<IStoreService, StoreService>();
+            
             await builder.Build().RunAsync();
         }
     }

@@ -76,5 +76,7 @@ namespace Business
             _db.Stores.Update(newStore);
             return await _db.SaveChangesAsync();
         }
+
+        
     }
 }
