@@ -1,0 +1,53 @@
+﻿@page "/"
+@layout HomeLayout
+   
+
+<div class="container p-3">
+    <div class="row justify-content-center">
+        <div class="col-8">
+            <form action="#" method="get" id="searchForm" class="input-group">
+                @* change with edit form when get model same with inside fields *@
+
+                <div class="input-group-btn search-panel">
+                    <select name="search_param" id="search_param" class="btn btn-default shadow-none ">
+                        <option value="all">All</option>
+                        <option value="username">Store</option>
+                        <option value="email">Category</option>
+                        <option value="studentcode">Product</option>
+                    </select>
+                </div>
+                <input type="text" class="form-control col-xl-7 shadow-none" placeholder="Search term...">
+                <span class="input-group-btn">
+                    <button class="btn btn-dark shadow-none" type="submit">
+                        <span class="oi oi-magnifying-glass"></span>
+                    </button>
+                </span>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<div class="form-inline justify-content-center mt-4">
+    @foreach (var store in Stores)
+    {
+        <a href="#" class="card col-3 m-3 p-0 shadow" style="text-decoration:none;">
+
+            <div>
+                <img class="card-img-top" src="" onerror="this.src = '/Images/store.jpg';" alt="Store image cap"/>
+                <div class="card-body">
+                    <h5 class="card-title text-dark">@store</h5>
+                    <p class="card-text text-dark">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                    <p class="card-text"><small class="text-muted">@store</small></p>
+                </div>
+            </div>
+
+        </a>
+    }
+</div>
+@code
+{
+        public string[,] Stores = new string[3, 2] { { "First Store", "owner Name" }, { "Second Store", "Other Owner" },
+                                        { "Third Store", "Another Store" } };
+
+}

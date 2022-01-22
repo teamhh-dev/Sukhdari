@@ -24,9 +24,9 @@ namespace Sukhdari_Api.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllProducts()
+        public async Task<IActionResult> GetAllProducts(int storeId)
         {
-            var products= await _productRepo.getAllProducts();
+            var products= await _productRepo.getAllProducts(storeId);
             return Ok(products);
         }
 

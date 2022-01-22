@@ -42,5 +42,9 @@ namespace Sukhdari_Api.Controllers
             var productsToFind = products.FirstOrDefault(i => i.StoreId == s_Id);
             return Ok(productsToFind);
         }
+
+        
+
+        
     }
 }

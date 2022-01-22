@@ -58,6 +58,8 @@ namespace Business
 
         }
 
+     
+
         public StoreDTO GetStoreByName(string name)
         {
 
