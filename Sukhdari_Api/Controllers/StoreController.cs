@@ -56,6 +56,7 @@ namespace Sukhdari_Api.Controllers
         public async Task<IActionResult> GetStoresByProduct(string productName)
         {
             var stores = _productRepo.getStoresByProductName(productName);
+            
             return Ok(stores);
         }
     }

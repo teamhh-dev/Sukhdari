@@ -76,8 +76,9 @@ namespace Business
 
         public async Task<IEnumerable<StoreDTO>> getStoreByCategory(string categoryName)
         {
-            var category = await _db.Categories.FirstOrDefaultAsync(i => i.Name.ToLower() == categoryName.ToLower());
-            return _mapper.Map<IEnumerable<Store>, IEnumerable<StoreDTO>>(category.Stores);
+            //var category = await _db.Categories.FirstOrDefaultAsync(i => i.Name.ToLower() == categoryName.ToLower());
+            //return _mapper.Map<IEnumerable<Store>, IEnumerable<StoreDTO>>(category.Stores);
+            return null;
             
         }
     }
