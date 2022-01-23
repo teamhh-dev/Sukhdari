@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Business.IRepo;
 using DataAccess.Data;
+using Microsoft.EntityFrameworkCore;
 using Models;
 using System;
 using System.Collections.Generic;
@@ -67,6 +68,19 @@ namespace Business
             var product = _db.Products.FirstOrDefault(i => i.Id == id && i.StoreId == storeId);
 
             return  _mapper.Map<Product, ProductDTO>(product);
+        }
+
+        public async Task<IEnumerable<StoreDTO>> getStoresByProductName(string productName)
+        {
+            var products = _db.Products.Where(i => i.Name.ToLower() == productName.ToLower()).ToList();
+            List<Store> stores = new List<Store>();
+            foreach (var s in products)
+            {
+
+                stores.Add(await _db.Stores.FindAsync(s.StoreId));
+            }
+            return _mapper.Map<IEnumerable<Store>, IEnumerable<StoreDTO>>(stores);
+            
         }
 
         public async Task<int> updateProduct(ProductDTO product)

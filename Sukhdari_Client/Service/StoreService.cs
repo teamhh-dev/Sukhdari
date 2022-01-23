@@ -17,13 +17,14 @@ namespace Sukhdari_Client.Service
             _httpClient = httpClient;
 
         }
-        public async Task<IEnumerable<StoreDTO>> GetAllStores()
+   
+        public async Task<IEnumerable<StoreDTO>> getAllStores()
         {
-            var response = await _httpClient.GetAsync("api/store/getAllStores");
+            var response = await _httpClient.GetAsync("api/store/GetAllStores");
             if (response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync();
-                var stores = JsonConvert.DeserializeObject <IEnumerable < StoreDTO >> (content);
+                var stores = JsonConvert.DeserializeObject<IEnumerable<StoreDTO>>(content);
                 return stores;
             }
             else
@@ -31,7 +32,31 @@ namespace Sukhdari_Client.Service
                 var content = await response.Content.ReadAsStringAsync();
                 var errorModel = JsonConvert.DeserializeObject<ErrorModelDTO>(content);
                 throw new Exception(errorModel.ErrorMessage);
-            }
+            }            
+        }
+
+        public async Task<IEnumerable<StoreDTO>> getAllStoresByCategory(string categoryName)
+        {
+            var response = await _httpClient.GetAsync($"api/Store/GetProductsWithStoreName/{categoryName}");
+            var content = await response.Content.ReadAsStringAsync();
+            var stores = JsonConvert.DeserializeObject<IEnumerable<StoreDTO>>(content);
+            return stores;
+        }
+
+        public async Task<IEnumerable<StoreDTO>> getAllStoresByProducts(string productName)
+        {
+            var response = await _httpClient.GetAsync($"api/Store/GetStoresByProduct/{productName}");
+            var content = await response.Content.ReadAsStringAsync();
+            var stores = JsonConvert.DeserializeObject<IEnumerable<StoreDTO>>(content);
+            return stores;
+        }
+
+        public async Task<StoreDTO> getStoreByName(string storeName)
+        {
+            var response = await _httpClient.GetAsync($"api/Store/GetStoresByCategory/{storeName}");
+            var content = await response.Content.ReadAsStringAsync();
+            var stores = JsonConvert.DeserializeObject<StoreDTO>(content);
+            return stores;
         }
     }
 }

@@ -41,9 +41,16 @@ namespace Business
         }
         public async Task<IEnumerable<StoreDTO>> getAllStores()
         {
-
-            return _mapper.Map<IEnumerable<Store>, IEnumerable<StoreDTO>>(_db.Stores);
-
+            try
+            {
+                IEnumerable<StoreDTO> stores =_mapper.Map<IEnumerable<Store>, IEnumerable<StoreDTO>>(_db.Stores);
+                return stores;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+            
         }
 
         public StoreDTO GetStoreByAdminName(string adminName)
@@ -76,5 +83,7 @@ namespace Business
             _db.Stores.Update(newStore);
             return await _db.SaveChangesAsync();
         }
+
+        
     }
 }

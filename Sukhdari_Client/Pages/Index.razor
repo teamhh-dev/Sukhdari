@@ -1,7 +1,8 @@
 ﻿@page "/"
 @layout HomeLayout
-@inject IStoreService Store
-
+@using Models
+@inject IStoreService storeService   
+@inject IJSRuntime jsRuntime
 <div class="container p-3">
     <div class="row justify-content-center">
         <div class="col-8">
@@ -29,7 +30,6 @@
 
 
 <div class="form-inline justify-content-center mt-4">
-
     @if (Stores != null && Stores.Any())
     {
 
@@ -44,20 +44,15 @@
                         <p class="card-text"><small class="text-muted">@store.Country</small></p>
                         <p class="card-text"><small class="text-muted">@store.Type</small></p>
                     </div>
-                </div>
-
-            </a>
-        }
+   
     }
 
 </div>
 @code
 {
-
     public IEnumerable<StoreDTO> Stores { get; set; }
     protected override async Task OnInitializedAsync()
     {
         Stores = await Store.GetAllStores();
-
     }
 }

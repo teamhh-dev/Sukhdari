@@ -21,5 +21,7 @@ namespace DataAccess.Data
         public string Country { get; set; }
         //[ForeignKey("UserId")]
         public string UserId { get; set; }
+        
+        
     }
 }

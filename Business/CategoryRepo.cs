@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Business.IRepo;
 using DataAccess.Data;
+using Microsoft.EntityFrameworkCore;
 using Models;
 
 namespace Business
@@ -71,6 +72,14 @@ namespace Business
             Category newCategory = _mapper.Map<CategoryDTO, Category>(category, oldCategory);
             _db.Categories.Update(newCategory);
             return await _db.SaveChangesAsync();
+        }
+
+        public async Task<IEnumerable<StoreDTO>> getStoreByCategory(string categoryName)
+        {
+            //var category = await _db.Categories.FirstOrDefaultAsync(i => i.Name.ToLower() == categoryName.ToLower());
+            //return _mapper.Map<IEnumerable<Store>, IEnumerable<StoreDTO>>(category.Stores);
+            return null;
+            
         }
     }
 
