@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Sukhdari_Api.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     public class StoreController : Controller
     {
         private readonly IStoreRepo _storeRepo;
@@ -22,7 +22,7 @@ namespace Sukhdari_Api.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> SearchStore()
+        public async Task<IActionResult> getAllStores()
         {
             var allStores = await _storeRepo.getAllStores();
 ;            return Ok(allStores);
