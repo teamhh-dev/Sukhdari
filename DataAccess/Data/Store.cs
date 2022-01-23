@@ -10,6 +10,7 @@ namespace DataAccess.Data
 {
     public class Store
     {
+        [Key]
         public int Id { get; set; }
 
         [Required]
@@ -19,6 +20,8 @@ namespace DataAccess.Data
         [Required]
         public string Country { get; set; }
         //[ForeignKey("UserId")]
-        public int UserId { get; set; }
+        public string UserId { get; set; }
+        
+        
     }
 }

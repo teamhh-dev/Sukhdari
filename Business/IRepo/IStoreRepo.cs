@@ -13,5 +13,9 @@ namespace Business.IRepo
         public Task<int> updateStore(StoreDTO store);
         public Task<int> deleteStore(int id);
         public Task<IEnumerable<StoreDTO>> getAllStores();
+        public StoreDTO GetStoreByName(string name);
+        public StoreDTO GetStoreByAdminName(string adminName);
+        
+
     }
 }

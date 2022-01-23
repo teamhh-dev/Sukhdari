@@ -1,0 +1,72 @@
+﻿@page "/category"
+@layout StoreAdminLayout
+@inject IStoreRepo Store
+@inject ICategoryRepo CategoryRepo
+@inject NavigationManager Navigator
+@attribute [Authorize]
+
+<div class="row d-flex align-items-center justify-content-center">
+    <h2 class="col-10 text-center text-md-left">All Categories</h2>
+    <a class="btn btn-dark col" href="/addCategory">Add Category</a>
+</div>
+
+<div class="table-responsive mt-2">
+    <table class="table">
+        <caption>List of All Categories</caption>
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">Name</th>
+                <th scope="col">Description</th>
+                <th scope="col">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Categories!=null&&Categories.Any())
+            {
+                @foreach (var category in Categories)
+                {
+                    <tr>
+                        <td>@category.Name</td>
+                        <td>@category.Description</td>
+                        <td class="d-flex align-items-center justify-content-center  flex-column flex-md-row">
+                            <a href="@($"category/update/{category.Id}")"><span class="oi oi-eye"></span></a>
+                            <a href="@($"category/delete/{category.Id}")" class="ml-2"><span class="oi oi-trash"></span></a>
+                        </td>
+                    </tr>
+
+                }
+                @*<tr>
+                    <td>Dummy Name</td>
+                    <td>It is a dummy data just to check the working of table. if you know you know</td>
+                    <td class="d-flex align-items-center justify-content-between flex-column flex-md-row">
+                        <a><span class="oi oi-eye"></span></a>
+                        <a><span class="oi oi-trash"></span></a>
+                    </td>
+                </tr>*@
+            }
+
+        </tbody>
+    </table>
+</div>
+
+@code {
+    [CascadingParameter]
+    public Task<AuthenticationState> AuthenticationState { get; set; }
+
+    public IEnumerable<CategoryDTO> Categories { get; set; }
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationState;
+
+
+        if (Store.GetStoreByAdminName(authState.User.Identity.Name) == null)
+        {
+            Navigator.NavigateTo("/storeNotExist");
+        }
+        else
+        {
+            var store = Store.GetStoreByAdminName(authState.User.Identity.Name);
+            Categories = await CategoryRepo.GetAllCategories(store.Id);
+        }
+    }
+}

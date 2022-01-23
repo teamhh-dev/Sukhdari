@@ -1,7 +1,23 @@
 ﻿@page "/store/dashboard"
 @layout StoreAdminLayout
+@inject IStoreRepo Store
+@inject NavigationManager Navigator
 @attribute [Authorize]
 <h1>Dashboard</h1>
+<hr />
 @code {
+    [CascadingParameter]
+    public Task<AuthenticationState> AuthenticationState { get; set; }
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationState;
 
+
+        if (Store.GetStoreByAdminName(authState.User.Identity.Name) == null)
+        {
+            Navigator.NavigateTo("/storeNotExist");
+        }
+    }
 }
+
+

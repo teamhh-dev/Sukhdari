@@ -35,13 +35,19 @@ namespace Sukhdari_Server
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<ApplicationDbContext>(options =>
-            options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            options.UseSqlServer(Configuration.GetConnectionString("IrhaConnection")));
             
             services.AddIdentity<IdentityUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders()
                 .AddDefaultUI();
             services.AddScoped<IDbInitializer, DbInitializer>();
+
+            services.AddScoped<IStoreRepo, StoreRepo>();
+            services.AddScoped<ICategoryRepo,CategoryRepo>();
+            services.AddScoped<IProductRepo,ProductRepo>();
+
             services.AddRazorPages();
+            services.AddHttpContextAccessor();
             services.AddServerSideBlazor();
             services.AddSingleton<WeatherForecastService>();
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
