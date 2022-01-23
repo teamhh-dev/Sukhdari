@@ -19,7 +19,7 @@ namespace Sukhdari_Client
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
             builder.RootComponents.Add<App>("#app");
 
-            builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.Configuration.GetValue<string>("BaseApiUrl"))});
+            builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.Configuration.GetValue<string>("BaseAppUrl", "https://localhost:44378/")) }); 
             builder.Services.AddScoped<IStoreService, StoreService>();
             
             await builder.Build().RunAsync();

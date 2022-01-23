@@ -2,6 +2,7 @@ using AutoMapper;
 using Business;
 using Business.IRepo;
 using DataAccess.Data;
+using Newtonsoft.Json.Serialization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -33,7 +34,7 @@ namespace Sukhdari_Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<ApplicationDbContext>(options =>
-            options.UseSqlServer(Configuration.GetConnectionString("IrhaConnection")));
+            options.UseSqlServer(Configuration.GetConnectionString("NehaConnection")));
 
             services.AddIdentity<IdentityUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
@@ -42,10 +43,23 @@ namespace Sukhdari_Api
             services.AddScoped<ICategoryRepo, CategoryRepo>();
             services.AddScoped<IProductRepo, ProductRepo>();
 
+            services.AddCors(o => o.AddPolicy("Sukhdari", builder =>
+            {
+                builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+            }));
+
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
             services.AddRouting(option => option.LowercaseUrls = true);
             services.AddControllers();
+
+            services.AddControllers().AddJsonOptions(opt => opt.JsonSerializerOptions.PropertyNamingPolicy = null)
+                .AddNewtonsoftJson(opt =>
+                {
+                    opt.SerializerSettings.ContractResolver = new DefaultContractResolver();
+                    opt.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+                });
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Sukhdari_Api", Version = "v1" });
@@ -63,7 +77,7 @@ namespace Sukhdari_Api
             }
 
             app.UseHttpsRedirection();
-
+            app.UseCors("Sukhdari");
             app.UseRouting();
 
             app.UseAuthorization();

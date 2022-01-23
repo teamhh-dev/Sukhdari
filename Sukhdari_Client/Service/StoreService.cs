@@ -19,10 +19,20 @@ namespace Sukhdari_Client.Service
         }
         public async Task<IEnumerable<StoreDTO>> getAllStores()
         {
-            var response = await _httpClient.GetAsync($"api/Store/GetAllStores");
-            var content = await response.Content.ReadAsStringAsync();
-            var stores = JsonConvert.DeserializeObject<IEnumerable<StoreDTO>>(content);
-            return stores;
+            var response = await _httpClient.GetAsync("api/store/GetAllStores");
+            if (response.IsSuccessStatusCode)
+            {
+                var content = await response.Content.ReadAsStringAsync();
+                var stores = JsonConvert.DeserializeObject<IEnumerable<StoreDTO>>(content);
+                return stores;
+            }
+            else
+            {
+                var content = await response.Content.ReadAsStringAsync();
+                var errorModel = JsonConvert.DeserializeObject<ErrorModelDTO>(content);
+                throw new Exception(errorModel.ErrorMessage);
+            }
+            
         }
 
         public async Task<IEnumerable<StoreDTO>> getAllStoresByCategory(string categoryName)

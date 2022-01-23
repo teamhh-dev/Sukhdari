@@ -27,7 +27,7 @@ namespace Sukhdari_Api.Controllers
         public async Task<IActionResult> GetAllStores()
         {
             var allStores = await _storeRepo.getAllStores();
-;            return Ok(allStores);
+;           return Ok(allStores);
         }
 
         [HttpGet("{StoreName}")]
