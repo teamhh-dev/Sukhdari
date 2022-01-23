@@ -57,7 +57,7 @@
     public IEnumerable<StoreDTO> Stores { get; set; }
     protected override async Task OnInitializedAsync()
     {
-        Stores = await Store.GetAllStores();
+        Stores = await Store.getAllStores();
 
     }
 }
