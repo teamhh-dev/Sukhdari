@@ -1,6 +1,7 @@
 ﻿@page "/"
 @layout HomeLayout
-@inject IStoreService storeService   
+@using Models
+@inject IStoreService storeService
 
 <div class="container p-3">
     <div class="row justify-content-center">
@@ -29,25 +30,25 @@
 
 
 <div class="form-inline justify-content-center mt-4">
-    @foreach (var store in Stores)
+    @foreach (var store in stores)
     {
-        <a href="/SpecificStore" class="card col-3 m-3 p-0 shadow" style="text-decoration:none;">
+<a href="/SpecificStore" class="card col-3 m-3 p-0 shadow" style="text-decoration:none;">
 
-            <div>
-                <img class="card-img-top" src="" onerror="this.src = '/Images/store.jpg';" alt="Store image cap"/>
-                <div class="card-body">
-                    <h5 class="card-title text-dark">@store</h5>
-                    <p class="card-text text-dark">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-                    <p class="card-text"><small class="text-muted">@store</small></p>
-                </div>
-            </div>
+    <div>
+        <img class="card-img-top" src="" onerror="this.src = '/Images/store.jpg';" alt="Store image cap" />
+        <div class="card-body">
+            <h5 class="card-title text-dark">@store.Name</h5>
+            <p class="card-text text-dark">@store.Type</p>
+            <p class="card-text"><small class="text-muted">@store.AdminName</small></p>
+        </div>
+    </div>
 
-        </a>
-    }
+</a>}
 </div>
 @code
-{
-        public string[,] Stores = new string[3, 2] { { "First Store", "owner Name" }, { "Second Store", "Other Owner" },
-                                        { "Third Store", "Another Store" } };
-
+{ public IEnumerable<StoreDTO> stores { get; set; } = new List<StoreDTO>();
+            protected override async Task OnInitializedAsync()
+            {
+                stores = await storeService.getAllStores();
+            } 
 }

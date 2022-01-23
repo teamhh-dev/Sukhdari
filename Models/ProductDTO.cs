@@ -25,6 +25,7 @@ namespace Models
         public int CategoryId { get; set; }
         public int StoreId { get; set; }
 
-
+        public virtual ICollection<ProductImageDTO> ProductImages { get; set; }
+        public List<string> ImageUrls { get; set; }
     }
 }

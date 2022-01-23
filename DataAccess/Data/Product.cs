@@ -27,6 +27,6 @@ namespace DataAccess.Data
         // [ForeignKey("CategoryID")]
         // public virtual Category Category { get; set; }
 
-
+        public virtual ICollection<ProductImage> ProductImages { get; set; }
     }
 }

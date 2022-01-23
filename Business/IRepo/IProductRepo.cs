@@ -9,7 +9,7 @@ namespace Business.IRepo
 {
     public interface IProductRepo
     {
-        public Task<int> createProduct(ProductDTO product);
+        public Task<ProductDTO> createProduct(ProductDTO product);
         public Task<int> updateProduct(ProductDTO product);
         public Task<int> deleteProduct(int id);
         public Task<IEnumerable<ProductDTO>> getAllProducts();
@@ -17,6 +17,7 @@ namespace Business.IRepo
         public Task<ProductDTO> GetProduct(int id,int storeId);
 
         public Task<IEnumerable<StoreDTO>> getStoresByProductName(string productName);
+        public Task<ProductDTO> getProduct(int id);
 
     }
 }
