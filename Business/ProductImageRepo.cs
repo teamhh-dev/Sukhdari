@@ -31,22 +31,34 @@ namespace Business
         public async Task<int> DeleteProductImageByImageID(int imageId)
         {
             var image = await _db.productImages.FindAsync(imageId);
-            _db.productImages.Remove(image);
-            return await _db.SaveChangesAsync();
+            if (image != null)
+            {
+                _db.productImages.Remove(image);
+                return await _db.SaveChangesAsync();
+            }
+            return 0;
         }
 
-        public async Task<int> DeleteProductImageByName(string name)
+        public async Task<int> DeleteProductImageByName(string url)
         {
-            var images = await _db.productImages.FirstOrDefaultAsync(i => i.ProductImageUrl.ToLower() == name.ToLower());
-            _db.productImages.Remove(images);
-            return await _db.SaveChangesAsync();
+            var images = await _db.productImages.FirstOrDefaultAsync(i => i.ProductImageUrl.ToLower() == url.ToLower());
+            if (images != null)
+            {
+                _db.productImages.Remove(images);
+                return await _db.SaveChangesAsync();
+            }
+            return 0;
         }
 
         public async Task<int> DeleteProductImageByProductID(int productId)
         {
             var images = _db.productImages.Where(i => i.ProductId == productId).ToList();
-            _db.productImages.RemoveRange(images);
-            return await _db.SaveChangesAsync();
+            if (images != null)
+            {
+                _db.productImages.RemoveRange(images);
+                return await _db.SaveChangesAsync();
+            }
+            return 0;
         }
 
         public async Task<IEnumerable<ProductImageDTO>> getProductImages(int productId)
