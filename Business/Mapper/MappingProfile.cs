@@ -16,6 +16,7 @@ namespace Business.Mapper
             CreateMap<Store, StoreDTO>().ReverseMap();
             CreateMap<Category, CategoryDTO>().ReverseMap();
             CreateMap<Product, ProductDTO>().ReverseMap();
+            CreateMap<ProductImage, ProductImageDTO>().ReverseMap();
 
         }
     }

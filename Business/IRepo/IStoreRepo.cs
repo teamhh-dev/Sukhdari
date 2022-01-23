@@ -15,5 +15,7 @@ namespace Business.IRepo
         public Task<IEnumerable<StoreDTO>> getAllStores();
         public StoreDTO GetStoreByName(string name);
         public StoreDTO GetStoreByAdminName(string adminName);
+        
+
     }
 }
