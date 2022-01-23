@@ -8,7 +8,9 @@ namespace Sukhdari_Client.Service.IService
 {
     public interface IStoreService
     {
-        public Task<IEnumerable<StoreDTO>> GetAllStores();
-        //public Task<HotelRoomDTO> GetHotelRoomDetails(int roomId, string checkInDate, string checkOutDate);
+        public Task<IEnumerable<StoreDTO>> getAllStores();
+        public Task<StoreDTO> getStoreByName(string storeName);
+        public Task<IEnumerable<StoreDTO>> getAllStoresByCategory(string categoryName);
+        public Task<IEnumerable<StoreDTO>> getAllStoresByProducts(string productName);
     }
 }
