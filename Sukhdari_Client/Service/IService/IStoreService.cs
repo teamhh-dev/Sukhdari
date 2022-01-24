@@ -12,5 +12,6 @@ namespace Sukhdari_Client.Service.IService
         public Task<StoreDTO> getStoreByName(string storeName);
         public Task<IEnumerable<StoreDTO>> getAllStoresByCategory(string categoryName);
         public Task<IEnumerable<StoreDTO>> getAllStoresByProducts(string productName);
+        public Task<IEnumerable<ProductDTO>> GetStoreProducts(int storeID);
     }
 }

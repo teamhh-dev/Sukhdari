@@ -1,6 +1,6 @@
 ﻿@page "/stores/store/{Id:int}"
 @layout MainLayout
-
+@inject IStoreService Store
 <h3>@Id</h3>
 
 <div class="container p-3">
@@ -25,25 +25,34 @@
 
 
 <div class="form-inline justify-content-center mt-4">
-    @foreach (var product in Products)
+    @if (Products != null && Products.Any())
     {
-        <a href="#" class="card col-3 m-3 p-0 shadow" style="text-decoration:none;">
-            <div>
-                <img class="card-img-top" src="" onerror="this.src = '/Images/product.png';" alt="Product image cap" />
-                <div class="card-body">
-                    <h5 class="card-title text-dark">@product</h5>
-                    <p class="card-text"><small class="text-muted">RS: 500/-</small></p>
+        @foreach (var product in Products)
+        {
+            <a href="#" class="card col-3 m-3 p-0 shadow" style="text-decoration:none;">
+                <div>
+                    <img class="card-img-top" src="@product.ProductImages" onerror="this.src = '/Images/product.png';" alt="Product image cap" />
+                    <div class="card-body">
+                        <h5 class="card-title text-dark">@product.Name</h5>
+                        <p class="card-text"><small class="text-muted">@product.Price</small></p>
+                    </div>
                 </div>
-            </div>
-
-        </a>
+            </a>
+        }
+    }
+    else 
+    {
+        <h2>This Store has no Products :)</h2>
     }
 </div>
 @code
 {
     [Parameter]
-    public int? Id { get; set; }
+    public int Id { get; set; }
 
-    public string[,] Products = new string[2, 2] { { "First Product", "Second Name" }, { "Third Store", "Fourth Owner" } };
-
+    public IEnumerable<ProductDTO> Products { get; set; }
+    protected override async Task OnInitializedAsync()
+    {
+        Products = await Store.GetStoreProducts(Id);
+    }
 }
