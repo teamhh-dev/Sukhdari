@@ -16,7 +16,7 @@
                         <option value="studentcode">Product</option>
                     </select>
                 </div>
-                <input type="text" class="form-control col-xl-7 shadow-none" placeholder="Search term...">
+                <input @bind-value="SearchTerm" @bind-value:event="oninput" type="text" class="form-control col-xl-7 shadow-none" placeholder="Search term...">
                 <span class="input-group-btn">
                     <button class="btn btn-dark shadow-none" type="submit">
                         <span class="oi oi-magnifying-glass"></span>
@@ -33,7 +33,7 @@
     @if (Stores != null && Stores.Any())
     {
 
-        @foreach (var store in Stores)
+        @foreach (var store in FilteredToDos)
         {
             <a href="@($"stores/store/{store.Id}")" class="card col-3 m-3 p-0 shadow" style="text-decoration:none;">
 
@@ -53,11 +53,12 @@
 </div>
 @code
 {
-
+    string SearchTerm { get; set; } = "";
     public IEnumerable<StoreDTO> Stores { get; set; }
     protected override async Task OnInitializedAsync()
     {
         Stores = await Store.getAllStores();
 
     }
+    List<StoreDTO> FilteredToDos => Stores.Where(i => i.Name.ToLower().Contains(SearchTerm.ToLower())).ToList();
 }
