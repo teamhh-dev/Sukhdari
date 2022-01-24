@@ -45,5 +45,12 @@ namespace Sukhdari_Api.Controllers
             //var productsToFind = products.All(x => products.Any(a => a.CategoryId.Equals(categoryToFind)));
             return Ok(productsToFind);
         }
+
+        [HttpGet("{storeId}")]
+        public async Task<IActionResult> getPrdouctsWithCategory(int id)
+        {
+            var products = await _categoryRepo.GetAllCategoriesWithProducts(id);
+            return Ok(products);
+        }
     }
 }
