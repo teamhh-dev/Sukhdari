@@ -45,18 +45,28 @@ namespace Sukhdari_Api.Controllers
             return Ok(productsToFind);
         }
 
+        [HttpGet("{StoreID}")]
+        public async Task<IActionResult> GetStoreProducts(int StoreID)
+        {
+            var products = await _productRepo.getAllProducts(StoreID);
+            if (products == null)
+            {
+                return BadRequest(new ErrorModelDTO() { ErrorMessage = "No Products Exist (", Title = "", StatusCode = StatusCodes.Status404NotFound });
+            }
+            return Ok(products);
+        }
+
         [HttpGet("{CategoryName}")]
         public async Task<IActionResult> GetStoresByCategory(string categoryName)
         {
-            var stores = _categoryRepo.getStoreByCategory(categoryName);
+            var stores = await _categoryRepo.getStoreByCategory(categoryName);
             return Ok(stores);
         }
 
         [HttpGet("{PrdouctName}")]
         public async Task<IActionResult> GetStoresByProduct(string productName)
         {
-            var stores = _productRepo.getStoresByProductName(productName);
-            
+            var stores = await _productRepo.getStoresByProductName(productName);
             return Ok(stores);
         }
     }

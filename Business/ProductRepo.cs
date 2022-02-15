@@ -67,7 +67,7 @@ namespace Business
 
         public async Task<IEnumerable<ProductDTO>> getAllProducts(int storeId)
         {
-            return _mapper.Map<IEnumerable<Product>, IEnumerable<ProductDTO>>(_db.Products.Where(i=>i.StoreId==storeId));
+            return _mapper.Map<IEnumerable<Product>, IEnumerable<ProductDTO>>(_db.Products.Include(i=>i.ProductImages).Where(i=>i.StoreId==storeId)).ToList();
         }
 
         public async Task<IEnumerable<ProductDTO>> getAllProducts()
