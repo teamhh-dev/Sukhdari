@@ -1,53 +1,64 @@
 ﻿@page "/addCategory"
 @page "/category/update/{Id:int}"
 @page "/category/delete/{Id:int}"
-@layout StoreAdminLayout
+@layout StoreAdminLayoutT
 @inject IStoreRepo Store
 @inject ICategoryRepo Category
 @inject NavigationManager Navigator
 @attribute [Authorize]
 
 
-@if (Id != null)
-{
-    <div class="top-row d-flex justify-content-end">
-        <button @onclick="DeleteCategory" class="btn btn-dark text-white"><span class="oi oi-trash mr-0 mr-md-2" /><h5 class="d-md-inline-block d-none pt-1">Delete Category</h5></button>
-        
-    </div>
-}
-
-<h1>@Title</h1>
-
-<EditForm Model="CategoryDetails" OnValidSubmit="SaveCategory" class="form-horizontal">
-
-    <DataAnnotationsValidator></DataAnnotationsValidator>
-    <div class="form-group">
-        <label class="col-md-7 control-label" for="category_name">CATEGORY NAME</label>
-        <div class="col-md-7">
-            <InputText @bind-Value="CategoryDetails.Name" placeholder="Category Name" class="form-control input-md" />
-            <ValidationMessage For="()=>CategoryDetails.Name"></ValidationMessage>
-
+<div class="card card-info">
+    <div class="card-header">
+        <div class="card-title float-left pt-2">
+            <h3>@Title</h3>
         </div>
+        @if (Id != null)
+        {
+            <div class="d-flex float-right">
+                <button @onclick="DeleteCategory" class="btn btn-info text-white"><span class="oi oi-trash mr-0 mr-md-2" />
+                    <h5 class="d-md-inline-block d-none pt-1">Delete Category</h5>
+                </button>
+
+            </div>
+        }
     </div>
 
+    <EditForm Model="CategoryDetails" OnValidSubmit="SaveCategory" class="form-horizontal">
+        <div class="card-body">
+
+            <DataAnnotationsValidator></DataAnnotationsValidator>
+            <div class="form-group">
+                <label class="col-md-7 control-label" for="category_name">CATEGORY NAME</label>
+                <div class="col-md-7">
+                    <InputText @bind-Value="CategoryDetails.Name" placeholder="Category Name"
+                        class="form-control input-md" />
+                    <ValidationMessage For="()=>CategoryDetails.Name"></ValidationMessage>
+
+                </div>
+            </div>
 
 
-    <div class="form-group">
-        <label class="col-md-7 control-label" for="category_description">CATEGORY DESCRIPTION</label>
-        <div class="col-md-7">
-            <InputTextArea @bind-Value="CategoryDetails.Description" class="form-control" />
-            <ValidationMessage For="()=>CategoryDetails.Description"></ValidationMessage>
 
+            <div class="form-group">
+                <label class="col-md-7 control-label" for="category_description">CATEGORY DESCRIPTION</label>
+                <div class="col-md-7">
+                    <InputTextArea @bind-Value="CategoryDetails.Description" class="form-control" />
+                    <ValidationMessage For="()=>CategoryDetails.Description"></ValidationMessage>
+
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-7">
+                    <button type="submit" class="btn btn-info text-white">@btnName</button>
+
+                </div>
+            </div>
         </div>
-    </div>
+    </EditForm>
+</div>
 
-    <div class="form-group">
-        <div class="col-md-7">
-            <button type="submit" class="btn btn-dark text-white">@btnName</button>
-
-        </div>
-    </div>
-</EditForm>
 @code {
     private String Title { get; set; } = "Add Category";
     private String btnName { get; set; } = "Add Category";
