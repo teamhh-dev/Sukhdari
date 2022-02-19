@@ -1,59 +1,86 @@
 ﻿@page "/products"
-@layout StoreAdminLayout
+@layout StoreAdminLayoutT
 @inject IStoreRepo Store
 @inject ICategoryRepo Category
 @inject IProductRepo Product
 @inject NavigationManager Navigator
 @attribute [Authorize]
 
-<div class="row">
-    <h2 class="col-10">All Products</h2>
-    <a class="btn btn-dark col mr-4 h2" href="/addProduct">Add Product</a>
-</div>
 
-<div class="table-responsive mt-2">
-    <table class="table">
-        <caption>List of All Products</caption>
-        <thead class="thead-dark">
-            <tr>
-                <th scope="col">Name</th>
-                <th scope="col">Category</th>
-                <th scope="col">Price (PKR)</th>
-                @*<th scope="col">Discount %</th>
-                    <th scope="col">Weight (kg)</th>*@
-                <th scope="col">Quantity</th>
-                <th scope="col">Description</th>
-                <th scope="col">Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            @if (AllProducts != null && AllProducts.Any())
-            {
+<div class="card card-info">
+    <div class="card-header">
+        <div class="card-header">
+            <div class="card-title float-left pt-2">
+                <h3>All Products</h3>
+            </div>
 
-                @foreach (var product in AllProducts)
-                {
+            <div class="d-flex float-right">
+                <a href="/addProduct">
+                    <button class="btn btn-info text-white"><span class="oi oi-plus mr-0 mr-md-2" />
+                        <h5 class="d-md-inline-block d-none pt-1">Add Product</h5>
+                    </button>
+                </a>
+            </div>
+        </div>
 
+    </div>
+    <div class="card-body">
 
+        <div class="table-responsive mt-2">
+            <table class="table">
+                <caption>List of All Products</caption>
+                <thead class="thead-light bg-info">
                     <tr>
-                        <td>@product.Name</td>
-                        <td>@getProductCategoryName(@product.CategoryId)</td>
-                        <td>@product.Price</td>
-                        @*<td>0</td>
-                            <td>2</td>*@
-                        <td>@product.Quantity</td>
-                        <td>@product.Description</td>
-                        <td class="d-flex align-items-center justify-content-center  flex-column flex-md-row">
-                            <a href="@($"/product/update/{product.Id}")"><span class="oi oi-eye"></span></a>
-                            <a href="@($"product/delete/{product.Id}")" class="ml-2"><span class="oi oi-trash"></span></a>
-                        </td>
+                        <th scope="col">Name</th>
+                        <th scope="col">Category</th>
+                        <th scope="col">Price (PKR)</th>
+                        @*<th scope="col">Discount %</th>
+                            <th scope="col">Weight (kg)</th>*@
+                        <th scope="col">Quantity</th>
+                        <th scope="col">Description</th>
+                        <th scope="col">Action</th>
                     </tr>
-                }
-            }
+                </thead>
+                <tbody>
+                    @if (AllProducts != null && AllProducts.Any())
+                    {
 
-        </tbody>
-    </table>
+                        @foreach (var product in AllProducts)
+                        {
+
+
+                            <tr>
+                                <td>@product.Name</td>
+                                <td>@getProductCategoryName(@product.CategoryId)</td>
+                                <td>@product.Price</td>
+                                @*<td>0</td>
+                                    <td>2</td>*@
+                                <td>@product.Quantity</td>
+                                <td>@product.Description</td>
+                                <td class="d-flex align-items-center justify-content-center  flex-column flex-md-row"
+                            style="gap: 0.3rem;">
+                                    <a href="@($"/product/update/{product.Id}")">
+                                        <div class="btn btn-secondary">
+
+                                            <span class="oi oi-eye"></span>
+                                        </div>
+                                    </a>
+
+                                    <a href="@($"/product/delete/{product.Id}")">
+                                        <div class="btn btn-danger">
+                                            <span class="oi oi-trash"></span>
+                                        </div>
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    }
+
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
-
 @code {
     [CascadingParameter]
     public Task<AuthenticationState> AuthenticationState { get; set; }
