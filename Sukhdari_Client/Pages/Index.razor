@@ -2,78 +2,52 @@
 @layout HomeLayout
 @inject IStoreService Store
 
-<div class="container p-3">
-    <div class="row justify-content-center">
-        <div class="col-8">
-            <form action="#" method="get" id="searchForm" class="input-group">
-                @* change with edit form when get model same with inside fields *@
-
-                <div class="input-group-btn search-panel">
-                    <select name="search_param" id="search_param" class="btn btn-default shadow-none ">
-                        <option value="all">All</option>
-                        <option value="username">Store</option>
-                        <option value="email">Category</option>
-                        <option value="studentcode">Product</option>
-                    </select>
-                </div>
-                <input @bind-value="SearchTerm" @bind-value:event="oninput" type="text"
-                    class="form-control col-xl-7 shadow-none" placeholder="Search term...">
-                <span class="input-group-btn">
-                    <button class="btn btn-dark shadow-none" type="submit">
-                        <span class="oi oi-magnifying-glass"></span>
-                    </button>
-                </span>
-            </form>
+<div id="carouselDiv" class="row p-0 m-0">
+    <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+        <ol class="carousel-indicators">
+            <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
+            <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
+        </ol>
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <img class="d-block w-100" src="images/slide1.jpg" alt="First slide">
+            </div>
+            <div class="carousel-item">
+                <img class="d-block w-100" src="images/slide2.png" alt="Second slide">
+            </div>
         </div>
+        <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="sr-only">Previous</span>
+        </a>
+        <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="sr-only">Next</span>
+        </a>
     </div>
 </div>
 
-@* <ul class="cards">
-    <li>
-
-    <a href="" class="card">
-    <img src="/Images/oYiTqum.jpg" class="card__image" alt="" />
-    <div class="card__overlay">
-    <div class="card__header">
-    <svg class="card__arc" xmlns="http://www.w3.org/2000/svg">
-    <path />
-    </svg>
-    <img class="card__thumb" src="/Images/7D7I6dI.png" alt="" />
-    <div class="card__header-text">
-    <h3 class="card__title">Jessica Parker</h3>
-    <span class="card__status">1 hour ago</span>
-    </div>
-    </div>
-    <p class="card__description">Lorem ipsum dolor sit amet consectetur adipisicing elit. Asperiores,
-    blanditiis?
-    </p>
-    </div>
-    </a>
-    </li>
-
-    </ul> *@
-<ul class="cards">
-
+<div class="form-inline justify-content-center mt-4">
     @if (Stores != null && Stores.Any())
     {
-
         @foreach (var store in FilteredToDos)
         {
-            <li>
-
-                <Card Store=@store ></Card>
-                @* <img class="card-img-top" src="" onerror="this.src = '/Images/store.jpg';" alt="Store image cap" />
+            <a href="@($"stores/store/{store.Id}")" class="card col-lg-3 col-md-5 col-11 m-3 p-0 shadow" style="text-decoration:none;">
+            <div>
+                <img class="card-img-top" src="" onerror="this.src = '/Images/store.jpg';" alt="Store image cap" />
                 <div class="card-body">
                     <h5 class="card-title text-dark">@store.Name</h5>
                     <p class="card-text"><small class="text-muted">@store.Country</small></p>
                     <p class="card-text"><small class="text-muted">@store.Type</small></p>
-                </div> *@
-
-            </li>
-        }
-
+                </div>
+            </div>
+            </a>
+         }
     }
-</ul>
+</div>
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
 @code
 {
     string SearchTerm { get; set; } = "";
@@ -81,7 +55,6 @@
     protected override async Task OnInitializedAsync()
     {
         Stores = await Store.getAllStores();
-
     }
     List<StoreDTO> FilteredToDos => Stores.Where(i => i.Name.ToLower().Contains(SearchTerm.ToLower())).ToList();
 }
