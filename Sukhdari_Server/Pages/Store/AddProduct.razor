@@ -204,7 +204,7 @@
             {
                 foreach (var deleted in DeletedImagesNames)
                 {
-                    var imageName = deleted.Replace($"ProductImages/", "");
+                    var imageName = deleted.Replace($"{Navigator.BaseUri}ProductImages/", "");
                     var result = imageUplaod.DeleteImage(imageName);
                     await productImageRepo.DeleteProductImageByName(deleted);
                 }
@@ -223,7 +223,7 @@
         ProductDTO product = await Product.getProduct(Id.Value);
         foreach (var image in product.ProductImages)
         {
-            var name = image.ProductImageUrl.Replace($"ProductImages/", "");
+            var name = image.ProductImageUrl.Replace($"{Navigator.BaseUri}ProductImages/", "");
             imageUplaod.DeleteImage(name);
         }
 
@@ -304,7 +304,7 @@
         try
         {
             var imageIndex = ProductDetails.ImageUrls.FindIndex(i => i == imageUrl);
-            var imageName = imageUrl.Replace($"ProductImages/", "");
+            var imageName = imageUrl.Replace($"{Navigator.BaseUri}ProductImages/", "");
             if (ProductDetails.Id == 0 && Title == "Add Product")
             {
                 var result = imageUplaod.DeleteImage(imageName);
