@@ -2,10 +2,9 @@
     <Router AppAssembly="@typeof(Program).Assembly" PreferExactMatches="@true">
         <Found Context="routeData">
             <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" >
-            <NotAuthorized>
-                Page Doesn't Exist!
-                Try Login!
-            </NotAuthorized>    
+                <NotAuthorized>
+                    It seems you are not logged in. Please login to continue
+                </NotAuthorized>    
             </AuthorizeRouteView>
 
         </Found>
