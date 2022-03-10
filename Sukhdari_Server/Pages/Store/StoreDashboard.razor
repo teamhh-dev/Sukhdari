@@ -1,9 +1,18 @@
 ﻿@page "/store/dashboard"
-@layout StoreAdminLayout
+@layout StoreAdminLayoutT
 @inject IStoreRepo Store
 @inject NavigationManager Navigator
 @attribute [Authorize]
-<h1>Dashboard</h1>
+<div class="card  card-info">
+
+    <div class="card-header">
+        <h3 class="card-title">Dashboard</h3>
+    </div>
+    <div class="card-body">
+    </div>
+
+</div>
+
 <hr />
 @code {
     [CascadingParameter]
@@ -19,5 +28,3 @@
         }
     }
 }
-
-

@@ -16,7 +16,8 @@
                         <option value="studentcode">Product</option>
                     </select>
                 </div>
-                <input type="text" class="form-control col-xl-7 shadow-none" placeholder="Search term...">
+                <input @bind-value="SearchTerm" @bind-value:event="oninput" type="text"
+                    class="form-control col-xl-7 shadow-none" placeholder="Search term...">
                 <span class="input-group-btn">
                     <button class="btn btn-dark shadow-none" type="submit">
                         <span class="oi oi-magnifying-glass"></span>
@@ -27,37 +28,60 @@
     </div>
 </div>
 
+@* <ul class="cards">
+    <li>
 
-<div class="form-inline justify-content-center mt-4">
+    <a href="" class="card">
+    <img src="/Images/oYiTqum.jpg" class="card__image" alt="" />
+    <div class="card__overlay">
+    <div class="card__header">
+    <svg class="card__arc" xmlns="http://www.w3.org/2000/svg">
+    <path />
+    </svg>
+    <img class="card__thumb" src="/Images/7D7I6dI.png" alt="" />
+    <div class="card__header-text">
+    <h3 class="card__title">Jessica Parker</h3>
+    <span class="card__status">1 hour ago</span>
+    </div>
+    </div>
+    <p class="card__description">Lorem ipsum dolor sit amet consectetur adipisicing elit. Asperiores,
+    blanditiis?
+    </p>
+    </div>
+    </a>
+    </li>
+
+    </ul> *@
+<ul class="cards">
 
     @if (Stores != null && Stores.Any())
     {
 
-        @foreach (var store in Stores)
+        @foreach (var store in FilteredToDos)
         {
-            <a href="@($"stores/store/{store.Id}")" class="card col-3 m-3 p-0 shadow" style="text-decoration:none;">
+            <li>
 
-                <div>
-                    <img class="card-img-top" src="" onerror="this.src = '/Images/store.jpg';" alt="Store image cap" />
-                    <div class="card-body">
-                        <h5 class="card-title text-dark">@store.Name</h5>
-                        <p class="card-text"><small class="text-muted">@store.Country</small></p>
-                        <p class="card-text"><small class="text-muted">@store.Type</small></p>
-                    </div>
-                </div>
+                <Card Store=@store ></Card>
+                @* <img class="card-img-top" src="" onerror="this.src = '/Images/store.jpg';" alt="Store image cap" />
+                <div class="card-body">
+                    <h5 class="card-title text-dark">@store.Name</h5>
+                    <p class="card-text"><small class="text-muted">@store.Country</small></p>
+                    <p class="card-text"><small class="text-muted">@store.Type</small></p>
+                </div> *@
 
-            </a>
+            </li>
         }
-    }
 
-</div>
+    }
+</ul>
 @code
 {
-
+    string SearchTerm { get; set; } = "";
     public IEnumerable<StoreDTO> Stores { get; set; }
     protected override async Task OnInitializedAsync()
     {
         Stores = await Store.getAllStores();
 
     }
+    List<StoreDTO> FilteredToDos => Stores.Where(i => i.Name.ToLower().Contains(SearchTerm.ToLower())).ToList();
 }
