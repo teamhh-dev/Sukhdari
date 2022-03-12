@@ -50,11 +50,53 @@
 
 @code
 {
-    string SearchTerm { get; set; } = "";
+    public string SearchTerm { get; set; } = "";
+    public string selectedFilter = "Store";
     public IEnumerable<StoreDTO> Stores { get; set; }
+    public IEnumerable<StoreDTO> FilteredToDos { get; set; }
+
     protected override async Task OnInitializedAsync()
     {
         Stores = await Store.getAllStores();
     }
-    List<StoreDTO> FilteredToDos => Stores.Where(i => i.Name.ToLower().Contains(SearchTerm.ToLower())).ToList();
+    public async Task searchResults()
+    {
+        if (selectedFilter == "Store")
+        {
+            FilteredToDos = Stores.Where(i => i.Name.ToLower().Contains(SearchTerm.ToLower())).ToList();
+        }
+        else if (selectedFilter == "Product")
+        {
+            if (SearchTerm == "")
+            {
+                FilteredToDos = Stores;
+            }
+            else
+            {
+                FilteredToDos = await Store.SearchStoreByProductName(SearchTerm);
+            }
+        }
+        else if (selectedFilter == "Category")
+        {
+            if (SearchTerm == "")
+            {
+                FilteredToDos = Stores;
+            }
+            else
+            {
+                FilteredToDos = await Store.SearchStoreByCategory(SearchTerm);
+            }
+        }
+        else if (selectedFilter == "All")
+        {
+            if (SearchTerm == "")
+            {
+                FilteredToDos = Stores;
+            }
+            else
+            {
+                FilteredToDos = await Store.getStoresByAllFilters(SearchTerm);
+            }
+        }
+    }
 }

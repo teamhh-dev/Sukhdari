@@ -15,7 +15,6 @@ namespace Business.IRepo
         public Task<IEnumerable<ProductDTO>> getAllProducts();
         public Task<IEnumerable<ProductDTO>> getAllProducts(int storeId);
         public Task<ProductDTO> GetProduct(int id,int storeId);
-
         public Task<IEnumerable<StoreDTO>> getStoresByProductName(string productName);
         public Task<ProductDTO> getProduct(int id);
 
