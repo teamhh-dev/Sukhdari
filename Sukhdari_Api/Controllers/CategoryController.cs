@@ -34,7 +34,7 @@ namespace Sukhdari_Api.Controllers
         }
 
         [HttpGet("{categoryName}")]
-        public async Task<IActionResult> GetProductsWithCategoryName(string? categoryName)
+        public async Task<IActionResult> GetProductsWithCategoryName(string categoryName)
         {
             var products = await _productRepo.getAllProducts();
             var category = await _categoryRepo.GetAllCategories();
@@ -44,6 +44,12 @@ namespace Sukhdari_Api.Controllers
             //var categoryToFind = category.Where(x => x.Name.Trim().ToLower().Contains(categoryName.ToLower())).Select(x => x.Id);
             //var productsToFind = products.All(x => products.Any(a => a.CategoryId.Equals(categoryToFind)));
             return Ok(productsToFind);
+        }
+        [HttpGet("{categoryName}")]
+        public async Task<IActionResult> GetStoresByCategory(string categoryName)
+        {
+            var stores = await _categoryRepo.getStoreByCategory(categoryName);
+            return Ok(stores);
         }
     }
 }

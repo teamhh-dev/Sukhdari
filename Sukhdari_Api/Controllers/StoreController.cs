@@ -56,17 +56,10 @@ namespace Sukhdari_Api.Controllers
             return Ok(products);
         }
 
-        [HttpGet("{CategoryName}")]
-        public async Task<IActionResult> GetStoresByCategory(string categoryName)
+        [HttpGet("{filterData}")]
+        public async Task<IActionResult> GetStoresByAllFilters(string filterData)
         {
-            var stores = await _categoryRepo.getStoreByCategory(categoryName);
-            return Ok(stores);
-        }
-
-        [HttpGet("{PrdouctName}")]
-        public async Task<IActionResult> GetStoresByProduct(string productName)
-        {
-            var stores = await _productRepo.getStoresByProductName(productName);
+            var stores = await _storeRepo.getStoresByAllFilters(filterData);
             return Ok(stores);
         }
     }

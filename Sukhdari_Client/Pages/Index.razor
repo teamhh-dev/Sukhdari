@@ -9,18 +9,18 @@
                 @* change with edit form when get model same with inside fields *@
 
                 <div class="input-group-btn search-panel">
-                    <select name="search_param" id="search_param" class="btn btn-default shadow-none ">
-                        <option value="all">All</option>
-                        <option value="username">Store</option>
-                        <option value="email">Category</option>
-                        <option value="studentcode">Product</option>
+                    <select @bind="@selectedFilter" name="search_param" id="search_param" class="btn btn-default shadow-none ">
+                        <option value="Store">Store</option>
+                        <option value="All">All</option>
+                        <option value="Category">Category</option>
+                        <option value="Product">Product</option>
                     </select>
                 </div>
-                <input @bind-value="SearchTerm" @bind-value:event="oninput" type="text" class="form-control col-xl-7 shadow-none" placeholder="Search term...">
+                <input @bind-value="SearchTerm" @bind-value:event="oninput" @onkeyup="@searchResults" type="text" class="form-control col-xl-7 shadow-none" placeholder="Search term...">
                 <span class="input-group-btn">
-                    <button class="btn btn-dark shadow-none" type="submit">
+                    @*<button class="btn btn-dark shadow-none" type="submit">
                         <span class="oi oi-magnifying-glass"></span>
-                    </button>
+                    </button>*@
                 </span>
             </form>
         </div>
@@ -32,7 +32,6 @@
 
     @if (Stores != null && Stores.Any())
     {
-
         @foreach (var store in FilteredToDos)
         {
             <a href="@($"stores/store/{store.Id}")" class="card col-3 m-3 p-0 shadow" style="text-decoration:none;">
@@ -53,12 +52,55 @@
 </div>
 @code
 {
-    string SearchTerm { get; set; } = "";
+    public string SearchTerm { get; set; } = "";
+    public string selectedFilter = "Store";
     public IEnumerable<StoreDTO> Stores { get; set; }
+    public IEnumerable<StoreDTO> FilteredToDos { get; set; }
+
     protected override async Task OnInitializedAsync()
     {
         Stores = await Store.getAllStores();
+        FilteredToDos = Stores;
 
     }
-    List<StoreDTO> FilteredToDos => Stores.Where(i => i.Name.ToLower().Contains(SearchTerm.ToLower())).ToList();
+    public async Task searchResults()
+    {
+        if (selectedFilter == "Store")
+        {
+            FilteredToDos = Stores.Where(i => i.Name.ToLower().Contains(SearchTerm.ToLower())).ToList();
+        }
+        else if (selectedFilter == "Product")
+        {
+            if (SearchTerm == "")
+            {
+                FilteredToDos = Stores;
+            }
+            else
+            {
+                FilteredToDos = await Store.SearchStoreByProductName(SearchTerm);
+            }
+        }
+        else if (selectedFilter == "Category")
+        {
+            if (SearchTerm == "")
+            {
+                FilteredToDos = Stores;
+            }
+            else
+            {
+                FilteredToDos = await Store.SearchStoreByCategory(SearchTerm);
+            }
+        }
+        else if (selectedFilter == "All")
+        {
+            if (SearchTerm == "")
+            {
+                FilteredToDos = Stores;
+            }
+            else
+            {
+                FilteredToDos = await Store.getStoresByAllFilters(SearchTerm);
+            }
+        }
+    }
 }
