@@ -82,5 +82,10 @@ namespace Business
             }
             return _mapper.Map<IEnumerable<Store>, IEnumerable<StoreDTO>>(storeByCategoryList);
         }
+        public async Task<IEnumerable<CategoryDTO>> GetAllCategoriesWithProducts(int StoreId)
+        {
+            var things = _db.Categories.Include(i => i.Products).ThenInclude(i => i.ProductImages).Where(i => i.StoreId == StoreId).ToList();
+            return _mapper.Map<IEnumerable<Category>, IEnumerable<CategoryDTO>>(things);
+        }
     }
 }

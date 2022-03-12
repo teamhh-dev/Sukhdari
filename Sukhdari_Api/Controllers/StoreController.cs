@@ -40,8 +40,9 @@ namespace Sukhdari_Api.Controllers
 
             }
             var s_Id = store.Id;
-            var products = await _productRepo.getAllProducts();
-            var productsToFind = products.FirstOrDefault(i => i.StoreId == s_Id);
+            //var products = await _productRepo.getAllProducts();
+            //var productsToFind = products.FirstOrDefault(i => i.StoreId == s_Id);
+            var productsToFind = await _productRepo.getAllProducts(s_Id);
             return Ok(productsToFind);
         }
 

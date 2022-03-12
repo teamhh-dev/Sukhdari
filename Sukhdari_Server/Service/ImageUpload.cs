@@ -1,6 +1,7 @@
-﻿using Microsoft.AspNetCore.Components.Forms;
+﻿using Sukhdari_Server.Service.IService;
+using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Hosting;
-using Sukhdari_Server.Service.IService;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -12,9 +13,12 @@ namespace Sukhdari_Server.Service
     public class ImageUpload : IImageUpload
     {
         private readonly IWebHostEnvironment _webHostEnvironment;
-        public ImageUpload(IWebHostEnvironment web)
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        public ImageUpload(IWebHostEnvironment web, IHttpContextAccessor httpContextAccessor)
         {
             _webHostEnvironment = web;
+            _httpContextAccessor = httpContextAccessor;
+
         }
         public bool DeleteImage(string imageName)
         {
@@ -57,8 +61,8 @@ namespace Sukhdari_Server.Service
                 {
                     memoryStream.WriteTo(fs);
                 }
-
-                var fullPath = $"ProductImages/{imageName}";
+                var url = $"{_httpContextAccessor.HttpContext.Request.Scheme}://{_httpContextAccessor.HttpContext.Request.Host.Value}/";
+                var fullPath = $"{url}ProductImages/{imageName}";
                 return fullPath;
             }
             catch(Exception e)
