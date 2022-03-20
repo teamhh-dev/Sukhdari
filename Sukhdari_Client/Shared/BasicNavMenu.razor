@@ -1,4 +1,5 @@
-﻿<nav class="navbar navbar-expand-lg navbar-light bg-light">
+﻿@inject IWebAssemblyHostEnvironment hostEnv
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
     <h3><a class="navbar-brand" href="/">Sukhdari</a></h3>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation" @onclick="ToggleNavMenu">
         <span class="navbar-toggler-icon"></span>
@@ -7,10 +8,17 @@
 
         <a class="nav-link" href="#">Sign Up</a>
         <a class="nav-link" href="#">Sign In</a>
-        <a class="nav-link" href="https://localhost:44301/Identity/Account/Register">Create Store</a>
-        <a class="nav-link" href="https://localhost:44301/Identity/Account/Login">Go to Store</a>
+        @if (hostEnv.IsDevelopment())
+        {
+            <a class="nav-link" href="https://localhost:44301/Identity/Account/Register">Create Store</a>
+            <a class="nav-link" href="https://localhost:44301/Identity/Account/Login">Go to Store</a>
+        }
+        else
+        {
+            <a class="nav-link" href="https://sukhdariserver.azurewebsites.net/Identity/Account/Register">Create Store</a>
+            <a class="nav-link" href="https://sukhdariserver.azurewebsites.net/Identity/Account/Login">Go to Store</a>
 
-
+        }
 
     </div>
 </nav>
@@ -19,9 +27,9 @@
 @code
 { private bool collapseNavMenu = true;
 
-            private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+    private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
 
-            private void ToggleNavMenu()
-            {
-                collapseNavMenu = !collapseNavMenu;
-            } }
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    } }
