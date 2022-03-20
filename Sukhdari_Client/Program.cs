@@ -19,8 +19,13 @@ namespace Sukhdari_Client
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
             builder.RootComponents.Add<App>("#app");
 
+
+            builder.Services.AddHttpClient("IP", (options) => {
+                options.BaseAddress = new Uri("https://jsonip.com");
+            });
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.Configuration.GetValue<string>("BaseApiUrl", "https://localhost:44353/")) });
             builder.Services.AddScoped<IStoreService, StoreService>();
+            builder.Services.AddScoped<IUserIpService, UserIpService>();
             await builder.Build().RunAsync();
         }
     }
