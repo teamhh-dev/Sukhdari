@@ -1,25 +1,27 @@
 ﻿@page "/stores/store/{Id:int}"
 @layout StoreLayout
 @inject IStoreService Store
+@inject IUserIpService userIp
 
-
+@*<h1>@ipAddress.IP</h1>
+<h1>@ipAddress.timeNow</h1>*@
 <div class="form-inline justify-content-center mt-4">
     @if (Products != null && Products.Any())
     {
         @foreach (var product in Products)
         {
             <a href="#" class="card col-3 m-3 p-0 shadow" style="text-decoration:none;">
-            <div>
-                @foreach (var image in product.ProductImages)
+                <div>
+                    @foreach (var image in product.ProductImages)
                     {
                         <img class="card-img-top" src="@image.ProductImageUrl" onerror="this.src = '/Images/product.png';" alt="Product image cap" />
                     }
-                <div class="card-body">
-                    <h5 class="card-title text-dark">@product.Name</h5>
-                    <p class="card-text"><small class="text-muted">@product.Price</small></p>
+                    <div class="card-body">
+                        <h5 class="card-title text-dark">@product.Name</h5>
+                        <p class="card-text"><small class="text-muted">@product.Price</small></p>
 
+                    </div>
                 </div>
-            </div>
             </a>
         }
     }
@@ -33,10 +35,25 @@
 {
     [Parameter]
     public int Id { get; set; }
+    public UserIpDTO ipAddress { get; set; } = new UserIpDTO();
+    public DateTime timeNow { get; set; }
 
     public IEnumerable<ProductDTO> Products { get; set; }
     protected override async Task OnInitializedAsync()
     {
+        try
+        {
+            ipAddress = await userIp.GetUserIPAsync();
+            timeNow = DateTime.Now;
+            ipAddress.timeNow = timeNow;
+            ipAddress.StoreId=Id;
+            userIp.StoreIp(ipAddress);
+        }
+        catch (Exception e)
+        {
+
+        }
+
         //await Task.Delay(2000);
         Products = await Store.GetStoreProducts(Id);
     }

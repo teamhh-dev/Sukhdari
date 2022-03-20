@@ -2,7 +2,9 @@
 @page "/store/dashboard"
 @layout StoreAdminLayoutT
 @inject IStoreRepo Store
+@inject IUserIPRepo IpRepo
 @inject NavigationManager Navigator
+@inject IJSRuntime js
 @attribute [Authorize]
 
 <div class="container-fluid">
@@ -15,17 +17,22 @@
 
 <div class="card  card-info">
     <div class="card-header">
-        <h3 class="card-title">Dashboard</h3>
+        <h3 class="card-title">Daily Unique Visitors</h3>
     </div>
     <div class="card-body">
+        <canvas id="myChart" style="height:40vh;" class="col-10"></canvas>
 
     </div>
 </div>
 
 <hr />
+
 @code {
     [CascadingParameter]
     public Task<AuthenticationState> AuthenticationState { get; set; }
+    public List<int> weekUniqueUsersCount { get; set; }
+    public List<string> pastWeekDates { get; set; } = new List<string>();
+
     protected override async Task OnInitializedAsync()
     {
         var authState = await AuthenticationState;
@@ -35,5 +42,17 @@
         {
             Navigator.NavigateTo("/storeNotExist");
         }
+    }
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        var authState = await AuthenticationState;
+
+        for (int i = 6; i >=0; i--)
+        {
+            pastWeekDates.Add(DateTime.Now.AddDays(Convert.ToDouble(-i)).ToLongDateString());
+        }
+        weekUniqueUsersCount= IpRepo.getPastWeekUniqueUsersCount(Store.GetStoreByAdminName(authState.User.Identity.Name).Id);
+
+        await js.InvokeVoidAsync("loadChart",weekUniqueUsersCount, pastWeekDates);
     }
 }
