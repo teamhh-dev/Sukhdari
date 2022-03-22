@@ -108,3 +108,9 @@
     -webkit-line-clamp: 3;
     overflow: hidden;
 }
+@media(max-width: 840px)
+{
+    .filterDiv{
+        display:none;
+    }
+}
