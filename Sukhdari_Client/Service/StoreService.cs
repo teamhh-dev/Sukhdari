@@ -58,5 +58,13 @@ namespace Sukhdari_Client.Service
             var stores = JsonConvert.DeserializeObject<IEnumerable<StoreDTO>>(content);
             return stores;
         }
+
+        public async Task<IEnumerable<ProductDTO>> getAllProducts()
+        {
+            var response = await _httpClient.GetAsync($"api/Product/GetAllProducts");
+            var content = await response.Content.ReadAsStringAsync();
+            var products = JsonConvert.DeserializeObject<IEnumerable<ProductDTO>>(content);
+            return products;
+        }
     }
 }

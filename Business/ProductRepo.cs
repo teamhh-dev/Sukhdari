@@ -104,6 +104,19 @@ namespace Business
             }
             return _mapper.Map<IEnumerable<Store>, IEnumerable<StoreDTO>>(stores);
         }
+
+        public async Task<IEnumerable<StoreDTO>> getStoresByProductPriceRange(int low, int high)
+        {
+            var products = _db.Products.Where(i => i.Price >= low && i.Price <= high).ToList();
+            List<Store> stores = new List<Store>();
+            foreach (var s in products)
+            {
+                stores.Add(await _db.Stores.FindAsync(s.StoreId));
+            }
+            return _mapper.Map<IEnumerable<Store>, IEnumerable<StoreDTO>>(stores);
+
+        }
+
         public async Task<int> updateProduct(ProductDTO product)
         {
             var prod = await _db.Products.FindAsync(product.Id);

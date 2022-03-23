@@ -80,6 +80,14 @@ namespace Business
             }
             return _mapper.Map<IEnumerable<Store>, IEnumerable<StoreDTO>>(storesList);
         }
+
+        public async Task<IEnumerable<StoreDTO>> getStoresByCountry(string country)
+        {
+            var stores = _db.Stores.Where(i => i.Country.ToLower().Contains(country.ToLower())).ToList();
+            return _mapper.Map<IEnumerable<Store>, IEnumerable<StoreDTO>>(stores);
+     
+        }
+
         public async Task<int> updateStore(StoreDTO store)
         {
             Store oldStore = await _db.Stores.FindAsync(store.Id);

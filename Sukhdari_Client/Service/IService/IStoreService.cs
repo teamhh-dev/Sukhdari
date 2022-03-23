@@ -9,6 +9,7 @@ namespace Sukhdari_Client.Service.IService
     public interface IStoreService
     {
         public Task<IEnumerable<StoreDTO>> getAllStores();
+        public Task<IEnumerable<ProductDTO>> getAllProducts();
         public Task<StoreDTO> getStoreByName(string storeName);
         public Task<IEnumerable<StoreDTO>> SearchStoreByCategory(string categoryName);
         public Task<IEnumerable<StoreDTO>> SearchStoreByProductName(string productName);

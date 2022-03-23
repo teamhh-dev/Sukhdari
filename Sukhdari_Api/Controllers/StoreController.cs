@@ -63,5 +63,12 @@ namespace Sukhdari_Api.Controllers
             var stores = await _storeRepo.getStoresByAllFilters(filterData);
             return Ok(stores);
         }
+
+        [HttpGet("{country}")]
+        public async Task<IActionResult> GetStoresByCountry(string country)
+        {
+            var stores = await _storeRepo.getStoresByCountry(country);
+            return Ok(stores);
+        }
     }
 }

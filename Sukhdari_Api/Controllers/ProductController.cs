@@ -47,5 +47,12 @@ namespace Sukhdari_Api.Controllers
             var stores = await _productRepo.getStoresByProductName(productName);
             return Ok(stores);
         }
+
+        [HttpGet("{low}/{high}")]
+        public async Task<IActionResult> getStoresByPriceRange(int low, int high)
+        {
+            var stores = await _productRepo.getStoresByProductPriceRange(low, high);
+            return Ok(stores);
+        }
     }
 }
