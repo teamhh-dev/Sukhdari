@@ -1,13 +1,17 @@
-﻿@inject IWebAssemblyHostEnvironment hostEnv
+@inject IWebAssemblyHostEnvironment hostEnv
+
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <h3><a class="navbar-brand" href="/">Sukhdari</a></h3>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation" @onclick="ToggleNavMenu">
+    
+    <button class="navbar-toggler" type="button" data-toggle="collapse" 
+            data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" 
+            aria-expanded="false" aria-label="Toggle navigation" @onclick="ToggleNavMenu">
         <span class="navbar-toggler-icon"></span>
     </button>
     <div class="@NavMenuCssClass navbar-collapse justify-content-end" id="navbarNavAltMarkup">
-
         <a class="nav-link" href="#">Sign Up</a>
         <a class="nav-link" href="#">Sign In</a>
+      
         @if (hostEnv.IsDevelopment())
         {
             <a class="nav-link" href="https://localhost:44301/Identity/Account/Register">Create Store</a>
@@ -19,6 +23,7 @@
             <a class="nav-link" href="https://sukhdariserver.azurewebsites.net/Identity/Account/Login">Go to Store</a>
 
         }
+
 
     </div>
 </nav>
@@ -32,4 +37,6 @@
     private void ToggleNavMenu()
     {
         collapseNavMenu = !collapseNavMenu;
+
     } }
+

@@ -35,7 +35,6 @@ namespace Business
             return await _db.SaveChangesAsync();
 
         }
-
         public async Task<int> deleteCategory(int id)
         {
             Category category = await _db.Categories.FindAsync(id);
@@ -47,7 +46,6 @@ namespace Business
             return 0;
 
         }
-
         public async Task<CategoryDTO> GetCategory(int id, int storeId)
         {
 
@@ -76,17 +74,18 @@ namespace Business
 
         public async Task<IEnumerable<StoreDTO>> getStoreByCategory(string categoryName)
         {
-            //var category = await _db.Categories.FirstOrDefaultAsync(i => i.Name.ToLower() == categoryName.ToLower());
-            //return _mapper.Map<IEnumerable<Store>, IEnumerable<StoreDTO>>(category.Stores);
-            return null;
-            
+            var storeCategories = _db.Categories.Where(i => i.Name.ToLower().Contains(categoryName.ToLower())).ToList();
+            List<Store> storeByCategoryList = new List<Store>();
+            foreach (var s in storeCategories)
+            {
+                storeByCategoryList.Add(await _db.Stores.FindAsync(s.StoreId));
+            }
+            return _mapper.Map<IEnumerable<Store>, IEnumerable<StoreDTO>>(storeByCategoryList);
         }
-
         public async Task<IEnumerable<CategoryDTO>> GetAllCategoriesWithProducts(int StoreId)
         {
             var things = _db.Categories.Include(i => i.Products).ThenInclude(i => i.ProductImages).Where(i => i.StoreId == StoreId).ToList();
             return _mapper.Map<IEnumerable<Category>, IEnumerable<CategoryDTO>>(things);
         }
     }
-
 }
