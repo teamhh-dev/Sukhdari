@@ -9,56 +9,50 @@ using System.Threading.Tasks;
 
 namespace Sukhdari_Api.Controllers
 {
-
     [Route("api/[controller]/[action]")]
-
-   
     public class ProductController : Controller
     {
         private readonly IStoreRepo _storeRepo;
         private readonly IProductRepo _productRepo;
-        public ProductController(IProductRepo productRepo,IStoreRepo storeRepo)
+        public ProductController(IProductRepo productRepo, IStoreRepo storeRepo)
         {
             _productRepo = productRepo;
-            _storeRepo= storeRepo;
+            _storeRepo = storeRepo;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAllProducts()
         {
-            var products= await _productRepo.getAllProducts();
+            var products = await _productRepo.getAllProducts();
             return Ok(products);
         }
 
         [HttpGet("{productId}")]
-        public async Task<IActionResult> GetProducts(int? productId)
+        public async Task<IActionResult> GetSpecificProduct(int? productId)
         {
             var products = await _productRepo.getAllProducts();
             var productToFind = products.FirstOrDefault(i => i.Id == productId);
 
-            if (productId==null||productToFind==null)
+            if (productId == null || productToFind == null)
             {
                 return BadRequest(new ErrorModelDTO() { ErrorMessage = "Invalid Product Id", Title = "", StatusCode = StatusCodes.Status400BadRequest });
 
             }
             return Ok(productToFind);
         }
+
         [HttpGet("{productName}")]
-        public async Task<IActionResult> GetProductsWithName(string productName)
+        public async Task<IActionResult> GetStoresByProductName(string productName)
         {
-            var products = await _productRepo.getAllProducts();
-            var productsToFind = products.Where(i => i.Name.ToLower().Contains(productName)).Select(i=>i.StoreId);
-
-            var stores = await _storeRepo.getAllStores();
-
-            var searchedStores = stores.Where(t => productsToFind.Contains(t.Id)).ToList();
-            //if (productId==null||productToFind==null)
-            //{
-            //    return BadRequest(new ErrorModelDTO() { ErrorMessage = "Invalid Product Id", Title = "", StatusCode = StatusCodes.Status400BadRequest });
-
-            //}
-            return Ok(searchedStores);
+            var stores = await _productRepo.getStoresByProductName(productName);
+            return Ok(stores);
         }
 
+        [HttpGet("{low}/{high}")]
+        public async Task<IActionResult> getStoresByPriceRange(int low, int high)
+        {
+            var stores = await _productRepo.getStoresByProductPriceRange(low, high);
+            return Ok(stores);
+        }
     }
 }

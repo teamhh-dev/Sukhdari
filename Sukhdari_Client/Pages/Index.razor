@@ -31,26 +31,35 @@
         <hr />
         <h5>Location</h5>
         <div class="form-check ml-2">
-            <input class="form-check-input" type="checkbox" value="Pakistan" id="flexCheckDefault">
-            <label class="form-check-label" for="flexCheckDefault">
-                Pakistan
-            </label>
-            <br />
-            <input class="form-check-input" type="checkbox" value="Pakistan" id="flexCheckDefault">
-            <label class="form-check-label" for="flexCheckDefault">
-                India
-            </label>
-            <br />
-            <input class="form-check-input" type="checkbox" value="Pakistan" id="flexCheckDefault">
-            <label class="form-check-label" for="flexCheckDefault">
-                China
-            </label>
+            @if (AllStores != null && AllStores.Any())
+            {
+@foreach (var store in AllStores)
+{
+@if (!countries.Contains(store.Country))
+{
+    countries.Add(store.Country);
+}                }
+                @foreach (var country in countries)
+                {
+
+<input class="form-check-input" type="checkbox" @onchange="@(async (e) => await CheckboxClicked(country, e.Value))">
+                    <label class="form-check-label" for="flexCheckDefault">
+                        @country
+                    </label>
+                                        <br />                }            }
+
+
         </div>
         <hr />
         <h5>Price</h5>
         <div class="ml-2 row">
-            <input type="number" class="col-5 p-0 mr-1" value="0" min="0" />
-            <input type="number" class="col-5 p-0" value="100000" />
+            <input type="number" class="col-5 p-0 mr-1" @bind-value="min" />
+            <input type="number" class="col-5 p-0" @bind-value="max" />
+        </div>
+        <div>
+            <br />
+            <button class="col-md-4 btn btn-primary" type="submit" @onclick="findStoresByPrice">Search</button>&nbsp;&nbsp;
+            <button class="col-md-4 btn btn-success" type="submit" @onclick="ResetStores">Reset</button>
         </div>
         <hr />
         <h5>Rating</h5>
@@ -102,38 +111,94 @@
                 </label>
             </form>
         </div>
-
-
-
     </div>
-   
+
     <div class="form-inline justify-content-center mt-4 col-9">
         @if (Stores != null && Stores.Any())
         {
-@foreach (var store in FilteredToDos)
+@foreach (var store in Stores)
 {
 <a href="@($"stores/store/{store.Id}")" class="card col-lg-3 col-md-5 col-11 m-3 p-0 shadow" style="text-decoration:none;">
-    <div>
-        <img class="card-img-top" src="" onerror="this.src = '/Images/store.jpg';" alt="Store image cap" />
-        <div class="card-body">
-            <h5 class="card-title text-dark">@store.Name</h5>
-            <p class="card-text"><small class="text-muted">@store.Country</small></p>
-            <p class="card-text"><small class="text-muted">@store.Type</small></p>
-        </div>
-    </div>
-</a>}}
+    <img class="card-img-top" src="" onerror="this.src = '/Images/store.jpg';" alt="Store image cap" />
+</a>
+                    <div class="card-body">
+                        <h5 class="card-title text-dark">@store.Name</h5>
+                        <p class="card-text"><small class="text-muted">@store.Country</small></p>
+                        <p class="card-text"><small class="text-muted">@store.Type</small></p>
+                    </div>}}
     </div>
 </div>
-
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
 @code
-{
-    string SearchTerm { get; set; } = "";
-    public IEnumerable<StoreDTO> Stores { get; set; }
-    protected override async Task OnInitializedAsync()
-    {
-        Stores = await Store.getAllStores();
-    }
-    List<StoreDTO> FilteredToDos => Stores.Where(i => i.Name.ToLower().Contains(SearchTerm.ToLower())).ToList();
-}
+{ public IEnumerable<StoreDTO> Stores { get; set; }
+            public IEnumerable<StoreDTO> AllStores { get; set; }
+            public IEnumerable<StoreDTO> test { get; set; }
+            public List<string> countries = new List<string>();
+            int min = 0;
+            int max = 10000;
+
+            public List<string> selectedCountries = new List<string>();
+            protected override async Task OnInitializedAsync()
+            {
+                Stores = await Store.getAllStores();
+                AllStores = await Store.getAllStores();
+            }
+            public async Task searchByRange()
+            {
+                Stores = await Store.SearchStoreByProductPrice(min, max);
+            }
+
+            public async Task CheckboxClicked(string countryID, object checkedValue)
+            {
+                if ((bool)checkedValue)
+                {
+                    if (!selectedCountries.Contains(countryID))
+                    {
+                        selectedCountries.Add(countryID);
+                    }
+                }
+                else
+                {
+                    if (selectedCountries.Contains(countryID))
+                    {
+                        selectedCountries.Remove(countryID);
+                    }
+                }
+                if (!selectedCountries.Any())
+                {
+                    await ResetStores();
+                }
+                else
+                {
+                    if (selectedCountries != null && selectedCountries.Any())
+                    {
+                        Stores = AllStores.Where(i => i.Country.ToLower().Contains(selectedCountries[0].ToLower())).ToList();
+                        int count = 1;
+                        foreach (var country in selectedCountries)
+                        {
+                            if (count != 1)
+                            {
+                                test = await Store.SearchStoreByCountry(country);
+                                Stores = Stores.Union(test);
+                            }
+                            count++;
+                        }
+                    }
+                }
+            }
+            public async Task findStoresByPrice()
+            {
+                Stores = await Store.SearchStoreByProductPrice(min, max);
+                foreach (var s in Stores)
+                {
+                    Console.WriteLine(s.Name);
+                }
+            }
+            public async Task ResetStores()
+            {
+                min = 0;
+                max = 10000;
+                Stores = await Store.getAllStores();
+
+            } }

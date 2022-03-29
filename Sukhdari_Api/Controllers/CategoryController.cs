@@ -13,7 +13,7 @@ namespace Sukhdari_Api.Controllers
         private readonly ICategoryRepo _categoryRepo;
         private readonly IProductRepo _productRepo;
 
-        public CategoryController(ICategoryRepo categoryRepo,IProductRepo productRepo)
+        public CategoryController(ICategoryRepo categoryRepo, IProductRepo productRepo)
         {
             _categoryRepo = categoryRepo;
             _productRepo = productRepo;
@@ -27,14 +27,14 @@ namespace Sukhdari_Api.Controllers
         }
 
         [HttpGet("{id},{storeId}")]
-        public async Task<IActionResult> GetCategory(int? id,int? storeId)
+        public async Task<IActionResult> GetCategory(int? id, int? storeId)
         {
             var category = await _categoryRepo.GetCategory(id.Value, storeId.Value);
             return Ok(category);
         }
 
         [HttpGet("{categoryName}")]
-        public async Task<IActionResult> GetProductsWithCategoryName(string? categoryName)
+        public async Task<IActionResult> GetProductsWithCategoryName(string categoryName)
         {
             var products = await _productRepo.getAllProducts();
             var category = await _categoryRepo.GetAllCategories();
@@ -45,12 +45,11 @@ namespace Sukhdari_Api.Controllers
             //var productsToFind = products.All(x => products.Any(a => a.CategoryId.Equals(categoryToFind)));
             return Ok(productsToFind);
         }
-
-        [HttpGet("{storeId}")]
-        public async Task<IActionResult> getPrdouctsWithCategory(int id)
+        [HttpGet("{categoryName}")]
+        public async Task<IActionResult> GetStoresByCategory(string categoryName)
         {
-            var products = await _categoryRepo.GetAllCategoriesWithProducts(id);
-            return Ok(products);
+            var stores = await _categoryRepo.getStoreByCategory(categoryName);
+            return Ok(stores);
         }
     }
 }

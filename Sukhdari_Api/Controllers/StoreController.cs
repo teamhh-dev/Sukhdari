@@ -15,7 +15,7 @@ namespace Sukhdari_Api.Controllers
         private readonly IStoreRepo _storeRepo;
         private readonly IProductRepo _productRepo;
         private readonly ICategoryRepo _categoryRepo;
-        public StoreController(IStoreRepo storeRepo,IProductRepo productRepo, ICategoryRepo categoryRepo)
+        public StoreController(IStoreRepo storeRepo, IProductRepo productRepo, ICategoryRepo categoryRepo)
         {
 
             _storeRepo = storeRepo;
@@ -27,7 +27,7 @@ namespace Sukhdari_Api.Controllers
         public async Task<IActionResult> getAllStores()
         {
             var allStores = await _storeRepo.getAllStores();
-;            return Ok(allStores);
+            ; return Ok(allStores);
         }
 
         [HttpGet("{StoreName}")]
@@ -57,17 +57,17 @@ namespace Sukhdari_Api.Controllers
             return Ok(products);
         }
 
-        [HttpGet("{CategoryName}")]
-        public async Task<IActionResult> GetStoresByCategory(string categoryName)
+        [HttpGet("{filterData}")]
+        public async Task<IActionResult> GetStoresByAllFilters(string filterData)
         {
-            var stores = await _categoryRepo.getStoreByCategory(categoryName);
+            var stores = await _storeRepo.getStoresByAllFilters(filterData);
             return Ok(stores);
         }
 
-        [HttpGet("{PrdouctName}")]
-        public async Task<IActionResult> GetStoresByProduct(string productName)
+        [HttpGet("{country}")]
+        public async Task<IActionResult> GetStoresByCountry(string country)
         {
-            var stores = await _productRepo.getStoresByProductName(productName);
+            var stores = await _storeRepo.getStoresByCountry(country);
             return Ok(stores);
         }
     }
