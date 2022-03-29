@@ -111,7 +111,11 @@ namespace Business
             List<Store> stores = new List<Store>();
             foreach (var s in products)
             {
-                stores.Add(await _db.Stores.FindAsync(s.StoreId));
+                var temp = await _db.Stores.FindAsync(s.StoreId);
+                if(!stores.Contains(temp))
+                {
+                    stores.Add(temp);
+                }
             }
             return _mapper.Map<IEnumerable<Store>, IEnumerable<StoreDTO>>(stores);
 
