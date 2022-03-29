@@ -34,28 +34,33 @@ namespace Sukhdari_Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<ApplicationDbContext>(options =>
-            options.UseSqlServer(Configuration.GetConnectionString("NehaConnection")));
+            options.UseSqlServer(Configuration.GetConnectionString("IrhaConnection")));
+
             services.AddIdentity<IdentityUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
+
             services.AddScoped<IStoreRepo, StoreRepo>();
             services.AddScoped<ICategoryRepo, CategoryRepo>();
             services.AddScoped<IProductRepo, ProductRepo>();
-
             services.AddScoped<IUserIPRepo, UserIPRepo>();
             
             services.AddCors(o => o.AddPolicy("Sukhdari", builder =>
             {
                 builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
             }));
+
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
             services.AddRouting(option => option.LowercaseUrls = true);
             services.AddControllers();
+
             services.AddControllers().AddJsonOptions(opt => opt.JsonSerializerOptions.PropertyNamingPolicy = null)
                 .AddNewtonsoftJson(opt =>
                 {
                     opt.SerializerSettings.ContractResolver = new DefaultContractResolver();
                     opt.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
                 });
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Sukhdari_Api", Version = "v1" });
@@ -68,13 +73,20 @@ namespace Sukhdari_Api
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Sukhdari_Api v1"));
+                
             }
+            app.UseSwagger();
+            app.UseSwaggerUI(c => {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Sukhdari_Api v1");
+                c.RoutePrefix = string.Empty;
+            });
+
             app.UseHttpsRedirection();
             app.UseCors("Sukhdari");
             app.UseRouting();
+
             app.UseAuthorization();
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
