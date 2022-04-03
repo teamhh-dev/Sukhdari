@@ -1,11 +1,12 @@
 ﻿@page "/createStore"
+@page "/details"
 @layout StoreAdminLayoutT
 @inject IStoreRepo Store
 @inject NavigationManager Navigator
 
 @attribute [Authorize]
 
-<h3>Create Store</h3>
+<h3>@Title</h3>
 <EditForm Model="StoreDetails" OnValidSubmit="CreateStoreWithDTO" class="form-horizontal">
     <DataAnnotationsValidator></DataAnnotationsValidator>
 
@@ -44,12 +45,13 @@
         </div>
     </div>
     <div class="col-md-7">
-        <button type="submit" disabled="@ShowButton" class="btn btn-dark text-white">Please Create Store</button>
+        <button type="submit" disabled="@ShowButton" class="btn btn-dark text-white">@SubmitBtnTxt</button>
     </div>
 </EditForm>
 
 @code {
-
+    public string Title = "Create Store";
+    public string SubmitBtnTxt = "Please Create Store";
     public bool StoreAvailability { get; set; } = true;
     public bool ShowButton { get; set; } = false;
 
@@ -62,6 +64,12 @@
     {
         var authState = await AuthenticationState;
         StoreDetails.AdminName = authState.User.Identity.Name;
+        if (Store.GetStoreByAdminName(StoreDetails.AdminName) != null)
+        {
+            Title = "Store Details";
+            BtnTxt = "Update Details";
+            StoreDetails = Store.GetStoreByAdminName(StoreDetails.AdminName);
+        }
 
         //StoreDetails.StoreName=
         //if (!authenticationState.User.)
