@@ -23,9 +23,11 @@ namespace Business
         }
         public async Task<StoreDTO> createStore(StoreDTO store)
         {
+            //Store oldStore = await _db.Stores.FindAsync(store.Id);
             if (store.Id != 0)
             {
                 Store oldStore = await _db.Stores.FindAsync(store.Id);
+                
                 oldStore.Name = store.Name;
                 oldStore.Type = store.Type;
                 oldStore.Country = store.Country;
@@ -33,12 +35,14 @@ namespace Business
                 await _db.SaveChangesAsync();
                 return _mapper.Map<Store, StoreDTO>(oldStore);
             }
+           
             var storeAdminId = _db.Users.FirstOrDefault(i => i.UserName == store.AdminName).Id;
             Store newStore = _mapper.Map<StoreDTO, Store>(store);
             newStore.UserId = storeAdminId;
             await _db.Stores.AddAsync(newStore);
             await _db.SaveChangesAsync();
             return _mapper.Map<Store, StoreDTO>(newStore);
+            
             
         }
         public async Task<int> deleteStore(int id)
