@@ -29,6 +29,7 @@ namespace Business
                 oldStore.Name = store.Name;
                 oldStore.Type = store.Type;
                 oldStore.Country = store.Country;
+                oldStore.Image = store.Image;
                 await _db.SaveChangesAsync();
                 return _mapper.Map<Store, StoreDTO>(oldStore);
             }
@@ -66,7 +67,7 @@ namespace Business
         public StoreDTO GetStoreByAdminName(string adminName)
         {
             var AdminID = _db.Users.FirstOrDefault(i => i.UserName == adminName).Id;
-            Store find = _db.Stores.FirstOrDefault(i => i.UserId == AdminID);
+            Store find = _db.Stores.Include(i=>i.StoreImages).FirstOrDefault(i => i.UserId == AdminID);
             if (find == null)
             {
                 return null;

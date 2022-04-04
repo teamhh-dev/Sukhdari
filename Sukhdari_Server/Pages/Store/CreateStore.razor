@@ -63,10 +63,10 @@
                         </div>
 
 
-                        @*<button type="button" @onclick="()=>DeleteImage(image)"
+                        <button type="button" @onclick="()=>DeleteImage(image)"
                                     class="btn btn-danger mt-1">
                                 <i class="oi oi-trash"></i>
-                            </button>*@
+                            </button>
                     </div>
                     no += 1;
                 }
@@ -74,7 +74,7 @@
         </div>
     </div>
     <div class="col-md-7">
-        <button type="submit" disabled="@ShowButton" class="btn btn-dark text-white">@SubmitBtnTxt</button>
+        <button type="submit" class="btn btn-dark text-white">@SubmitBtnTxt</button>
     </div>
 </EditForm>
 
@@ -85,9 +85,10 @@
     public bool StoreAvailability { get; set; } = true;
     public bool ShowButton { get; set; } = false;
 
+    private List<string> DeleteImagesName { get; set; } = new List<string>();
+
     [CascadingParameter]
     public Task<AuthenticationState> AuthenticationState { get; set; }
-
     private StoreDTO StoreDetails { get; set; } = new StoreDTO();
     private StoreImageDTO StoreImage { get; set; } = new StoreImageDTO();
 
@@ -99,7 +100,12 @@
         {
             Title = "Store Details";
             SubmitBtnTxt = "Update";
-            StoreDetails = Store.GetStoreByAdminName(StoreDetails.AdminName);
+            var store = Store.GetStoreByAdminName(StoreDetails.AdminName);
+            if(store.StoreImages!=null)
+            {
+                store.ImageUrls = store.StoreImages.Select(i => i.StoreImageUrl).ToList();
+            }
+            StoreDetails = store;
         }
         else
         {
@@ -129,9 +135,44 @@
             }
         }
     }
+    internal async Task DeleteImage(string imageUrl)
+    {
+        try
+        {
+            var imageIndex = StoreDetails.ImageUrls.FindIndex(i => i == imageUrl);
+            var imageName = imageUrl.Replace($"{Navigator.BaseUri}ProductImages/", "");
+            if (StoreDetails.Id == 0 && Title == "Create Store")
+            {
+                var result = imageUplaod.DeleteImage(imageName);
+
+            }
+            else
+            {
+                DeleteImagesName ??= new List<string>();
+                DeleteImagesName.Add(imageUrl);
+            }
+            StoreDetails.ImageUrls.RemoveAt(imageIndex);
+        }
+        catch (Exception e)
+        {
+
+        }
+    }
 
     private async void CreateStoreWithDTO()
     {
+        if(StoreDetails.Id!=0 && Title == "Store Details")
+        {
+            if(DeleteImagesName!= null && DeleteImagesName.Any())
+            {
+                foreach(var deletedImage in DeleteImagesName)
+                {
+                    var name = deletedImage.Replace($"{Navigator.BaseUri}ProductImages/", "");
+                    var result = imageUplaod.DeleteImage(name);
+                    await storeImageRepo.DeleteStoreImageByName(deletedImage);
+                }
+            }
+        }
         Console.WriteLine("CREATE STORE WITH DTO");
         var newStore = await Store.createStore(StoreDetails);
         await AddStoreImage(newStore);
