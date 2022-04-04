@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
+using Microsoft.EntityFrameworkCore;
 
 namespace Business
 {
@@ -19,19 +21,29 @@ namespace Business
             _db = db;
             _mapper = map;
         }
-        public async Task<int> createStore(StoreDTO store)
+        public async Task<StoreDTO> createStore(StoreDTO store)
         {
             var storeAdminId = _db.Users.FirstOrDefault(i => i.UserName == store.AdminName).Id;
             Store newStore = _mapper.Map<StoreDTO, Store>(store);
             newStore.UserId = storeAdminId;
             var result = await _db.Stores.AddAsync(newStore);
-            return await _db.SaveChangesAsync();
+            //return await _db.SaveChangesAsync();
+            return _mapper.Map<Store, StoreDTO>(newStore);
         }
         public async Task<int> deleteStore(int id)
         {
             var store = await _db.Stores.FindAsync(id);
             if (store != null)
             {
+                var images = _db.storeImages.Where(i => i.StoreId == id).ToList();
+                foreach(var image in images)
+                {
+                    if (File.Exists(image.StoreImageUrl))
+                    {
+                        File.Delete(image.StoreImageUrl);
+                    }
+                }
+                _db.storeImages.RemoveRange(images);
                 _db.Stores.Remove(store);
                 return await _db.SaveChangesAsync();
             }
@@ -39,7 +51,7 @@ namespace Business
         }
         public async Task<IEnumerable<StoreDTO>> getAllStores()
         {
-            return _mapper.Map<IEnumerable<Store>, IEnumerable<StoreDTO>>(_db.Stores);
+            return _mapper.Map<IEnumerable<Store>, IEnumerable<StoreDTO>>(_db.Stores.Include(i=>i.StoreImages));
         }
         public StoreDTO GetStoreByAdminName(string adminName)
         {

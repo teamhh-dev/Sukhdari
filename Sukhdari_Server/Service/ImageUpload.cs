@@ -22,18 +22,18 @@ namespace Sukhdari_Server.Service
         }
         public bool DeleteImage(string imageName)
         {
-            
+
             try
             {
                 var path = $"{_webHostEnvironment.WebRootPath}\\ProductImages\\{imageName}";
-                if(File.Exists(path))
+                if (File.Exists(path))
                 {
                     File.Delete(path);
                     return true;
                 }
                 return false;
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 throw e;
             }
@@ -52,12 +52,12 @@ namespace Sukhdari_Server.Service
                 var memoryStream = new MemoryStream();
                 await image.OpenReadStream().CopyToAsync(memoryStream);
 
-                if(!Directory.Exists(folderDirectory))
+                if (!Directory.Exists(folderDirectory))
                 {
                     Directory.CreateDirectory(folderDirectory);
                 }
 
-                await using(var fs= new FileStream(path,FileMode.Create,FileAccess.Write))
+                await using (var fs = new FileStream(path, FileMode.Create, FileAccess.Write))
                 {
                     memoryStream.WriteTo(fs);
                 }
@@ -65,7 +65,7 @@ namespace Sukhdari_Server.Service
                 var fullPath = $"{url}ProductImages/{imageName}";
                 return fullPath;
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 throw e;
             }
