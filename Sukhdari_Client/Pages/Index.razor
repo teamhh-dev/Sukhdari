@@ -121,7 +121,8 @@
         @if (Stores != null && Stores.Any())
         {
             @foreach (var store in Stores)
-            {
+             {
+                Console.WriteLine(store.Name);
                 <a href="@($"stores/store/{store.Id}")" class="card col-lg-3 col-md-5 col-11 m-3 p-0 shadow" style="text-decoration:none;">
                     <img class="card-img-top" src="" onerror="this.src = '/Images/store.jpg';" alt="Store image cap" />
                 </a>
@@ -130,7 +131,7 @@
                     <p class="card-text"><small class="text-muted">@store.Country</small></p>
                     <p class="card-text"><small class="text-muted">@store.Type</small></p>
                 </div>
-            }
+             }
         }
     </div>
 </div>
@@ -207,6 +208,5 @@
         min = 0;
         max = 10000;
         Stores = await Store.getAllStores();
-
     }
 }

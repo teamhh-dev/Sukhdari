@@ -23,12 +23,22 @@ namespace Business
         }
         public async Task<StoreDTO> createStore(StoreDTO store)
         {
+            if (store.Id != 0)
+            {
+                Store oldStore = await _db.Stores.FindAsync(store.Id);
+                oldStore.Name = store.Name;
+                oldStore.Type = store.Type;
+                oldStore.Country = store.Country;
+                await _db.SaveChangesAsync();
+                return _mapper.Map<Store, StoreDTO>(oldStore);
+            }
             var storeAdminId = _db.Users.FirstOrDefault(i => i.UserName == store.AdminName).Id;
             Store newStore = _mapper.Map<StoreDTO, Store>(store);
             newStore.UserId = storeAdminId;
-            var result = await _db.Stores.AddAsync(newStore);
-            //return await _db.SaveChangesAsync();
+            await _db.Stores.AddAsync(newStore);
+            await _db.SaveChangesAsync();
             return _mapper.Map<Store, StoreDTO>(newStore);
+            
         }
         public async Task<int> deleteStore(int id)
         {
@@ -51,7 +61,7 @@ namespace Business
         }
         public async Task<IEnumerable<StoreDTO>> getAllStores()
         {
-            return _mapper.Map<IEnumerable<Store>, IEnumerable<StoreDTO>>(_db.Stores.Include(i=>i.StoreImages));
+            return _mapper.Map<IEnumerable<Store>, IEnumerable<StoreDTO>>(_db.Stores);
         }
         public StoreDTO GetStoreByAdminName(string adminName)
         {
