@@ -11,9 +11,10 @@
 
 <h3>@Title</h3>
 <br />
-<EditForm Model="StoreDetails" OnValidSubmit="CreateStoreWithDTO" class="form-horizontal">
+<EditForm Model="StoreDetails" OnValidSubmit="@CreateStoreWithDTO" class="form-horizontal">
     <DataAnnotationsValidator></DataAnnotationsValidator>
-
+    <ValidationSummary></ValidationSummary>
+    <br />
     <div class="form-group">
         <label class="col-md-7 control-label" for="store_name">STORE NAME</label>
         <div class="col-md-7 d-flex flex-row">
@@ -29,6 +30,7 @@
                     <span class="oi oi-warning" style="color:red" )></span>
 
                 }*@
+
             <ValidationMessage For="()=>StoreDetails.Name"></ValidationMessage>
         </div>
     </div>
@@ -45,9 +47,9 @@
         <div class="col-md-7">
             <InputText @bind-Value="StoreDetails.Country" id="store_type" name="store_type" placeholder="Pakistan" class="form-control input-md" />
             <ValidationMessage For="()=>StoreDetails.Country"></ValidationMessage>
-
         </div>
     </div>
+
     <div class="form-group">
         <InputFile OnChange="HandleImageUpload" multiple></InputFile>
         <div class="row">
@@ -64,9 +66,9 @@
 
 
                         <button type="button" @onclick="()=>DeleteImage(image)"
-                                    class="btn btn-danger mt-1">
-                                <i class="oi oi-trash"></i>
-                            </button>
+                                class="btn btn-danger mt-1">
+                            <i class="oi oi-trash"></i>
+                        </button>
                     </div>
                     no += 1;
                 }
@@ -80,11 +82,10 @@
 
 @code {
 
-    public string Title { get; set; }
-    public string SubmitBtnTxt { get; set; }
+    public string Title = "Create Store";
+    public string SubmitBtnTxt = "Add";
     public bool StoreAvailability { get; set; } = true;
     public bool ShowButton { get; set; } = false;
-
     private List<string> DeleteImagesName { get; set; } = new List<string>();
 
     [CascadingParameter]
@@ -95,23 +96,19 @@
     protected override async Task OnInitializedAsync()
     {
         var authState = await AuthenticationState;
-        StoreDetails.AdminName = authState.User.Identity.Name;
-        if (Store.GetStoreByAdminName(StoreDetails.AdminName) != null)
+        string adminName = authState.User.Identity.Name;
+        var store = Store.GetStoreByAdminName(adminName);
+        if (store != null)
         {
             Title = "Store Details";
             SubmitBtnTxt = "Update";
-            var store = Store.GetStoreByAdminName(StoreDetails.AdminName);
             if(store.StoreImages!=null)
             {
                 store.ImageUrls = store.StoreImages.Select(i => i.StoreImageUrl).ToList();
             }
             StoreDetails = store;
         }
-        else
-        {
-            Title = "Create Store";
-            SubmitBtnTxt = "Add";
-        }
+        StoreDetails.AdminName = adminName;
     }
 
 
@@ -158,10 +155,9 @@
 
         }
     }
-
     private async void CreateStoreWithDTO()
     {
-        if(StoreDetails.Id!=0 && Title == "Store Details")
+        if(StoreDetails.Id != 0 && Title == "Store Details")
         {
             if(DeleteImagesName!= null && DeleteImagesName.Any())
             {
@@ -173,7 +169,6 @@
                 }
             }
         }
-        Console.WriteLine("CREATE STORE WITH DTO");
         var newStore = await Store.createStore(StoreDetails);
         await AddStoreImage(newStore);
         StoreDetails = new StoreDTO();
@@ -231,7 +226,6 @@
             throw;
         }
     }
-
     protected async Task CheckStoreAvailability(ChangeEventArgs e)
     {
         var result = Store.GetStoreByName(Convert.ToString(e.Value));
