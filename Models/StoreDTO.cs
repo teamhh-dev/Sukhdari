@@ -20,6 +20,8 @@ namespace Models
 
         [Required]
         public string AdminName { get; set; }
+        public virtual ICollection<StoreImageDTO> StoreImages { get; set; }
+        public List<string> ImageUrls { get; set; }
 
     }
 }

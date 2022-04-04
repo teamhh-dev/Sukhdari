@@ -7,35 +7,33 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
 
 namespace Sukhdari_Server.Service
 {
     public class ImageUpload : IImageUpload
     {
         private readonly IWebHostEnvironment _webHostEnvironment;
-        private readonly IConfiguration _configuration;
-        public ImageUpload(IWebHostEnvironment web, IConfiguration configuration)
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        public ImageUpload(IWebHostEnvironment web, IHttpContextAccessor httpContextAccessor)
         {
             _webHostEnvironment = web;
-            //_httpContextAccessor = httpContextAccessor;
-            _configuration = configuration;
+            _httpContextAccessor = httpContextAccessor;
 
         }
         public bool DeleteImage(string imageName)
         {
-            
+
             try
             {
                 var path = $"{_webHostEnvironment.WebRootPath}\\ProductImages\\{imageName}";
-                if(File.Exists(path))
+                if (File.Exists(path))
                 {
                     File.Delete(path);
                     return true;
                 }
                 return false;
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 throw e;
             }
@@ -54,20 +52,20 @@ namespace Sukhdari_Server.Service
                 var memoryStream = new MemoryStream();
                 await image.OpenReadStream().CopyToAsync(memoryStream);
 
-                if(!Directory.Exists(folderDirectory))
+                if (!Directory.Exists(folderDirectory))
                 {
                     Directory.CreateDirectory(folderDirectory);
                 }
 
-                await using(var fs= new FileStream(path,FileMode.Create,FileAccess.Write))
+                await using (var fs = new FileStream(path, FileMode.Create, FileAccess.Write))
                 {
                     memoryStream.WriteTo(fs);
                 }
-                var url = $"{_configuration.GetValue<string>("ServerUrl")}";
+                var url = $"{_httpContextAccessor.HttpContext.Request.Scheme}://{_httpContextAccessor.HttpContext.Request.Host.Value}/";
                 var fullPath = $"{url}ProductImages/{imageName}";
                 return fullPath;
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 throw e;
             }

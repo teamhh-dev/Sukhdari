@@ -48,6 +48,7 @@ namespace Sukhdari_Server
             services.AddScoped<IProductImageRepo, ProductImageRepo>();
             services.AddScoped<IImageUpload, ImageUpload>();
             services.AddScoped<IUserIPRepo, UserIPRepo>();
+            services.AddScoped<IStoreImageRepo, StoreImageRepo>();
             services.AddHttpContextAccessor();
             services.AddRazorPages();
             services.AddHttpContextAccessor();

@@ -21,7 +21,9 @@ namespace DataAccess.Data
         public string Country { get; set; }
         //[ForeignKey("UserId")]
         public string UserId { get; set; }
-        
-        
+        public string Image { get; set; }
+        public virtual ICollection<StoreImage> StoreImages { get; set; }
+
+
     }
 }
