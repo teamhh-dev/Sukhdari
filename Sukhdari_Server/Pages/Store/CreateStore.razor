@@ -107,6 +107,7 @@
                 store.ImageUrls = store.StoreImages.Select(i => i.StoreImageUrl).ToList();
             }
             StoreDetails = store;
+            StoreDetails.AdminName = authState.User.Identity.Name;
         }
         StoreDetails.AdminName = adminName;
     }
