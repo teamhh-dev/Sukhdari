@@ -9,7 +9,7 @@ namespace Business.IRepo
 {
     public interface IStoreRepo
     {
-        public Task<int> createStore(StoreDTO store);
+        public Task<StoreDTO> createStore(StoreDTO store);
         public Task<int> updateStore(StoreDTO store);
         public Task<int> deleteStore(int id);
         public Task<IEnumerable<StoreDTO>> getAllStores();

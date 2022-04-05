@@ -3,11 +3,14 @@
 @layout StoreAdminLayoutT
 @inject IStoreRepo Store
 @inject NavigationManager Navigator
-
+@using System.IO
+@using Sukhdari_Server.Service.IService
+@inject IImageUpload imageUplaod
+@inject IStoreImageRepo storeImageRepo
 @attribute [Authorize]
 
 <h3>@Title</h3>
-<EditForm Model="StoreDetails" OnValidSubmit="CreateStoreWithDTO" class="form-horizontal">
+<EditForm Model="StoreDetails" OnValidSubmit="@CreateStoreWithDTO" class="form-horizontal">
     <DataAnnotationsValidator></DataAnnotationsValidator>
 
     <div class="form-group">
@@ -44,6 +47,33 @@
 
         </div>
     </div>
+
+    <div class="form-group">
+        <InputFile OnChange="HandleImageUpload" multiple></InputFile>
+        <div class="row">
+            @if (StoreDetails.ImageUrls != null && StoreDetails.ImageUrls.Count > 0)
+            {
+                int no = 1;
+                foreach (var image in StoreDetails.ImageUrls)
+                {
+                    <div class="col-md-3 mt-3">
+                        <div style="object-fit: cover;">
+                            <span class="badge badge-danger">@no</span>
+                            <img src="@image" alt="Store Image" style="width: 5rem;height: 5rem;object-fit: cover;">
+                        </div>
+
+
+                        <button type="button" @onclick="()=>DeleteImage(image)"
+                                class="btn btn-danger mt-1">
+                            <i class="oi oi-trash"></i>
+                        </button>
+                    </div>
+                    no += 1;
+                }
+            }
+        </div>
+    </div>
+
     <div class="col-md-7">
         <button type="submit" disabled="@ShowButton" class="btn btn-dark text-white">@SubmitBtnTxt</button>
     </div>
@@ -51,43 +81,148 @@
 
 @code {
     public string Title = "Create Store";
-    public string SubmitBtnTxt = "Please Create Store";
+    public string SubmitBtnTxt = "Add";
     public bool StoreAvailability { get; set; } = true;
     public bool ShowButton { get; set; } = false;
+    private List<string> DeleteImagesName { get; set; } = new List<string>();
 
     [CascadingParameter]
     public Task<AuthenticationState> AuthenticationState { get; set; }
-
     private StoreDTO StoreDetails { get; set; } = new StoreDTO();
+    private StoreImageDTO StoreImage { get; set; } = new StoreImageDTO();
 
     protected override async Task OnInitializedAsync()
     {
         var authState = await AuthenticationState;
-        StoreDetails.AdminName = authState.User.Identity.Name;
-        if (Store.GetStoreByAdminName(StoreDetails.AdminName) != null)
+        string adminName = authState.User.Identity.Name;
+        var store = Store.GetStoreByAdminName(adminName);
+        if (store != null)
         {
             Title = "Store Details";
-            SubmitBtnTxt = "Update Details";
-            StoreDetails = Store.GetStoreByAdminName(StoreDetails.AdminName);
+            SubmitBtnTxt = "Update";
+            if (store.StoreImages != null)
+            {
+                store.ImageUrls = store.StoreImages.Select(i => i.StoreImageUrl).ToList();
+            }
+            StoreDetails = store;
+            StoreDetails.AdminName = authState.User.Identity.Name;
         }
+        StoreDetails.AdminName = adminName;
+    }
+    private async Task AddStoreImage(StoreDTO store)
+    {
+        if (StoreDetails.ImageUrls != null && StoreDetails.ImageUrls.Any())
+        {
+            foreach (var image in StoreDetails.ImageUrls)
+            {
+                if (StoreDetails.StoreImages == null || StoreDetails.StoreImages.Where(x => x.StoreImageUrl == image).Count()
+                == 0)
 
-        //StoreDetails.StoreName=
-        //if (!authenticationState.User.)
-        //{
-        //    var uri = new Uri(NavigationManager.Uri);
-        //    NavigationManager.NavigateTo($"/identity/account/login?returnUrl={uri.LocalPath}");
-        //}
+                {
+                    StoreImage = new StoreImageDTO()
+                    {
+                        StoreId = store.Id,
+                        StoreImageUrl = image
+                    };
+                    await storeImageRepo.CreateStoreImage(StoreImage);
+                }
+            }
+        }
+    }
+    internal async Task DeleteImage(string imageUrl)
+    {
+        try
+        {
+            var imageIndex = StoreDetails.ImageUrls.FindIndex(i => i == imageUrl);
+            var imageName = imageUrl.Replace($"{Navigator.BaseUri}ProductImages/", "");
+            if (StoreDetails.Id == 0 && Title == "Create Store")
+            {
+                var result = imageUplaod.DeleteImage(imageName);
+
+            }
+            else
+            {
+                DeleteImagesName ??= new List<string>();
+                DeleteImagesName.Add(imageUrl);
+            }
+            StoreDetails.ImageUrls.RemoveAt(imageIndex);
+        }
+        catch (Exception e)
+        {
+
+        }
     }
     private async void CreateStoreWithDTO()
     {
-
-        var result = await Store.createStore(StoreDetails);
+        if (StoreDetails.Id != 0 && Title == "Store Details")
+        {
+            if (DeleteImagesName != null && DeleteImagesName.Any())
+            {
+                foreach (var deletedImage in DeleteImagesName)
+                {
+                    var name = deletedImage.Replace($"{Navigator.BaseUri}ProductImages/", "");
+                    var result = imageUplaod.DeleteImage(name);
+                    await storeImageRepo.DeleteStoreImageByName(deletedImage);
+                }
+            }
+        }
+        var newStore = await Store.createStore(StoreDetails);
+        await AddStoreImage(newStore);
+        StoreDetails = new StoreDTO();
+        StateHasChanged();
         Navigator.NavigateTo("/store/dashboard");
+
+        //var result = await Store.createStore(StoreDetails);
+        //Navigator.NavigateTo("/store/dashboard");
 
 
     }
+    private async Task HandleImageUpload(InputFileChangeEventArgs e)
+    {
+        try
+        {
+            var images = new List<string>();
+            if (e.GetMultipleFiles().Count > 0)
+            {
+                foreach (var image in e.GetMultipleFiles())
+                {
+                    FileInfo imageInfo = new FileInfo(image.Name);
+                    if (imageInfo.Extension.ToLower() == ".jpg" ||
+                    imageInfo.Extension.ToLower() == ".png" ||
+                    imageInfo.Extension.ToLower() == ".jpeg")
+                    {
+                        var uploadedImagePath = await imageUplaod.uploadImage(image);
+                        images.Add(uploadedImagePath);
+                    }
+                    else
+                    {
+                        return;
+                    }
+                }
+                if (images.Any())
+                {
+                    if (StoreDetails.ImageUrls != null && StoreDetails.ImageUrls.Any())
+                    {
+                        StoreDetails.ImageUrls.AddRange(images);
+                    }
+                    else
+                    {
+                        StoreDetails.ImageUrls = new List<string>();
+                        StoreDetails.ImageUrls.AddRange(images);
+                    }
+                }
+                else
+                {
+                    return;
+                }
 
-
+            }
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
     protected async Task CheckStoreAvailability(ChangeEventArgs e)
     {
         var result = Store.GetStoreByName(Convert.ToString(e.Value));
