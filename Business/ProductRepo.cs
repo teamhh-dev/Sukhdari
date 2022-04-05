@@ -102,7 +102,7 @@ namespace Business
                 var products = _db.Products.Where(i => i.Name.ToLower().Contains(productName.ToLower())).ToList();
                 foreach (var s in products)
                 {
-                    stores.Add(await _db.Stores.FindAsync(s.StoreId));
+                    stores.Add(await _db.Stores.Include(i=>i.StoreImages).FirstOrDefaultAsync(i=>i.Id==s.StoreId));
                 }
             }
             return _mapper.Map<IEnumerable<Store>, IEnumerable<StoreDTO>>(stores);
@@ -114,7 +114,7 @@ namespace Business
             List<Store> stores = new List<Store>();
             foreach (var s in products)
             {
-                var temp = await _db.Stores.FindAsync(s.StoreId);
+                var temp = await _db.Stores.Include(i=>i.StoreImages).FirstOrDefaultAsync(i=>i.Id==s.StoreId);
                 if(!stores.Contains(temp))
                 {
                     stores.Add(temp);

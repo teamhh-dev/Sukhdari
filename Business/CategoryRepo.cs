@@ -78,7 +78,7 @@ namespace Business
             List<Store> storeByCategoryList = new List<Store>();
             foreach (var s in storeCategories)
             {
-                storeByCategoryList.Add(await _db.Stores.FindAsync(s.StoreId));
+                storeByCategoryList.Add(await _db.Stores.Include(i=>i.StoreImages).FirstOrDefaultAsync(i=>i.Id==s.StoreId));
             }
             return _mapper.Map<IEnumerable<Store>, IEnumerable<StoreDTO>>(storeByCategoryList);
         }

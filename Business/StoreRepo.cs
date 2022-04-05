@@ -66,7 +66,7 @@ namespace Business
         }
         public async Task<IEnumerable<StoreDTO>> getAllStores()
         {
-            return _mapper.Map<IEnumerable<Store>, IEnumerable<StoreDTO>>(_db.Stores);
+            return _mapper.Map<IEnumerable<Store>, IEnumerable<StoreDTO>>(_db.Stores.Include(i=>i.StoreImages));
         }
         public StoreDTO GetStoreByAdminName(string adminName)
         {
@@ -80,7 +80,7 @@ namespace Business
         }
         public StoreDTO GetStoreByName(string name)
         {
-            Store find = _db.Stores.FirstOrDefault(i => i.Name == name);
+            Store find = _db.Stores.Include(i=>i.StoreImages).FirstOrDefault(i => i.Name == name);
             if(find==null)
             {
                 return null;
@@ -91,7 +91,7 @@ namespace Business
         {
             var products = _db.Products.Where(i => i.Name.ToLower().Contains(data.ToLower())).ToList();
             var storeCategories = _db.Categories.Where(i => i.Name.ToLower().Contains(data.ToLower())).ToList();
-            var stores = _db.Stores.Where(i => i.Name.ToLower().Contains(data.ToLower())).ToList();
+            var stores = _db.Stores.Include(i=>i.StoreImages).Where(i => i.Name.ToLower().Contains(data.ToLower())).ToList();
             List<Store> storesList = new List<Store>();
             foreach (var s in products)
             {
@@ -110,7 +110,7 @@ namespace Business
 
         public async Task<IEnumerable<StoreDTO>> getStoresByCountry(string country)
         {
-            var stores = _db.Stores.Where(i => i.Country.ToLower().Contains(country.ToLower())).ToList();
+            var stores = _db.Stores.Include(i=>i.StoreImages).Where(i => i.Country.ToLower().Contains(country.ToLower())).ToList();
             return _mapper.Map<IEnumerable<Store>, IEnumerable<StoreDTO>>(stores);
         }
         public async Task<int> updateStore(StoreDTO store)
