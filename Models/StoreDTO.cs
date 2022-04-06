@@ -11,15 +11,18 @@ namespace Models
     {
         public int Id { get; set; }
 
-        [Required(ErrorMessage ="Please Enter Store Name")]
+        [Required(ErrorMessage = "Please Enter Store Name")]
         public string Name { get; set; }
-        [Required(ErrorMessage ="Enter Your Store Type")]
+        [Required(ErrorMessage = "Enter Your Store Type")]
         public string Type { get; set; }
-        [Required(ErrorMessage ="Enter Country Name")]
+        [Required(ErrorMessage = "Enter Country Name")]
         public string Country { get; set; }
 
         [Required]
         public string AdminName { get; set; }
+        public string Image { get; set; }
+        public virtual ICollection<StoreImageDTO> StoreImages { get; set; }
+        public List<string> ImageUrls { get; set; }
 
     }
 }

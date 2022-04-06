@@ -34,7 +34,8 @@ namespace Sukhdari_Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<ApplicationDbContext>(options =>
-            options.UseSqlServer(Configuration.GetConnectionString("NehaConnection")));
+                options.UseSqlServer(Configuration.GetConnectionString("IrhaConnection")));
+
             services.AddIdentity<IdentityUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
             services.AddScoped<IStoreRepo, StoreRepo>();
@@ -68,9 +69,14 @@ namespace Sukhdari_Api
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Sukhdari_Api v1"));
+                
             }
+            app.UseSwagger();
+            app.UseSwaggerUI(c => {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Sukhdari_Api v1");
+                c.RoutePrefix = string.Empty;
+            });
+
             app.UseHttpsRedirection();
             app.UseCors("Sukhdari");
             app.UseRouting();

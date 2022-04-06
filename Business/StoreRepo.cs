@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Business.IRepo;
 using DataAccess.Data;
 using Models;
@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
+using Microsoft.EntityFrameworkCore;
 
 namespace Business
 {
@@ -19,19 +21,44 @@ namespace Business
             _db = db;
             _mapper = map;
         }
-        public async Task<int> createStore(StoreDTO store)
+        public async Task<StoreDTO> createStore(StoreDTO store)
         {
+            //Store oldStore = await _db.Stores.FindAsync(store.Id);
+            if (store.Id != 0)
+            {
+                Store oldStore = await _db.Stores.FindAsync(store.Id);
+
+                oldStore.Name = store.Name;
+                oldStore.Type = store.Type;
+                oldStore.Country = store.Country;
+                oldStore.Image = store.Image;
+                await _db.SaveChangesAsync();
+                return _mapper.Map<Store, StoreDTO>(oldStore);
+            }
+
             var storeAdminId = _db.Users.FirstOrDefault(i => i.UserName == store.AdminName).Id;
             Store newStore = _mapper.Map<StoreDTO, Store>(store);
             newStore.UserId = storeAdminId;
-            var result = await _db.Stores.AddAsync(newStore);
-            return await _db.SaveChangesAsync();
+
+            await _db.Stores.AddAsync(newStore);
+            await _db.SaveChangesAsync();
+            return _mapper.Map<Store, StoreDTO>(newStore);
+
         }
         public async Task<int> deleteStore(int id)
         {
             var store = await _db.Stores.FindAsync(id);
             if (store != null)
             {
+                var images = _db.storeImages.Where(i => i.StoreId == id).ToList();
+                foreach (var image in images)
+                {
+                    if (File.Exists(image.StoreImageUrl))
+                    {
+                        File.Delete(image.StoreImageUrl);
+                    }
+                }
+                _db.storeImages.RemoveRange(images);
                 _db.Stores.Remove(store);
                 return await _db.SaveChangesAsync();
             }
@@ -39,12 +66,14 @@ namespace Business
         }
         public async Task<IEnumerable<StoreDTO>> getAllStores()
         {
-            return _mapper.Map<IEnumerable<Store>, IEnumerable<StoreDTO>>(_db.Stores);
+        
+            return _mapper.Map<IEnumerable<Store>, IEnumerable<StoreDTO>>(_db.Stores.Include(i => i.StoreImages));
+
         }
         public StoreDTO GetStoreByAdminName(string adminName)
         {
             var AdminID = _db.Users.FirstOrDefault(i => i.UserName == adminName).Id;
-            Store find = _db.Stores.FirstOrDefault(i => i.UserId == AdminID);
+            Store find = _db.Stores.Include(i => i.StoreImages).FirstOrDefault(i => i.UserId == AdminID);
             if (find == null)
             {
                 return null;
@@ -53,8 +82,10 @@ namespace Business
         }
         public StoreDTO GetStoreByName(string name)
         {
-            Store find = _db.Stores.FirstOrDefault(i => i.Name == name);
-            if(find==null)
+
+            Store find = _db.Stores.Include(i => i.StoreImages).FirstOrDefault(i => i.Name == name);
+            if (find == null)
+
             {
                 return null;
             }
@@ -64,7 +95,8 @@ namespace Business
         {
             var products = _db.Products.Where(i => i.Name.ToLower().Contains(data.ToLower())).ToList();
             var storeCategories = _db.Categories.Where(i => i.Name.ToLower().Contains(data.ToLower())).ToList();
-            var stores = _db.Stores.Where(i => i.Name.ToLower().Contains(data.ToLower())).ToList();
+            var stores = _db.Stores.Include(i => i.StoreImages).Where(i => i.Name.ToLower().Contains(data.ToLower())).ToList();
+
             List<Store> storesList = new List<Store>();
             foreach (var s in products)
             {
@@ -83,11 +115,9 @@ namespace Business
 
         public async Task<IEnumerable<StoreDTO>> getStoresByCountry(string country)
         {
-            var stores = _db.Stores.Where(i => i.Country.ToLower().Contains(country.ToLower())).ToList();
+            var stores = _db.Stores.Include(i => i.StoreImages).Where(i => i.Country.ToLower().Contains(country.ToLower())).ToList();
             return _mapper.Map<IEnumerable<Store>, IEnumerable<StoreDTO>>(stores);
-     
         }
-
         public async Task<int> updateStore(StoreDTO store)
         {
             Store oldStore = await _db.Stores.FindAsync(store.Id);

@@ -15,7 +15,7 @@ namespace Sukhdari_Api.Controllers
         private readonly IStoreRepo _storeRepo;
         private readonly IProductRepo _productRepo;
         private readonly ICategoryRepo _categoryRepo;
-        public StoreController(IStoreRepo storeRepo,IProductRepo productRepo, ICategoryRepo categoryRepo)
+        public StoreController(IStoreRepo storeRepo, IProductRepo productRepo, ICategoryRepo categoryRepo)
         {
 
             _storeRepo = storeRepo;
@@ -27,7 +27,7 @@ namespace Sukhdari_Api.Controllers
         public async Task<IActionResult> getAllStores()
         {
             var allStores = await _storeRepo.getAllStores();
-;            return Ok(allStores);
+            ; return Ok(allStores);
         }
 
         [HttpGet("{StoreName}")]

@@ -141,6 +141,7 @@
             <div class="form-group">
                 <div class="col-md-7">
                     <button type="submit" class="btn btn-info">@btnName</button>
+                    <a class="btn btn-outline-info" href="/products">Cancle</a>
                 </div>
             </div>
         </div>
@@ -283,20 +284,24 @@
 
     private async Task AddProductImage(ProductDTO product)
     {
-        foreach (var image in ProductDetails.ImageUrls)
+        if (ProductDetails.ImageUrls != null && ProductDetails.ImageUrls.Any())
         {
-            if (ProductDetails.ProductImages == null || ProductDetails.ProductImages.Where(x => x.ProductImageUrl == image).Count()
-            == 0)
-
+            foreach (var image in ProductDetails.ImageUrls)
             {
-                ProductImage = new ProductImageDTO()
+                if (ProductDetails.ProductImages == null || ProductDetails.ProductImages.Where(x => x.ProductImageUrl == image).Count()
+                == 0)
+
                 {
-                    ProductId = product.Id,
-                    ProductImageUrl = image
-                };
-                await productImageRepo.CreateProductImage(ProductImage);
+                    ProductImage = new ProductImageDTO()
+                    {
+                        ProductId = product.Id,
+                        ProductImageUrl = image
+                    };
+                    await productImageRepo.CreateProductImage(ProductImage);
+                }
             }
         }
+
     }
 
     internal async Task DeleteImage(string imageUrl)

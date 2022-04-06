@@ -1,4 +1,4 @@
-﻿ using AutoMapper;
+using AutoMapper;
 using Business.IRepo;
 using DataAccess.Data;
 using Microsoft.EntityFrameworkCore;
@@ -50,9 +50,9 @@ namespace Business
             if (prod != null)
             {
                 var images = _db.productImages.Where(i => i.ProductId == id).ToList();
-                foreach(var image in images)
+                foreach (var image in images)
                 {
-                    if(File.Exists(image.ProductImageUrl))
+                    if (File.Exists(image.ProductImageUrl))
                     {
                         File.Delete(image.ProductImageUrl);
                     }
@@ -77,7 +77,7 @@ namespace Business
 
         public async Task<ProductDTO> GetProduct(int id, int storeId)
         {
-            var product = _db.Products.Include(i=>i.ProductImages).FirstOrDefault(i => i.Id == id && i.StoreId == storeId);
+            var product = _db.Products.Include(i => i.ProductImages).FirstOrDefault(i => i.Id == id && i.StoreId == storeId);
 
             return _mapper.Map<Product, ProductDTO>(product);
         }
@@ -87,20 +87,26 @@ namespace Business
             try
             {
                 ProductDTO product = _mapper.Map<Product, ProductDTO>(await _db.Products.Include(i => i.ProductImages).FirstOrDefaultAsync(i => i.Id == id));
-                return product; 
+                return product;
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 throw e;
             }
         }
         public async Task<IEnumerable<StoreDTO>> getStoresByProductName(string productName)
         {
-            var products = _db.Products.Where(i => i.Name.ToLower().Contains(productName.ToLower())).ToList();
+
             List<Store> stores = new List<Store>();
-            foreach (var s in products)
+            if (productName != "")
             {
-                stores.Add(await _db.Stores.FindAsync(s.StoreId));
+
+                var products = _db.Products.Where(i => i.Name.ToLower().Contains(productName.ToLower())).ToList();
+                foreach (var s in products)
+                {
+                    stores.Add(await _db.Stores.FindAsync(s.StoreId));
+                }
+
             }
             return _mapper.Map<IEnumerable<Store>, IEnumerable<StoreDTO>>(stores);
         }
@@ -111,7 +117,13 @@ namespace Business
             List<Store> stores = new List<Store>();
             foreach (var s in products)
             {
-                stores.Add(await _db.Stores.FindAsync(s.StoreId));
+
+                var temp = await _db.Stores.FindAsync(s.StoreId);
+                if (!stores.Contains(temp))
+                {
+                    stores.Add(temp);
+                }
+
             }
             return _mapper.Map<IEnumerable<Store>, IEnumerable<StoreDTO>>(stores);
 

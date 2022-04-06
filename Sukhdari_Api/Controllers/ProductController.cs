@@ -1,4 +1,4 @@
-﻿using Business.IRepo;
+using Business.IRepo;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Models;
@@ -14,16 +14,16 @@ namespace Sukhdari_Api.Controllers
     {
         private readonly IStoreRepo _storeRepo;
         private readonly IProductRepo _productRepo;
-        public ProductController(IProductRepo productRepo,IStoreRepo storeRepo)
+        public ProductController(IProductRepo productRepo, IStoreRepo storeRepo)
         {
             _productRepo = productRepo;
-            _storeRepo= storeRepo;
+            _storeRepo = storeRepo;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAllProducts()
         {
-            var products= await _productRepo.getAllProducts();
+            var products = await _productRepo.getAllProducts();
             return Ok(products);
         }
 
@@ -33,14 +33,14 @@ namespace Sukhdari_Api.Controllers
             var products = await _productRepo.getAllProducts();
             var productToFind = products.FirstOrDefault(i => i.Id == productId);
 
-            if (productId==null||productToFind==null)
+            if (productId == null || productToFind == null)
             {
                 return BadRequest(new ErrorModelDTO() { ErrorMessage = "Invalid Product Id", Title = "", StatusCode = StatusCodes.Status400BadRequest });
 
             }
             return Ok(productToFind);
         }
-        
+
         [HttpGet("{productName}")]
         public async Task<IActionResult> GetStoresByProductName(string productName)
         {

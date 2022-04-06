@@ -13,7 +13,7 @@ namespace Sukhdari_Api.Controllers
         private readonly ICategoryRepo _categoryRepo;
         private readonly IProductRepo _productRepo;
 
-        public CategoryController(ICategoryRepo categoryRepo,IProductRepo productRepo)
+        public CategoryController(ICategoryRepo categoryRepo, IProductRepo productRepo)
         {
             _categoryRepo = categoryRepo;
             _productRepo = productRepo;
@@ -27,7 +27,7 @@ namespace Sukhdari_Api.Controllers
         }
 
         [HttpGet("{id},{storeId}")]
-        public async Task<IActionResult> GetCategory(int? id,int? storeId)
+        public async Task<IActionResult> GetCategory(int? id, int? storeId)
         {
             var category = await _categoryRepo.GetCategory(id.Value, storeId.Value);
             return Ok(category);
