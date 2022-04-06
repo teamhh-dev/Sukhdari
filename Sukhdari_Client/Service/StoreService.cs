@@ -1,4 +1,4 @@
-﻿using Models;
+using Models;
 using Newtonsoft.Json;
 using Sukhdari_Client.Service.IService;
 using System;
@@ -40,6 +40,7 @@ namespace Sukhdari_Client.Service
         public async Task<IEnumerable<StoreDTO>> SearchStoreByProductPrice(int min, int max)
         {
             var response = await _httpClient.GetAsync($"api/Product/getStoresByPriceRange/{min}/{max}");
+
             var content = await response.Content.ReadAsStringAsync();
             var stores = JsonConvert.DeserializeObject<IEnumerable<StoreDTO>>(content);
             return stores;
@@ -65,6 +66,7 @@ namespace Sukhdari_Client.Service
             var stores = JsonConvert.DeserializeObject<IEnumerable<StoreDTO>>(content);
             return stores;
         }
+
         public async Task<IEnumerable<ProductDTO>> getAllProducts()
         {
             var response = await _httpClient.GetAsync($"api/Product/GetAllProducts");
@@ -73,6 +75,7 @@ namespace Sukhdari_Client.Service
             return products;
         }
 
+
         public async Task<IEnumerable<StoreDTO>> SearchStoreByCountry(string country)
         {
             var response = await _httpClient.GetAsync($"api/Store/GetStoresByCountry/{country}");
@@ -80,5 +83,6 @@ namespace Sukhdari_Client.Service
             var stores = JsonConvert.DeserializeObject<IEnumerable<StoreDTO>>(content);
             return stores;
         }
+
     }
 }
