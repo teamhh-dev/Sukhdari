@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Business.IRepo;
 using DataAccess.Data;
 using Microsoft.EntityFrameworkCore;
@@ -96,14 +96,17 @@ namespace Business
         }
         public async Task<IEnumerable<StoreDTO>> getStoresByProductName(string productName)
         {
+
             List<Store> stores = new List<Store>();
             if (productName != "")
             {
+
                 var products = _db.Products.Where(i => i.Name.ToLower().Contains(productName.ToLower())).ToList();
                 foreach (var s in products)
                 {
                     stores.Add(await _db.Stores.FindAsync(s.StoreId));
                 }
+
             }
             return _mapper.Map<IEnumerable<Store>, IEnumerable<StoreDTO>>(stores);
         }
@@ -114,11 +117,13 @@ namespace Business
             List<Store> stores = new List<Store>();
             foreach (var s in products)
             {
+
                 var temp = await _db.Stores.FindAsync(s.StoreId);
                 if (!stores.Contains(temp))
                 {
                     stores.Add(temp);
                 }
+
             }
             return _mapper.Map<IEnumerable<Store>, IEnumerable<StoreDTO>>(stores);
 

@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using DataAccess.Data;
 using Models;
 using System;

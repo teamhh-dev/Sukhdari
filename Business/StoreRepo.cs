@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Business.IRepo;
 using DataAccess.Data;
 using Models;
@@ -39,10 +39,10 @@ namespace Business
             var storeAdminId = _db.Users.FirstOrDefault(i => i.UserName == store.AdminName).Id;
             Store newStore = _mapper.Map<StoreDTO, Store>(store);
             newStore.UserId = storeAdminId;
+
             await _db.Stores.AddAsync(newStore);
             await _db.SaveChangesAsync();
             return _mapper.Map<Store, StoreDTO>(newStore);
-
 
         }
         public async Task<int> deleteStore(int id)
@@ -66,7 +66,9 @@ namespace Business
         }
         public async Task<IEnumerable<StoreDTO>> getAllStores()
         {
+        
             return _mapper.Map<IEnumerable<Store>, IEnumerable<StoreDTO>>(_db.Stores.Include(i => i.StoreImages));
+
         }
         public StoreDTO GetStoreByAdminName(string adminName)
         {
@@ -80,8 +82,10 @@ namespace Business
         }
         public StoreDTO GetStoreByName(string name)
         {
+
             Store find = _db.Stores.Include(i => i.StoreImages).FirstOrDefault(i => i.Name == name);
             if (find == null)
+
             {
                 return null;
             }
@@ -92,6 +96,7 @@ namespace Business
             var products = _db.Products.Where(i => i.Name.ToLower().Contains(data.ToLower())).ToList();
             var storeCategories = _db.Categories.Where(i => i.Name.ToLower().Contains(data.ToLower())).ToList();
             var stores = _db.Stores.Include(i => i.StoreImages).Where(i => i.Name.ToLower().Contains(data.ToLower())).ToList();
+
             List<Store> storesList = new List<Store>();
             foreach (var s in products)
             {
