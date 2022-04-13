@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220314230529_CreateIpAddressTable")]
-    partial class CreateIpAddressTable
+    [Migration("20220413173859_all")]
+    partial class all
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -19,7 +19,7 @@ namespace DataAccess.Migrations
             modelBuilder
                 .UseIdentityColumns()
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("ProductVersion", "5.0.0");
+                .HasAnnotation("ProductVersion", "5.0.1");
 
             modelBuilder.Entity("DataAccess.Data.Category", b =>
                 {
@@ -30,6 +30,9 @@ namespace DataAccess.Migrations
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<float?>("DiscountPercentage")
+                        .HasColumnType("real");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -53,6 +56,9 @@ namespace DataAccess.Migrations
                     b.Property<string>("IP")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("StoreId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("timeNow")
                         .HasColumnType("datetime2");
 
@@ -73,6 +79,12 @@ namespace DataAccess.Migrations
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<float?>("DiscountPercentage")
+                        .HasColumnType("real");
+
+                    b.Property<float?>("DiscountPrice")
+                        .HasColumnType("real");
 
                     b.Property<string>("Image")
                         .HasColumnType("nvarchar(max)");
@@ -130,6 +142,9 @@ namespace DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Image")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -144,6 +159,26 @@ namespace DataAccess.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Stores");
+                });
+
+            modelBuilder.Entity("DataAccess.Data.StoreImage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<int?>("StoreId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("StoreImageUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("StoreId");
+
+                    b.ToTable("storeImages");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -372,6 +407,15 @@ namespace DataAccess.Migrations
                     b.Navigation("product");
                 });
 
+            modelBuilder.Entity("DataAccess.Data.StoreImage", b =>
+                {
+                    b.HasOne("DataAccess.Data.Store", "store")
+                        .WithMany("StoreImages")
+                        .HasForeignKey("StoreId");
+
+                    b.Navigation("store");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -431,6 +475,11 @@ namespace DataAccess.Migrations
             modelBuilder.Entity("DataAccess.Data.Product", b =>
                 {
                     b.Navigation("ProductImages");
+                });
+
+            modelBuilder.Entity("DataAccess.Data.Store", b =>
+                {
+                    b.Navigation("StoreImages");
                 });
 #pragma warning restore 612, 618
         }

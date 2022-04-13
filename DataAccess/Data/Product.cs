@@ -17,16 +17,14 @@ namespace DataAccess.Data
         [Required]
         public int Quantity { get; set; }
         public float Price { get; set; }
+        public float? DiscountPercentage { get; set; }
+        public float? DiscountPrice { get; set; }
         public string Description { get; set; }
-
         public string Image { get; set; }
         public int CategoryId { get; set; }
         public Category Category { get; set; }
         public int StoreId { get; set; }
         public Store Store { get; set; }
-        // [ForeignKey("CategoryID")]
-        // public virtual Category Category { get; set; }
-
         public virtual ICollection<ProductImage> ProductImages { get; set; }
     }
 }
