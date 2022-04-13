@@ -8,7 +8,6 @@ namespace Models
         [Required(ErrorMessage = "Category Name Required!")]
         public string Name { get; set; }
         public string Description { get; set; }
-        public float? DiscountPercentage { get; set; }
         public int StoreId { get; set; }
         public List<ProductDTO> Products { get; set; }
     }
