@@ -5,6 +5,13 @@
 
 @*<h1>@ipAddress.IP</h1>
 <h1>@ipAddress.timeNow</h1>*@
+<div class="row m-0">
+    <div class="card bg-light col-2 m-2 p-2 filterDiv" style="left:1% ">
+        <h4>Filters</h4>
+        <hr />
+        <h5>Discount</h5>
+        <hr />
+    </div>
 <div class="form-inline justify-content-center mt-4 col-9">
     @if (Products == null)
     {
@@ -74,7 +81,7 @@
                 <div class="card-body">
                     <h5 class="card-title text-dark">@product.Name</h5>
                     <p class="card-text"><small class="text-muted">Price = @product.Price PKR</small></p>
-                    <button class="btn btn-primary mr-1">View</button>
+                    <button class="btn btn-primary mr-1 col-12">View</button>
                 </div>
                 @{caresoltag++;}
             </div>
@@ -86,7 +93,7 @@
     }
 
 </div>
-
+</div>
 @code
 {
     [Parameter]
