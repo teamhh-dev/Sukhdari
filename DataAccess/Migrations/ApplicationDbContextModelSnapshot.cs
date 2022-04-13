@@ -29,6 +29,9 @@ namespace DataAccess.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<float?>("DiscountPercentage")
+                        .HasColumnType("real");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -74,6 +77,12 @@ namespace DataAccess.Migrations
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<float?>("DiscountPercentage")
+                        .HasColumnType("real");
+
+                    b.Property<float?>("DiscountPrice")
+                        .HasColumnType("real");
 
                     b.Property<string>("Image")
                         .HasColumnType("nvarchar(max)");

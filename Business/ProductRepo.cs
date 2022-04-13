@@ -33,9 +33,18 @@ namespace Business
                 oldCategory.CategoryId = product.CategoryId;
                 oldCategory.Image = product.Image;
                 oldCategory.Quantity = product.Quantity;
+                oldCategory.DiscountPercentage = product.DiscountPercentage;
+                if(product.DiscountPercentage != null)
+                {
+                    oldCategory.DiscountPrice = product.DiscountPrice;
+                }
+                else
+                {
+                    oldCategory.DiscountPrice = null;
+                }
+                
                 await _db.SaveChangesAsync();
                 return _mapper.Map<Product, ProductDTO>(oldCategory);
-
             }
 
             Product newProd = _mapper.Map<ProductDTO, Product>(product);
@@ -70,6 +79,15 @@ namespace Business
             return _mapper.Map<IEnumerable<Product>, IEnumerable<ProductDTO>>(_db.Products.Include(i => i.ProductImages).Where(i => i.StoreId == storeId)).ToList();
         }
 
+        
+
+        public async Task<int> setDiscountOnProduct(ProductDTO p)
+        {
+            var product = await _db.Products.FindAsync(p.Id);
+            product.DiscountPrice = p.Price - ((p.DiscountPercentage / 100) * p.Price);
+            return await _db.SaveChangesAsync();
+            
+        }
         public async Task<IEnumerable<ProductDTO>> getAllProducts()
         {
             return _mapper.Map<IEnumerable<Product>, IEnumerable<ProductDTO>>(_db.Products.Include(i => i.ProductImages));
@@ -91,7 +109,7 @@ namespace Business
             }
             catch(Exception e)
             {
-                throw e;
+                throw;
             }
         }
         public async Task<IEnumerable<StoreDTO>> getStoresByProductName(string productName)

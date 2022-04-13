@@ -49,7 +49,6 @@
             <ValidationMessage For="()=>StoreDetails.Country"></ValidationMessage>
         </div>
     </div>
-
     <div class="form-group">
         <InputFile OnChange="HandleImageUpload" multiple></InputFile>
         <div class="row">
@@ -111,8 +110,6 @@
         }
         StoreDetails.AdminName = adminName;
     }
-
-
     private async Task AddStoreImage(StoreDTO store)
     {
         if (StoreDetails.ImageUrls != null && StoreDetails.ImageUrls.Any())

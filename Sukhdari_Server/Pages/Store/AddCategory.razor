@@ -28,6 +28,7 @@
         <div class="card-body">
 
             <DataAnnotationsValidator></DataAnnotationsValidator>
+            <ValidationSummary></ValidationSummary>
             <div class="form-group">
                 <label class="col-md-7 control-label" for="category_name">CATEGORY NAME</label>
                 <div class="col-md-7">
@@ -38,7 +39,15 @@
                 </div>
             </div>
 
-
+            @if(btnName == "Update Category")
+                {
+                    <div class="form-group">
+                        <label class="col-md-7 control-label" for="discount percentage">Discount Percentage</label>
+                        <div class="col-md-7">
+                            <InputNumber @bind-Value="@CategoryDetails.DiscountPercentage" placeholder="Discount Percentage" class="form-control" />
+                        </div>
+                    </div>
+                }
 
             <div class="form-group">
                 <label class="col-md-7 control-label" for="category_description">CATEGORY DESCRIPTION</label>

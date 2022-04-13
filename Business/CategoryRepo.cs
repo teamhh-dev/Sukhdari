@@ -27,24 +27,61 @@ namespace Business
                 var oldCategory = _db.Categories.FirstOrDefault(i => i.Id == category.Id);
                 oldCategory.Name = category.Name;
                 oldCategory.Description = category.Description;
+                oldCategory.DiscountPercentage = category.DiscountPercentage;
+                var products = _db.Products.Where(i => i.CategoryId == category.Id).ToList();
+                if (category.DiscountPercentage != null)
+                {
+                    if (products != null && products.Any())
+                    {
+                        foreach (var p in products)
+                        {
+                            p.DiscountPercentage = category.DiscountPercentage;
+                            p.DiscountPrice = p.Price - ((category.DiscountPercentage / 100) * p.Price);
+                        }
+                    }
+                }
+                else
+                {
+                    if (products != null && products.Any())
+                    {
+                        foreach (var p in products)
+                        {
+                            p.DiscountPercentage = null;
+                            p.DiscountPrice = null;
+                        }
+                    }
+                }
                 return await _db.SaveChangesAsync();
 
             }
             Category newCategory = _mapper.Map<CategoryDTO, Category>(category);
             await _db.Categories.AddAsync(newCategory);
             return await _db.SaveChangesAsync();
-
+           
         }
+
         public async Task<int> deleteCategory(int id)
         {
             Category category = await _db.Categories.FindAsync(id);
             if (category != null)
             {
+                if(category.DiscountPercentage !=null)
+                {
+                    var products = _db.Products.Where(i => i.CategoryId == category.Id).ToList();
+                    if (products != null && products.Any())
+                    {
+                        foreach (var p in products)
+                        {
+                            p.DiscountPercentage = null;
+                            p.DiscountPrice = null;
+                        }
+                    }
+                    await _db.SaveChangesAsync();
+                }
                 _db.Categories.Remove(category);
                 return await _db.SaveChangesAsync();
             }
             return 0;
-
         }
         public async Task<CategoryDTO> GetCategory(int id, int storeId)
         {
