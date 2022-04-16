@@ -1,121 +1,1 @@
-﻿@page "/addCategory"
-@page "/category/update/{Id:int}"
-@page "/category/delete/{Id:int}"
-@layout StoreAdminLayoutT
-@inject IStoreRepo Store
-@inject ICategoryRepo Category
-@inject NavigationManager Navigator
-@attribute [Authorize]
-
-
-<div class="card card-info">
-    <div class="card-header">
-        <div class="card-title float-left pt-2">
-            <h3>@Title</h3>
-        </div>
-        @if (Id != null)
-        {
-            <div class="d-flex float-right">
-                <button @onclick="DeleteCategory" class="btn btn-info text-white"><span class="oi oi-trash mr-0 mr-md-2" />
-                    <h5 class="d-md-inline-block d-none pt-1">Delete Category</h5>
-                </button>
-
-            </div>
-        }
-    </div>
-
-    <EditForm Model="CategoryDetails" OnValidSubmit="SaveCategory" class="form-horizontal">
-        <div class="card-body">
-
-            <DataAnnotationsValidator></DataAnnotationsValidator>
-            <div class="form-group">
-                <label class="col-md-7 control-label" for="category_name">CATEGORY NAME</label>
-                <div class="col-md-7">
-                    <InputText @bind-Value="CategoryDetails.Name" placeholder="Category Name"
-                        class="form-control input-md" />
-                    <ValidationMessage For="()=>CategoryDetails.Name"></ValidationMessage>
-
-                </div>
-            </div>
-
-
-
-            <div class="form-group">
-                <label class="col-md-7 control-label" for="category_description">CATEGORY DESCRIPTION</label>
-                <div class="col-md-7">
-                    <InputTextArea @bind-Value="CategoryDetails.Description" class="form-control" />
-                    <ValidationMessage For="()=>CategoryDetails.Description"></ValidationMessage>
-
-                </div>
-            </div>
-
-            <div class="form-group">
-                <div class="col-md-7">
-                    <button type="submit" class="btn btn-info text-white">@btnName</button>
-                    <a class="btn btn-outline-info" href="/category">Cancle</a>
-
-                </div>
-            </div>
-        </div>
-    </EditForm>
-</div>
-
-@code {
-    private String Title { get; set; } = "Add Category";
-    private String btnName { get; set; } = "Add Category";
-    [Parameter]
-    public int? Id { get; set; }
-
-    [CascadingParameter]
-    public Task<AuthenticationState> AuthenticationState { get; set; }
-
-    public CategoryDTO CategoryDetails { get; set; } = new CategoryDTO();
-
-    public String StoreName { get; set; }
-
-    protected override async Task OnInitializedAsync()
-    {
-        var authState = await AuthenticationState;
-
-        var store = Store.GetStoreByAdminName(authState.User.Identity.Name);
-        if (store == null)
-        {
-            Navigator.NavigateTo("/storeNotExist");
-        }
-        else
-        {
-            CategoryDetails.StoreId = store.Id;
-            if (!authState.User.IsInRole(Common.StaticDetails.Role_StoreAdmin))
-            {
-                var uri = new Uri(Navigator.Uri);
-                Navigator.NavigateTo($"/identity/account/login?returnUrl={uri.LocalPath}");
-            }
-            if (Id != null)
-            {
-                //updating
-                Title = "Update Category";
-                btnName = "Update Category";
-                var category = await Category.GetCategory(Id.Value, CategoryDetails.StoreId);
-                CategoryDetails = category;
-            }
-        }
-
-    }
-    private async void SaveCategory()
-    {
-
-        await Category.createCategory(CategoryDetails);
-        CategoryDetails = new CategoryDTO();
-        StateHasChanged();
-        Navigator.NavigateTo("/category");
-    }
-
-    private async void DeleteCategory()
-    {
-        await Category.deleteCategory(Id.Value);
-        StateHasChanged();
-        Navigator.NavigateTo("/category");
-
-    }
-
-}
+﻿@page "/addCategory"@page "/category/update/{Id:int}"@page "/category/delete/{Id:int}"@layout StoreAdminLayoutT@inject IStoreRepo Store@inject ICategoryRepo Category@inject NavigationManager Navigator@attribute [Authorize]<div class="card card-info">    <div class="card-header">        <div class="card-title float-left pt-2">            <h3>@Title</h3>        </div>        @if (Id != null)        {<div class="d-flex float-right">    <button @onclick="DeleteCategory" class="btn btn-info text-white">        <span class="oi oi-trash mr-0 mr-md-2" />        <h5 class="d-md-inline-block d-none pt-1">Delete Category</h5>    </button></div>}    </div>    <EditForm Model="CategoryDetails" OnValidSubmit="SaveCategory" class="form-horizontal">        <div class="card-body">            <DataAnnotationsValidator></DataAnnotationsValidator>            <ValidationSummary></ValidationSummary>            <div class="form-group">                <label class="col-md-7 control-label" for="category_name">CATEGORY NAME</label>                <div class="col-md-7">                    <InputText @bind-Value="CategoryDetails.Name" placeholder="Category Name" class="form-control input-md" />                    <ValidationMessage For="()=>CategoryDetails.Name"></ValidationMessage>                </div>            </div>            @if (btnName == "Update Category")            {<div class="form-group">    <label class="col-md-7 control-label" for="discount percentage">Discount Percentage</label>    <div class="col-md-7">        <InputNumber @bind-Value="@CategoryDetails.DiscountPercentage" placeholder="Discount Percentage" class="form-control" />    </div></div>                }            <div class="form-group">                <label class="col-md-7 control-label" for="category_description">CATEGORY DESCRIPTION</label>                <div class="col-md-7">                    <InputTextArea @bind-Value="CategoryDetails.Description" class="form-control" />                    <ValidationMessage For="()=>CategoryDetails.Description"></ValidationMessage>                </div>            </div>            <div class="form-group">                <div class="col-md-7">                    <button type="submit" class="btn btn-info text-white">@btnName</button>                </div>            </div>        </div>    </EditForm></div>@code { private String Title { get; set; } = "Add Category";            private String btnName { get; set; } = "Add Category";            [Parameter]            public int? Id { get; set; }            [CascadingParameter]            public Task<AuthenticationState> AuthenticationState { get; set; }            public CategoryDTO CategoryDetails { get; set; } = new CategoryDTO();            public String StoreName { get; set; }            protected override async Task OnInitializedAsync()            {                var authState = await AuthenticationState;                var store = Store.GetStoreByAdminName(authState.User.Identity.Name);                if (store == null)                {                    Navigator.NavigateTo("/storeNotExist");                }                else                {                    CategoryDetails.StoreId = store.Id;                    if (!authState.User.IsInRole(Common.StaticDetails.Role_StoreAdmin))                    {                        var uri = new Uri(Navigator.Uri);                        Navigator.NavigateTo($"/identity/account/login?returnUrl={uri.LocalPath}");                    }                    if (Id != null)                    {                        //updating                        Title = "Update Category";                        btnName = "Update Category";                        var category = await Category.GetCategory(Id.Value, CategoryDetails.StoreId);                        CategoryDetails = category;                    }                }            }            private async void SaveCategory()            {                await Category.createCategory(CategoryDetails);                CategoryDetails = new CategoryDTO();                StateHasChanged();                Navigator.NavigateTo("/category");            }            private async void DeleteCategory()            {                await Category.deleteCategory(Id.Value);                StateHasChanged();                Navigator.NavigateTo("/category");            }}

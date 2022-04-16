@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
@@ -24,7 +25,15 @@ namespace Models
         public string Image { get; set; }
         public int CategoryId { get; set; }
         public int StoreId { get; set; }
-
+        public float? DiscountPercentage { get; set; }
+        [ReadOnly(true)]
+        public float? DiscountPrice
+        {
+            get
+            {
+                return Price - ((DiscountPercentage / 100) * Price);
+            }
+        }
         public virtual ICollection<ProductImageDTO> ProductImages { get; set; }
         public List<string> ImageUrls { get; set; }
     }
