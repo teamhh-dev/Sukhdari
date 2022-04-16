@@ -105,7 +105,7 @@ namespace Business
         {
             try
             {
-                ProductDTO product = mapper.Map<Product, ProductDTO>(await db.Products.Include(i => i.ProductImages).FirstOrDefaultAsync(i => i.Id == id));
+                ProductDTO product = _mapper.Map<Product, ProductDTO>(await _db.Products.Include(i => i.ProductImages).FirstOrDefaultAsync(i => i.Id == id));
                 return product;
             }
             catch (Exception e)
