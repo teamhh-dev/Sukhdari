@@ -34,7 +34,7 @@ namespace Business
                 oldCategory.Image = product.Image;
                 oldCategory.Quantity = product.Quantity;
                 oldCategory.DiscountPercentage = product.DiscountPercentage;
-                if(product.DiscountPercentage != null)
+                if (product.DiscountPercentage != null)
                 {
                     oldCategory.DiscountPrice = product.DiscountPrice;
                 }
@@ -46,13 +46,11 @@ namespace Business
                 await _db.SaveChangesAsync();
                 return _mapper.Map<Product, ProductDTO>(oldCategory);
             }
-
             Product newProd = _mapper.Map<ProductDTO, Product>(product);
             await _db.Products.AddAsync(newProd);
             await _db.SaveChangesAsync();
             return _mapper.Map<Product, ProductDTO>(newProd);
         }
-
         public async Task<int> deleteProduct(int id)
         {
             var prod = await _db.Products.FindAsync(id);
@@ -61,7 +59,7 @@ namespace Business
                 var images = _db.productImages.Where(i => i.ProductId == id).ToList();
                 foreach(var image in images)
                 {
-                    if(File.Exists(image.ProductImageUrl))
+                    if (File.Exists(image.ProductImageUrl))
                     {
                         File.Delete(image.ProductImageUrl);
                     }
@@ -71,35 +69,27 @@ namespace Business
                 return await _db.SaveChangesAsync();
             }
             else
-                return 0;
+            { return 0; }
         }
-
         public async Task<IEnumerable<ProductDTO>> getAllProducts(int storeId)
         {
             return _mapper.Map<IEnumerable<Product>, IEnumerable<ProductDTO>>(_db.Products.Include(i => i.ProductImages).Where(i => i.StoreId == storeId)).ToList();
         }
-
-        
-
         public async Task<int> setDiscountOnProduct(ProductDTO p)
         {
             var product = await _db.Products.FindAsync(p.Id);
             product.DiscountPrice = p.Price - ((p.DiscountPercentage / 100) * p.Price);
             return await _db.SaveChangesAsync();
-            
         }
         public async Task<IEnumerable<ProductDTO>> getAllProducts()
         {
             return _mapper.Map<IEnumerable<Product>, IEnumerable<ProductDTO>>(_db.Products.Include(i => i.ProductImages));
         }
-
         public async Task<ProductDTO> GetProduct(int id, int storeId)
         {
             var product = _db.Products.Include(i=>i.ProductImages).FirstOrDefault(i => i.Id == id && i.StoreId == storeId);
-
             return _mapper.Map<Product, ProductDTO>(product);
         }
-
         public async Task<ProductDTO> getProduct(int id)
         {
             try
@@ -125,7 +115,6 @@ namespace Business
             }
             return _mapper.Map<IEnumerable<Store>, IEnumerable<StoreDTO>>(stores);
         }
-
         public async Task<IEnumerable<StoreDTO>> getStoresByProductPriceRange(int low, int high)
         {
             var products = _db.Products.Where(i => i.Price >= low && i.Price <= high).ToList();
@@ -139,9 +128,7 @@ namespace Business
                 }
             }
             return _mapper.Map<IEnumerable<Store>, IEnumerable<StoreDTO>>(stores);
-
         }
-
         public async Task<int> updateProduct(ProductDTO product)
         {
             var prod = await _db.Products.FindAsync(product.Id);

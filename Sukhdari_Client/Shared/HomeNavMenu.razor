@@ -1,4 +1,5 @@
 @inject IWebAssemblyHostEnvironment hostEnv
+
 @inject IStoreService Store
 
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -7,44 +8,37 @@
         <span class="navbar-toggler-icon"></span>
     </button>
     <div class="@NavMenuCssClass navbar-collapse -content-end" id="navbarNavAltMarkup">
-        <input list="searchitem" @bind-value="SearchTerm" @bind-value:event="oninput" @onkeyup="searchResult" type="text" class="form-control col-xl-7 shadow-none border-dark" placeholder="Search Product, Category, Store ..."/>
+        <input list="searchitem" @bind-value="SearchTerm" @bind-value:event="oninput" @onkeyup="searchResult" type="text" class="form-control col-xl-7 shadow-none border-dark" placeholder="Search Product, Category, Store ..." />
         <datalist id="searchitem">
             @if (SearchByStore != null && SearchByStore.Any())
             {
-                @foreach (var store in SearchByStore)
-                {
-                    
-                    <option><b>Store:</b> @store.Name</option>
-                }
-            }
+@foreach (var store in SearchByStore)
+{
+
+<option><b>Store:</b> @store.Name</option>                }            }
             @if (SearchByProduct != null && SearchByProduct.Any())
             {
                 //Console.WriteLine("I am in display IF Product");
-                @foreach (var pStore in SearchByProduct)
-                {
+@foreach (var pStore in SearchByProduct)
+{
 
-                    <option> Product: @pStore.Name </option>
-                }
-            }
+<option> Product: @pStore.Name </option>                }            }
             @if (SearchByCategory != null && SearchByCategory.Any())
             {
                 //Console.WriteLine("I am in display IF Category");
-                @foreach (var cStore in SearchByProduct)
-                {
+@foreach (var cStore in SearchByProduct)
+{
 
-                    <option> Category: @cStore.Name </option>
-                }
-            }
+<option> Category: @cStore.Name </option>                } } @*<option @bind-value="SearchTerm" @bind-value:event="oninput"><b>Category:</b> @SearchTerm</option>
+    <option @bind-value="SearchTerm" @bind-value:event="oninput"><b>Product:</b> @SearchTerm</option>*@
 
-
-            @*<option @bind-value="SearchTerm" @bind-value:event="oninput"><b>Category:</b> @SearchTerm</option>
-        <option @bind-value="SearchTerm" @bind-value:event="oninput"><b>Product:</b> @SearchTerm</option>*@
         </datalist>
 
         <a class="nav-link" href="#">Sign Up</a>
         <a class="nav-link" href="#">Sign In</a>
         @if (hostEnv.IsDevelopment())
         {
+
             <a class="nav-link" href="https://localhost:44301/Identity/Account/Register">Create Store</a>
             <a class="nav-link" href="https://localhost:44301/Identity/Account/Login">Go to Store</a>
         }
@@ -60,31 +54,29 @@
 
 @code
 
-{
-    public string SearchTerm="";
-    public IEnumerable<StoreDTO> Stores { get; set; }
-    public IEnumerable<StoreDTO> SearchByProduct { get; set; }
-    public IEnumerable<StoreDTO> SearchByCategory { get; set; }
-    public IEnumerable<StoreDTO> SearchByStore { get; set; }
-    private bool collapseNavMenu = true;
-    private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
-    protected override async Task OnInitializedAsync()
-    {
-        Stores = await Store.getAllStores();
-    }
-    private void ToggleNavMenu()
-    {
-        collapseNavMenu = !collapseNavMenu;
-    }
 
-    public async Task searchResult()
-    {
-        SearchByStore = Stores.Where(i => i.Name.ToLower().Contains(SearchTerm.ToLower())).ToList();
-        if(SearchTerm !="")
-        {
-            SearchByProduct = await Store.SearchStoreByProductName(SearchTerm);
-            SearchByCategory = await Store.SearchStoreByCategory(SearchTerm);
-        }
-    }
-}
+{ public string SearchTerm = "";
+            public IEnumerable<StoreDTO> Stores { get; set; }
+            public IEnumerable<StoreDTO> SearchByProduct { get; set; }
+            public IEnumerable<StoreDTO> SearchByCategory { get; set; }
+            public IEnumerable<StoreDTO> SearchByStore { get; set; }
+            private bool collapseNavMenu = true;
+            private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+            protected override async Task OnInitializedAsync()
+            {
+                Stores = await Store.getAllStores();
+            }
+            private void ToggleNavMenu()
+            {
+                collapseNavMenu = !collapseNavMenu;
+            }
 
+            public async Task searchResult()
+            {
+                SearchByStore = Stores.Where(i => i.Name.ToLower().Contains(SearchTerm.ToLower())).ToList();
+                if (SearchTerm != "")
+                {
+                    SearchByProduct = await Store.SearchStoreByProductName(SearchTerm);
+                    SearchByCategory = await Store.SearchStoreByCategory(SearchTerm);
+                }
+            } }
