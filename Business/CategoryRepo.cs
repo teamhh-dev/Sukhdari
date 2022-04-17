@@ -42,7 +42,7 @@ namespace Business
                             {
                                 p.DiscountPercentage= category.DiscountPercentage;
                                 p.DiscountPrice = p.Price - ((category.DiscountPercentage / 100) * p.Price);
-                            }
+                            }           
                         }
                     }
                 }

@@ -28,11 +28,16 @@ namespace Models
         [Range(0, 100, ErrorMessage = "Discount value must be from 0 to 100")]
         public float? DiscountPercentage { get; set; }
         [ReadOnly(true)]
+
         public float? DiscountPrice
         {
             get
             {
-                return Price - ((DiscountPercentage / 100) * Price);
+                if(DiscountPercentage >= 0 && DiscountPercentage <= 100)
+                {
+                    return Price - ((DiscountPercentage / 100) * Price);
+                }
+                return null;
             }
         }
         public virtual ICollection<ProductImageDTO> ProductImages { get; set; }

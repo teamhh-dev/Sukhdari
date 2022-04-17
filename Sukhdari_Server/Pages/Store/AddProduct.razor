@@ -30,7 +30,6 @@
     <EditForm Model="ProductDetails" OnValidSubmit="SaveProduct" class="form-horizontal">
         <div class="card-body">
             <DataAnnotationsValidator></DataAnnotationsValidator>
-            <ValidationSummary></ValidationSummary>
 
             <div class="form-group">
                 <label class="col-md-7 control-label" for="product_name">PRODUCT NAME</label>
@@ -70,14 +69,14 @@
                 <label class="col-md-7 control-label" for="discount percentage">Discount Percentage</label>
                 <div class="col-md-7">
                     <InputNumber @bind-Value="ProductDetails.DiscountPercentage" placeholder="Discount Percentage" class="form-control input-md" />
+                    <ValidationMessage For="()=>ProductDetails.DiscountPercentage"></ValidationMessage>
                 </div>
             </div>
             
             <div class="form-group">
                 <label class="col-md-7 control-label" for="discount percentage">Discount Price</label>
                 <div class="col-md-7">
-                   
-                    <input readonly value="@ProductDetails.DiscountPrice" placeholder="Discount Price" class="form-control input-md" />
+                  <input readonly value="@ProductDetails.DiscountPrice" placeholder="Discount Price" class="form-control input-md" />
                 </div>
             </div>
 
