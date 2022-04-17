@@ -31,7 +31,7 @@ namespace Business
         public async Task<int> DeleteStoreImageByImageID(int imageId)
         {
             var image = await _db.storeImages.FindAsync(imageId);
-            if(image!=null)
+            if (image != null)
             {
                 _db.storeImages.Remove(image);
                 return await _db.SaveChangesAsync();
@@ -41,8 +41,8 @@ namespace Business
 
         public async Task<int> DeleteStoreImageByName(string name)
         {
-            var image = await _db.storeImages.FirstOrDefaultAsync(i=>i.StoreImageUrl.ToLower()==name.ToLower());
-            if(image!=null)
+            var image = await _db.storeImages.FirstOrDefaultAsync(i => i.StoreImageUrl.ToLower() == name.ToLower());
+            if (image != null)
             {
                 _db.storeImages.Remove(image);
                 return await _db.SaveChangesAsync();
@@ -53,7 +53,7 @@ namespace Business
         public async Task<int> DeleteStoreImageByStoreID(int StoreId)
         {
             var images = _db.storeImages.Where(i => i.StoreId == StoreId).ToList();
-            if(images!=null)
+            if (images != null)
             {
                 _db.storeImages.RemoveRange(images);
                 return await _db.SaveChangesAsync();
