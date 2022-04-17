@@ -27,7 +27,10 @@ namespace Business
                 var oldCategory = _db.Categories.FirstOrDefault(i => i.Id == category.Id);
                 oldCategory.Name = category.Name;
                 oldCategory.Description = category.Description;
-                oldCategory.DiscountPercentage = category.DiscountPercentage;
+                if (category.DiscountPercentage >= 0 && category.DiscountPercentage <= 100)
+                {
+                    oldCategory.DiscountPercentage = category.DiscountPercentage;
+                }
                 var products = _db.Products.Where(i => i.CategoryId == category.Id).ToList();
                 if (category.DiscountPercentage != null)
                 {
@@ -35,8 +38,11 @@ namespace Business
                     {
                         foreach (var p in products)
                         {
-                            p.DiscountPercentage = category.DiscountPercentage;
-                            p.DiscountPrice = p.Price - ((category.DiscountPercentage / 100) * p.Price);
+                            if (category.DiscountPercentage >= 0 && category.DiscountPercentage <= 100)
+                            {
+                                p.DiscountPercentage= category.DiscountPercentage;
+                                p.DiscountPrice = p.Price - ((category.DiscountPercentage / 100) * p.Price);
+                            }
                         }
                     }
                 }
