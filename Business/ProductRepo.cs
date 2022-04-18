@@ -33,20 +33,19 @@ namespace Business
                 oldCategory.CategoryId = product.CategoryId;
                 oldCategory.Image = product.Image;
                 oldCategory.Quantity = product.Quantity;
-                oldCategory.DiscountPercentage = product.DiscountPercentage;
-                if (product.DiscountPercentage != null)
+                if (product.DiscountPercentage >= 0 && product.DiscountPercentage <= 100)
                 {
+                    oldCategory.DiscountPercentage = product.DiscountPercentage;
                     oldCategory.DiscountPrice = product.DiscountPrice;
                 }
                 else
                 {
+                    oldCategory.DiscountPercentage = null;
                     oldCategory.DiscountPrice = null;
                 }
-
                 await _db.SaveChangesAsync();
                 return _mapper.Map<Product, ProductDTO>(oldCategory);
             }
-
             Product newProd = _mapper.Map<ProductDTO, Product>(product);
             await _db.Products.AddAsync(newProd);
             await _db.SaveChangesAsync();
