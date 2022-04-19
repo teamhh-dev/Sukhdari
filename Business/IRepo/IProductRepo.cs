@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace Business.IRepo
 {
     public interface IProductRepo
-    {
+        {
         public Task<ProductDTO> createProduct(ProductDTO product);
         public Task<int> updateProduct(ProductDTO product);
         public Task<int> deleteProduct(int id);
@@ -18,8 +18,8 @@ namespace Business.IRepo
         public Task<IEnumerable<StoreDTO>> getStoresByProductName(string productName);
         public Task<IEnumerable<StoreDTO>> getStoresByProductPriceRange(int low, int high);
         public Task<ProductDTO> getProduct(int id);
-        public Task<IEnumerable<ProductDTO>> getDiscountedProducts();
+        public Task<IEnumerable<ProductDTO>> getDiscountedProducts(int storeId);
         public Task<IEnumerable<ProductDTO>> getDiscountedCategoryProducts(int storeId);
-
-    }
+        public Task<IEnumerable<ProductDTO>> getCategoryProducts(int categoryId);
+        }
 }

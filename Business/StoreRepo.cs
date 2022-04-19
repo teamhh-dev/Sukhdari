@@ -76,6 +76,16 @@ namespace Business
             }
             return _mapper.Map<Store, StoreDTO>(find);
         }
+
+        public async Task<StoreDTO> GetStoreByID(int storeID)
+            {
+            var store = await _db.Stores.FirstOrDefaultAsync(i => i.Id == storeID);
+            if (store == null)
+                {
+                return null;
+                }
+            return _mapper.Map<Store, StoreDTO>(store);
+            }
         public StoreDTO GetStoreByName(string name)
         {
             Store find = _db.Stores.Include(i=>i.StoreImages).FirstOrDefault(i => i.Name == name);
@@ -105,7 +115,6 @@ namespace Business
             }
             return _mapper.Map<IEnumerable<Store>, IEnumerable<StoreDTO>>(storesList);
         }
-
         public async Task<IEnumerable<StoreDTO>> getStoresByCountry(string country)
         {
             var stores = _db.Stores.Include(i=>i.StoreImages).Where(i => i.Country.ToLower().Contains(country.ToLower())).ToList();

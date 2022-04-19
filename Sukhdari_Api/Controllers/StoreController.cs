@@ -70,5 +70,12 @@ namespace Sukhdari_Api.Controllers
             var stores = await _storeRepo.getStoresByCountry(country);
             return Ok(stores);
         }
-    }
+
+        [HttpGet("{storeId}")]
+        public async Task<IActionResult> GetStoreByID(int storeId)
+            {
+            var store = await _storeRepo.GetStoreByID(storeId);
+            return Ok(store);
+            }
+        }
 }

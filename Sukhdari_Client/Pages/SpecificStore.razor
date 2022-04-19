@@ -7,20 +7,33 @@
 <h1>@ipAddress.timeNow</h1>*@
 <div class="row m-0">
     <div class="card bg-light col-2 m-2 p-2 filterDiv" style="left:1% ">
-        <h4>Filters</h4>
-        <hr />
-        <div class="form-check ml-2">
-            <input class="form-check-input" type="checkbox">
-            <label class="form-check-label" for="flexCheckDefault">
-                Discount
-            </label>
-        </div>
-        <hr />
-        <h5>Categories</h5>
-        <div class="form-check ml-2">
-
-        </div>
-        <hr />
+        @if (Products != null && Products.Any())
+        {
+            <h4>Filters</h4>
+            <hr />
+            <div class="form-check ml-2">
+                <input  @onchange="@(async (e) => await DiscountCheckboxClicked(e.Value))" class="form-check-input" type="checkbox">
+                <label class="form-check-label" for="flexCheckDefault">
+                    Discount
+                </label>
+            </div>
+             <hr />
+            <h5>Categories</h5>
+            <div class="form-check ml-2">
+                @if (allCategories != null && allCategories.Any())
+                {
+                    @foreach (var category in allCategories)
+                    {
+                        <input class="form-check-input" type="checkbox" @onchange="@(async (e) => await CategoryCheckboxClicked(category.Id, e.Value))">
+                        <label class="form-check-label" for="flexCheckDefault">
+                            @category.Name
+                        </label>
+                         <br /> 
+                    }
+                }
+            </div>
+            <hr />
+        }
     </div>
 <div class="form-inline justify-content-center mt-4 col-9">
     @if (Products == null)
@@ -29,7 +42,7 @@
     }
     else if (Products != null && Products.Any())
     {
-        @foreach (var product in Products)
+        @foreach (var product in FilteredProducts)
         {
             int dataSlideTag = 0;
             int imageIndex = 0;
@@ -108,11 +121,14 @@
 {
     [Parameter]
     public int Id { get; set; }
+    public IEnumerable<ProductDTO> FilteredProducts { get; set; }
+    public IEnumerable<CategoryDTO> allCategories { get; set; }
     public int caresoltag = 0;
     public UserIpDTO ipAddress { get; set; } = new UserIpDTO();
     public DateTime timeNow { get; set; }
 
     public IEnumerable<ProductDTO> Products { get; set; }
+    public List<int> selectedCategories = new List<int>();
     protected override async Task OnInitializedAsync()
     {
         try
@@ -130,5 +146,58 @@
 
         //await Task.Delay(2000);
         Products = await Store.GetStoreProducts(Id);
+        FilteredProducts = Products;
+        allCategories = await Store.getStoreCategories(Id);
+    }
+    public async Task DiscountCheckboxClicked(object checkedValue)
+    {
+        if ((bool)checkedValue)
+        {
+            FilteredProducts = await Store.getDiscountedProducts(Id);
+        }
+        else
+        {
+            FilteredProducts = Products;
+        }
+    }
+    public async Task CategoryCheckboxClicked(int categoryId, object checkedValue)
+    {
+        if ((bool)checkedValue)
+        {
+            if (!selectedCategories.Contains(categoryId))
+            {
+                selectedCategories.Add(categoryId);
+            }
+
+            FilteredProducts = await Store.getCategoryProducts(categoryId);
+        }
+        else
+        {
+            if (selectedCategories.Contains(categoryId))
+            {
+                selectedCategories.Remove(categoryId);
+            }
+        }
+        if (!selectedCategories.Any())
+        {
+            FilteredProducts = Products;
+        }
+        else
+        {
+            if (selectedCategories != null && selectedCategories.Any())
+            {
+                FilteredProducts = Products.Where(i => i.CategoryId == selectedCategories[0]).ToList();
+                int count = 1;
+                foreach (var category in selectedCategories)
+                {
+                    if (count != 1)
+                    {
+                        var test = await Store.getCategoryProducts(category);
+                        FilteredProducts = FilteredProducts.Union(test);
+                    }
+                    count++;
+                }
+            }
+        }
     }
 }

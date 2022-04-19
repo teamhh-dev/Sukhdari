@@ -10,6 +10,8 @@ namespace Sukhdari_Client.Service.IService
     {
         public Task<IEnumerable<StoreDTO>> getAllStores();
         public Task<IEnumerable<ProductDTO>> getAllProducts();
+        public Task<IEnumerable<CategoryDTO>> getStoreCategories(int storeId);
+        public Task<IEnumerable<ProductDTO>> getDiscountedProducts(int storeId);
         public Task<StoreDTO> getStoreByName(string storeName);
         public Task<IEnumerable<StoreDTO>> SearchStoreByCategory(string categoryName);
         public Task<IEnumerable<StoreDTO>> SearchStoreByProductName(string productName);
@@ -17,5 +19,6 @@ namespace Sukhdari_Client.Service.IService
         public Task<IEnumerable<ProductDTO>> GetStoreProducts(int storeID);
         public Task<IEnumerable<StoreDTO>> SearchStoreByProductPrice(int min, int max);
         public Task<IEnumerable<StoreDTO>> SearchStoreByCountry(string country);
+        public Task<IEnumerable<ProductDTO>> getCategoryProducts(int categoryId);
     }
 }
