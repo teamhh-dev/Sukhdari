@@ -28,12 +28,12 @@
 @*search bar*@
 <div class="bg-light p-3 col-12">
     <div class="ml-4 row">
-        <select class="btn btn-primary col-2">
-            <option>Store</option>
-            <option>Category</option>
-            <option>Product</option>
+        <select @bind="@selectedFilter" class="btn btn-primary col-2">
+            <option value="store">Store</option>
+            <option value="category">Category</option>
+            <option value="product">Product</option>
         </select>
-        <input class="form-control col-7 shadow-none border-dark ml-2 mr-2" />
+        <input @bind-value="SearchTerm" @bind-value:event="oninput" @onkeyup="@searchResults"  class="form-control col-7 shadow-none border-dark ml-2 mr-2" />
         <a class="btn btn-primary oi oi-magnifying-glass text-light col-2"></a>
     </div>
 </div>
@@ -44,25 +44,25 @@
         <hr />
         <h5>Location</h5>
         <div class="form-check ml-2">
-
             @if (AllStores != null && AllStores.Any())
             {
-@foreach (var store in AllStores)
-{
-@if (!countries.Contains(store.Country))
-{
-    countries.Add(store.Country);
-}                }
-                @foreach (var country in countries)
+                @foreach (var store in AllStores)
                 {
-
-<input class="form-check-input" type="checkbox" @onchange="@(async (e) => await CheckboxClicked(country, e.Value))">
+                    @if (!countries.Contains(store.Country))
+                    {
+                        countries.Add(store.Country);
+                    }
+                }
+            }
+            @foreach (var country in countries)
+                {
+                    <input class="form-check-input" type="checkbox" @onchange="@(async (e) => await CheckboxClicked(country, e.Value))">
                     <label class="form-check-label" for="flexCheckDefault">
                         @country
                     </label>
-                                        <br />                }            }
-
-
+                     <br />    
+                }
+               
         </div>
         <hr />
         <h5>Price</h5>
@@ -90,7 +90,7 @@
             }
         else if (Stores != null && Stores.Any())
         {
-            @foreach (var store in Stores)
+            @foreach (var store in FilteredStores)
             {
                 int imageIndex = 0;
                 int dataSlideTag = 0;
@@ -165,82 +165,122 @@
         else
         {
             <h2>Curruntly no store is available :)</h2>
-            }
+        }
     </div>
 </div>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
 @code
 
-{           public int caresoltag = 0;
-            public IEnumerable<StoreDTO> Stores { get; set; }
-            public IEnumerable<StoreDTO> AllStores { get; set; }
-            public IEnumerable<StoreDTO> test { get; set; }
-            public List<string> countries = new List<string>();
-            int min = 0;
-            int max = 10000;
+{
+    public int caresoltag = 0;
+    public string selectedFilter = "store";
+    public string SearchTerm { get; set; } = "";
+    public IEnumerable<StoreDTO> FilteredStores { get; set; }
+    public IEnumerable<StoreDTO> Stores { get; set; }
+    public IEnumerable<StoreDTO> AllStores { get; set; }
+    public IEnumerable<StoreDTO> test { get; set; }
+    public List<string> countries = new List<string>();
+    int min = 0;
+    int max = 10000;
 
-            public List<string> selectedCountries = new List<string>();
-            protected override async Task OnInitializedAsync()
-            {
-                Stores = await Store.getAllStores();
-                AllStores = await Store.getAllStores();
-            }
-            public async Task searchByRange()
-            {
-                Stores = await Store.SearchStoreByProductPrice(min, max);
-            }
+    public List<string> selectedCountries = new List<string>();
+    protected override async Task OnInitializedAsync()
+    {
+        Stores = await Store.getAllStores();
+        AllStores = await Store.getAllStores();
+        FilteredStores = Stores;
+    }
+    public async Task searchByRange()
+    {
+        Stores = await Store.SearchStoreByProductPrice(min, max);
+    }
 
-            public async Task CheckboxClicked(string countryID, object checkedValue)
+    public async Task CheckboxClicked(string countryID, object checkedValue)
+    {
+        if ((bool)checkedValue)
+        {
+            if (!selectedCountries.Contains(countryID))
             {
-                if ((bool)checkedValue)
+                selectedCountries.Add(countryID);
+            }
+        }
+        else
+        {
+            if (selectedCountries.Contains(countryID))
+            {
+                selectedCountries.Remove(countryID);
+            }
+        }
+        if (!selectedCountries.Any())
+        {
+            await ResetStores();
+        }
+        else
+        {
+            if (selectedCountries != null && selectedCountries.Any())
+            {
+                FilteredStores = AllStores.Where(i => i.Country.ToLower().Contains(selectedCountries[0].ToLower())).ToList();
+                int count = 1;
+                foreach (var country in selectedCountries)
                 {
-                    if (!selectedCountries.Contains(countryID))
+                    if (count != 1)
                     {
-                        selectedCountries.Add(countryID);
+                        test = await Store.SearchStoreByCountry(country);
+                        FilteredStores = Stores.Union(test);
                     }
-                }
-                else
-                {
-                    if (selectedCountries.Contains(countryID))
-                    {
-                        selectedCountries.Remove(countryID);
-                    }
-                }
-                if (!selectedCountries.Any())
-                {
-                    await ResetStores();
-                }
-                else
-                {
-                    if (selectedCountries != null && selectedCountries.Any())
-                    {
-                        Stores = AllStores.Where(i => i.Country.ToLower().Contains(selectedCountries[0].ToLower())).ToList();
-                        int count = 1;
-                        foreach (var country in selectedCountries)
-                        {
-                            if (count != 1)
-                            {
-                                test = await Store.SearchStoreByCountry(country);
-                                Stores = Stores.Union(test);
-                            }
-                            count++;
-                        }
-                    }
+                    count++;
                 }
             }
-            public async Task findStoresByPrice()
-            {
-                Stores = await Store.SearchStoreByProductPrice(min, max);
-                foreach (var s in Stores)
-                {
-                    Console.WriteLine(s.Name);
-                }
-            }
-            public async Task ResetStores()
-            {
-                min = 0;
-                max = 10000;
-                Stores = await Store.getAllStores();
+        }
+    }
+    public async Task findStoresByPrice()
+    {
+        Stores = await Store.SearchStoreByProductPrice(min, max);
+        FilteredStores = Stores;
+    }
+    public async Task ResetStores()
+    {
+        min = 0;
+        max = 10000;
+        Stores = await Store.getAllStores();
+        FilteredStores = Stores;
 
-            } }
+    }
+    public async Task searchResults()
+    {
+        if (selectedFilter == "store")
+        {
+            if (SearchTerm == "")
+            {
+                FilteredStores = Stores;
+            }
+            else
+            {
+                FilteredStores = Stores.Where(i => i.Name.ToLower().Contains(SearchTerm.ToLower())).ToList();
+            }
+        }
+        else if (selectedFilter == "product")
+        {
+            if (SearchTerm == "")
+            {
+                FilteredStores = Stores;
+            }
+            else
+            {
+                FilteredStores = await Store.SearchStoreByProductName(SearchTerm);
+            }
+        }
+        else if (selectedFilter == "category")
+        {
+            if (SearchTerm == "")
+            {
+                FilteredStores = Stores;
+            }
+            else
+            {
+                FilteredStores = await Store.SearchStoreByCategory(SearchTerm);
+            }
+        }
+    }
+}
