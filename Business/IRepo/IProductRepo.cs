@@ -18,6 +18,8 @@ namespace Business.IRepo
         public Task<IEnumerable<StoreDTO>> getStoresByProductName(string productName);
         public Task<IEnumerable<StoreDTO>> getStoresByProductPriceRange(int low, int high);
         public Task<ProductDTO> getProduct(int id);
+        public Task<IEnumerable<ProductDTO>> getDiscountedProducts();
+        public Task<IEnumerable<ProductDTO>> getDiscountedCategoryProducts(int storeId);
 
     }
 }

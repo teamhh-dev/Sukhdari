@@ -148,5 +148,15 @@ namespace Business
             _db.Products.Update(updatedProd);
             return await _db.SaveChangesAsync();
         }
-    }
+
+        public async Task<IEnumerable<ProductDTO>> getDiscountedProducts()
+        {
+            return _mapper.Map<IEnumerable<Product>,IEnumerable<ProductDTO>>(await _db.Products.Include(i => i.ProductImages).Where(i => i.DiscountPercentage != null).ToListAsync());   
+        }
+
+        public async Task<IEnumerable<ProductDTO>> getDiscountedCategoryProducts(int storeId)
+            {
+            return _mapper.Map<IEnumerable<Product>,IEnumerable<ProductDTO>> (await _db.Products.Include(i => i.ProductImages).Where(i => i.StoreId == storeId && i.Category.DiscountPercentage != null).ToListAsync());
+            }
+        }
 }
