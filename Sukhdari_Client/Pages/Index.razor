@@ -25,6 +25,19 @@
         </a>
     </div>
 </div>
+@*search bar*@
+<div class="bg-light p-3 col-12">
+    <div class="ml-4 row">
+        <select class="btn btn-primary col-2">
+            <option>Store</option>
+            <option>Category</option>
+            <option>Product</option>
+        </select>
+        <input class="form-control col-7 shadow-none border-dark ml-2 mr-2" />
+        <a class="btn btn-primary oi oi-magnifying-glass text-light col-2"></a>
+    </div>
+</div>
+
 <div class="row m-0">
     <div class="card bg-light col-2 m-2 p-2 filterDiv" style="left:1% ">
         <h4>Filters</h4>
@@ -64,56 +77,7 @@
             <button class="col-5 btn btn-success" type="submit" @onclick="ResetStores">Reset</button>
             </div>
         </div>
-        <hr />
-        <h5>Rating</h5>
-        <div class="ml-2">
-            <form class="rating">
-                <input type="checkbox">
-                <label class="tick">
-                    <span class="oi oi-star text-warning"></span>
-                    <span class="oi oi-star text-warning"></span>
-                    <span class="oi oi-star text-warning"></span>
-                    <span class="oi oi-star text-warning"></span>
-                    <span class="oi oi-star text-warning"></span>
-                </label>
-                <br />
-                <input type="checkbox">
-                <label class="tick">
-                    <span class="oi oi-star text-warning"></span>
-                    <span class="oi oi-star text-warning"></span>
-                    <span class="oi oi-star text-warning"></span>
-                    <span class="oi oi-star text-warning"></span>
-                    <span class="oi oi-star text-muted"></span>
-                </label>
-                <br />
-                <input type="checkbox">
-                <label class="tick">
-                    <span class="oi oi-star text-warning"></span>
-                    <span class="oi oi-star text-warning"></span>
-                    <span class="oi oi-star text-warning"></span>
-                    <span class="oi oi-star text-muted"></span>
-                    <span class="oi oi-star text-muted"></span>
-                </label>
-                <br />
-                <input type="checkbox">
-                <label class="tick">
-                    <span class="oi oi-star text-warning"></span>
-                    <span class="oi oi-star text-warning"></span>
-                    <span class="oi oi-star text-muted"></span>
-                    <span class="oi oi-star text-muted"></span>
-                    <span class="oi oi-star text-muted"></span>
-                </label>
-                <br />
-                <input type="checkbox">
-                <label class="tick">
-                    <span class="oi oi-star text-warning"></span>
-                    <span class="oi oi-star text-muted"></span>
-                    <span class="oi oi-star text-muted"></span>
-                    <span class="oi oi-star text-muted"></span>
-                    <span class="oi oi-star text-muted"></span>
-                </label>
-            </form>
-        </div>
+      
 
     </div>
 
@@ -130,7 +94,7 @@
             {
                 int imageIndex = 0;
                 int dataSlideTag = 0;
-                <div class="card col-lg-3 col-md-5 col-11 m-3 p-0 shadow" style="text-decoration:none;">
+                <div class="card storeCard col-lg-3 col-md-5 col-11 m-3 p-0 shadow" style="text-decoration:none;">
                     <div id="carouselDiv" class="row p-0 m-0">
                         <div id="@caresoltag" class="carousel slide" data-ride="carousel" data-interval="4000">
                             <ol class="carousel-indicators">
@@ -187,11 +151,11 @@
 
     <a href="@($"stores/store/{store.Id}")"  style="text-decoration:none;">
         <div>
-            <div class="card-body">
-                <h5 class="card-title text-dark">@store.Name</h5>
+            <div class="card-body pt-0 pb-0 pl-2">
+                <h5 class="card-title text-dark m-0">@store.Name</h5>
             </div>
-            <div class="card-footer">
-                <p class="card-text"><small class="text-muted">@store.Type</small></p>
+            <div class="card-footer pt-0 pb-0 pl-2">
+                <p class="card-text m-0"><small class="text-muted">@store.Type</small></p>
             </div>
         </div>
     </a>
