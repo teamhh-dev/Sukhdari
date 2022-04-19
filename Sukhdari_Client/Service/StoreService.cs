@@ -40,7 +40,6 @@ namespace Sukhdari_Client.Service
         public async Task<IEnumerable<StoreDTO>> SearchStoreByProductPrice(int min, int max)
         {
             var response = await _httpClient.GetAsync($"api/Product/getStoresByPriceRange/{min}/{max}");
-
             var content = await response.Content.ReadAsStringAsync();
             var stores = JsonConvert.DeserializeObject<IEnumerable<StoreDTO>>(content);
             return stores;
@@ -66,7 +65,6 @@ namespace Sukhdari_Client.Service
             var stores = JsonConvert.DeserializeObject<IEnumerable<StoreDTO>>(content);
             return stores;
         }
-
         public async Task<IEnumerable<ProductDTO>> getAllProducts()
         {
             var response = await _httpClient.GetAsync($"api/Product/GetAllProducts");
@@ -74,8 +72,6 @@ namespace Sukhdari_Client.Service
             var products = JsonConvert.DeserializeObject<IEnumerable<ProductDTO>>(content);
             return products;
         }
-
-
         public async Task<IEnumerable<StoreDTO>> SearchStoreByCountry(string country)
         {
             var response = await _httpClient.GetAsync($"api/Store/GetStoresByCountry/{country}");
@@ -83,6 +79,26 @@ namespace Sukhdari_Client.Service
             var stores = JsonConvert.DeserializeObject<IEnumerable<StoreDTO>>(content);
             return stores;
         }
-
+        public async Task<IEnumerable<ProductDTO>> getDiscountedProducts(int storeId)
+        {
+            var response = await _httpClient.GetAsync($"api/Product/getDiscountedProducts/{storeId}");
+            var content = await response.Content.ReadAsStringAsync();
+            var products = JsonConvert.DeserializeObject<IEnumerable<ProductDTO>>(content);
+            return products;
+        }
+        public async Task<IEnumerable<CategoryDTO>> getStoreCategories(int storeId)
+        {
+            var response = await _httpClient.GetAsync($"api/Category/GetAllCategories/{storeId}");
+            var content = await response.Content.ReadAsStringAsync();
+            var categories = JsonConvert.DeserializeObject<IEnumerable<CategoryDTO>>(content);
+            return categories;
+        }
+        public async Task<IEnumerable<ProductDTO>> getCategoryProducts(int categoryId)
+        {
+            var response = await _httpClient.GetAsync($"api/Category/GetProductsWithCategoryID/{categoryId}");
+            var content = await response.Content.ReadAsStringAsync();
+            var products = JsonConvert.DeserializeObject<IEnumerable<ProductDTO>>(content);
+            return products;
+        }
     }
 }

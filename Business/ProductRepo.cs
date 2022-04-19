@@ -51,7 +51,6 @@ namespace Business
             await _db.SaveChangesAsync();
             return _mapper.Map<Product, ProductDTO>(newProd);
         }
-
         public async Task<int> deleteProduct(int id)
         {
             var prod = await _db.Products.FindAsync(id);
@@ -72,15 +71,10 @@ namespace Business
             else
                 return 0;
         }
-
         public async Task<IEnumerable<ProductDTO>> getAllProducts(int storeId)
         {
-
             return _mapper.Map<IEnumerable<Product>, IEnumerable<ProductDTO>>(_db.Products.Include(i => i.ProductImages).Where(i => i.StoreId == storeId)).ToList();
         }
-
-
-
         public async Task<int> setDiscountOnProduct(ProductDTO p)
         {
             var product = await _db.Products.FindAsync(p.Id);
@@ -92,14 +86,11 @@ namespace Business
         {
             return _mapper.Map<IEnumerable<Product>, IEnumerable<ProductDTO>>(_db.Products.Include(i => i.ProductImages));
         }
-
         public async Task<ProductDTO> GetProduct(int id, int storeId)
         {
             var product = _db.Products.Include(i => i.ProductImages).FirstOrDefault(i => i.Id == id && i.StoreId == storeId);
-
             return _mapper.Map<Product, ProductDTO>(product);
         }
-
         public async Task<ProductDTO> getProduct(int id)
         {
             try
@@ -120,12 +111,15 @@ namespace Business
                 var products = _db.Products.Where(i => i.Name.ToLower().Contains(productName.ToLower())).ToList();
                 foreach (var s in products)
                 {
-                    stores.Add(await _db.Stores.Include(i => i.StoreImages).FirstOrDefaultAsync(i => i.Id == s.StoreId));
+                    var id = _db.Stores.FirstOrDefault(i => i.Id == s.StoreId);
+                    if (!stores.Contains(id))
+                    {
+                        stores.Add(await _db.Stores.Include(i => i.StoreImages).FirstOrDefaultAsync(i => i.Id == s.StoreId));
+                    }
                 }
             }
             return _mapper.Map<IEnumerable<Store>, IEnumerable<StoreDTO>>(stores);
         }
-
         public async Task<IEnumerable<StoreDTO>> getStoresByProductPriceRange(int low, int high)
         {
             var products = _db.Products.Where(i => i.Price >= low && i.Price <= high).ToList();
@@ -141,7 +135,6 @@ namespace Business
             return _mapper.Map<IEnumerable<Store>, IEnumerable<StoreDTO>>(stores);
 
         }
-
         public async Task<int> updateProduct(ProductDTO product)
         {
             var prod = await _db.Products.FindAsync(product.Id);
@@ -149,5 +142,18 @@ namespace Business
             _db.Products.Update(updatedProd);
             return await _db.SaveChangesAsync();
         }
+        public async Task<IEnumerable<ProductDTO>> getDiscountedProducts(int storeId)
+        {
+            return _mapper.Map<IEnumerable<Product>, IEnumerable<ProductDTO>>(await _db.Products.Include(i => i.ProductImages).Where(i => i.StoreId == storeId && i.DiscountPercentage != null).ToListAsync());
+        }
+        public async Task<IEnumerable<ProductDTO>> getDiscountedCategoryProducts(int storeId)
+        {
+            return _mapper.Map<IEnumerable<Product>, IEnumerable<ProductDTO>>(await _db.Products.Include(i => i.ProductImages).Where(i => i.StoreId == storeId && i.Category.DiscountPercentage != null).ToListAsync());
+        }
+        public async Task<IEnumerable<ProductDTO>> getCategoryProducts(int categoryId)
+        {
+            return _mapper.Map<IEnumerable<Product>, IEnumerable<ProductDTO>>(await _db.Products.Include(i => i.ProductImages).Where(i => i.CategoryId == categoryId).ToListAsync());
+        }
+
     }
 }

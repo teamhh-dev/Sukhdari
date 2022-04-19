@@ -65,7 +65,6 @@ namespace Business
             return await _db.SaveChangesAsync();
 
         }
-
         public async Task<int> deleteCategory(int id)
         {
             Category category = await _db.Categories.FindAsync(id);
@@ -91,9 +90,7 @@ namespace Business
         }
         public async Task<CategoryDTO> GetCategory(int id, int storeId)
         {
-
-            var category = _db.Categories.FirstOrDefault(i => i.Id == id && i.StoreId == storeId);
-
+            var category = await _db.Categories.FirstOrDefaultAsync(i => i.Id == id && i.StoreId == storeId);
             return _mapper.Map<Category, CategoryDTO>(category);
         }
         public async Task<IEnumerable<CategoryDTO>> GetAllCategories(int StoreId)
@@ -106,7 +103,6 @@ namespace Business
             IEnumerable<CategoryDTO> dto = _mapper.Map<IEnumerable<Category>, IEnumerable<CategoryDTO>>(_db.Categories);
             return dto;
         }
-
         public async Task<int> updateCategory(CategoryDTO category)
         {
             Category oldCategory = await _db.Categories.FindAsync(category.Id);
@@ -114,7 +110,6 @@ namespace Business
             _db.Categories.Update(newCategory);
             return await _db.SaveChangesAsync();
         }
-
         public async Task<IEnumerable<StoreDTO>> getStoreByCategory(string categoryName)
         {
             var storeCategories = _db.Categories.Where(i => i.Name.ToLower().Contains(categoryName.ToLower())).ToList();
@@ -127,8 +122,12 @@ namespace Business
         }
         public async Task<IEnumerable<CategoryDTO>> GetAllCategoriesWithProducts(int StoreId)
         {
-            var things = _db.Categories.Include(i => i.Products).ThenInclude(i => i.ProductImages).Where(i => i.StoreId == StoreId).ToList();
+            var things = await _db.Categories.Include(i => i.Products).ThenInclude(i => i.ProductImages).Where(i => i.StoreId == StoreId).ToListAsync();
             return _mapper.Map<IEnumerable<Category>, IEnumerable<CategoryDTO>>(things);
+        }
+        public async Task<IEnumerable<CategoryDTO>> getDicountedCategory(int storeId)
+        {
+            return _mapper.Map<IEnumerable<Category>, IEnumerable<CategoryDTO>>(await _db.Categories.Where(i => i.DiscountPercentage != null).ToListAsync());
         }
     }
 }
