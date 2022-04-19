@@ -7,32 +7,8 @@
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation" @onclick="ToggleNavMenu">
         <span class="navbar-toggler-icon"></span>
     </button>
-    <div class="@NavMenuCssClass navbar-collapse -content-end" id="navbarNavAltMarkup">
-        <input list="searchitem" @bind-value="SearchTerm" @bind-value:event="oninput" @onkeyup="searchResult" type="text" class="form-control col-xl-7 shadow-none border-dark" placeholder="Search Product, Category, Store ..." />
-        <datalist id="searchitem">
-            @if (SearchByStore != null && SearchByStore.Any())
-            {
-@foreach (var store in SearchByStore)
-{
-
-<option><b>Store:</b> @store.Name</option>                }            }
-            @if (SearchByProduct != null && SearchByProduct.Any())
-            {
-                //Console.WriteLine("I am in display IF Product");
-@foreach (var pStore in SearchByProduct)
-{
-
-<option> Product: @pStore.Name </option>                }            }
-            @if (SearchByCategory != null && SearchByCategory.Any())
-            {
-                //Console.WriteLine("I am in display IF Category");
-@foreach (var cStore in SearchByProduct)
-{
-
-<option> Category: @cStore.Name </option>                } } @*<option @bind-value="SearchTerm" @bind-value:event="oninput"><b>Category:</b> @SearchTerm</option>
-    <option @bind-value="SearchTerm" @bind-value:event="oninput"><b>Product:</b> @SearchTerm</option>*@
-
-        </datalist>
+    <div class="@NavMenuCssClass navbar-collapse justify-content-end" id="navbarNavAltMarkup">
+      
 
         <a class="nav-link" href="#">Sign Up</a>
         <a class="nav-link" href="#">Sign In</a>
