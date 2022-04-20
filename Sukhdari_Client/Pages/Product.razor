@@ -42,10 +42,8 @@
 
             <!-- Product Description -->
             <div class="product-description">
-                @*<h1>@Products.Name</h1>
-                <p>@Products.Description</p>*@
-                <h1>Name</h1>
-                <p>Description</p>
+                <h1>@Products.Name</h1>
+                <p>@Products.Description</p>
             </div>
 
 
@@ -66,9 +64,10 @@
     [Parameter]
     public int StoreId { get; set; }
 
-    public ProductDTO Products { get; set; }
+    public ProductDTO Products { get; set; } = new ProductDTO();
     protected override async Task OnInitializedAsync()
     {
+        
         Products = await Store.getSpecificProduct(StoreId, Id);
     }
 }
