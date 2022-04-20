@@ -20,5 +20,6 @@ namespace Sukhdari_Client.Service.IService
         public Task<IEnumerable<StoreDTO>> SearchStoreByProductPrice(int min, int max);
         public Task<IEnumerable<StoreDTO>> SearchStoreByCountry(string country);
         public Task<IEnumerable<ProductDTO>> getCategoryProducts(int categoryId);
+        public Task<ProductDTO> getSpecificProduct(int storeId, int productId);
     }
 }
