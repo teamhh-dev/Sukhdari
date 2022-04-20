@@ -66,7 +66,13 @@
 
                             }
                         </ol>
-                        <div class="carousel-inner col-12 min-vh-30" style="height:150px; !important">
+                        <div class="carousel-inner col-12 min-vh-30 p-0" style="height:160px; !important">
+                            <div style="position:relative;">
+                                @if (product.DiscountPercentage > 0)
+                                {
+                                    <p class="card-text p-1 bg-success"><small class="text-light">@product.DiscountPercentage% Off</small></p>
+                                }
+                            </div>
                             @foreach (var image in product.ProductImages)
                             {
                                 @if (imageIndex == 0)
@@ -104,7 +110,7 @@
                 <div class="card-body">
                     <h5 class="card-title text-dark">@product.Name</h5>
                     <p class="card-text"><small class="text-muted">Price = @product.Price PKR</small></p>
-                    <button class="btn btn-primary mr-1 col-12">View</button>
+                    <a href="@($"stores/product/{product.Id}/{Id}")" class="btn btn-primary mr-1 col-12">View</a>
                 </div>
                 @{caresoltag++;}
             </div>
