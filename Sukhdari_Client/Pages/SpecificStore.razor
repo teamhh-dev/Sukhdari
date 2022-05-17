@@ -5,18 +5,30 @@
 
 @*<h1>@ipAddress.IP</h1>
 <h1>@ipAddress.timeNow</h1>*@
+
+@*search bar*@
+<div class="bg-light p-3 col-12">
+    <div class="ml-4 row">
+        <select class="btn btn-primary col-2">
+            <option value="category">Category</option>
+            <option value="product">Product</option>
+        </select>
+        <input @bind-value="SearchProduct" @bind-value:event="oninput" @onkeyup="@searchProductResults"  class="form-control col-9 shadow-none border-dark ml-2 mr-2" />
+    </div>
+</div>
+
 <div class="row m-0">
     <div class="card bg-light col-2 m-2 p-2 filterDiv" style="left:1% ">
         @if (Products != null && Products.Any())
         {
             <h4>Filters</h4>
-            <hr />
+            @*<hr />
             <div class="form-check ml-2">
                 <input  @onchange="@(async (e) => await DiscountCheckboxClicked(e.Value))" class="form-check-input" type="checkbox">
                 <label class="form-check-label" for="flexCheckDefault">
                     Discount
                 </label>
-            </div>
+            </div>*@
              <hr />
             <h5>Categories</h5>
             <div class="form-check ml-2">
@@ -33,6 +45,17 @@
                 }
             </div>
             <hr />
+        <h5>Discount</h5>
+        <div class="form-check ml-2">
+            <input type="radio" class="form-check-input"  @onclick="(() => { RadioButtonClicked(25); })" >
+            <label class="form-check-label">Upto 25%</label><br />
+            
+            <input class="form-check-input" type="radio" @onclick="(() => { RadioButtonClicked(50); })">
+            <label class="form-check-label">Upto 50%</label><br />
+            
+            <input class="form-check-input" type="radio" @onclick="(() => { RadioButtonClicked(75); })" >
+            <label class="form-check-label">Upto75%</label><br />
+        </div>
         }
     </div>
 <div class="form-inline justify-content-center mt-4 col-9">
@@ -66,7 +89,13 @@
 
                             }
                         </ol>
-                        <div class="carousel-inner col-12 min-vh-30" style="height:150px; !important">
+                        <div class="carousel-inner col-12 min-vh-30 p-0" style="height:160px; !important">
+                            <div style="position:relative;">
+                                @if (product.DiscountPercentage > 0)
+                                {
+                                    <p class="card-text p-1 bg-success"><small class="text-light">@product.DiscountPercentage% Off</small></p>
+                                }
+                            </div>
                             @foreach (var image in product.ProductImages)
                             {
                                 @if (imageIndex == 0)
@@ -104,7 +133,7 @@
                 <div class="card-body">
                     <h5 class="card-title text-dark">@product.Name</h5>
                     <p class="card-text"><small class="text-muted">Price = @product.Price PKR</small></p>
-                    <button class="btn btn-primary mr-1 col-12">View</button>
+                    <a href="@($"stores/product/{product.Id}/{Id}")" class="btn btn-primary mr-1 col-12">View</a>
                 </div>
                 @{caresoltag++;}
             </div>
@@ -121,6 +150,7 @@
 {
     [Parameter]
     public int Id { get; set; }
+    public string SearchProduct { get; set; } = "";
     public IEnumerable<ProductDTO> FilteredProducts { get; set; }
     public IEnumerable<CategoryDTO> allCategories { get; set; }
     public int caresoltag = 0;
@@ -198,6 +228,33 @@
                     count++;
                 }
             }
+        }
+    }
+
+    public void searchProductResults()
+    {
+        if (SearchProduct == "")
+        {
+            FilteredProducts = Products;
+        }
+        else
+        {
+            FilteredProducts = Products.Where(i => i.Name.ToLower().Contains(SearchProduct.ToLower())).ToList();
+        }
+    }
+    public void RadioButtonClicked(float? discount)
+    {
+        if (discount == 25)
+        {
+           FilteredProducts = Products.Where(i => i.DiscountPercentage <= 25).ToList();
+        }
+        else if(discount == 50)
+        {
+            FilteredProducts = Products.Where(i => i.DiscountPercentage <= 50).ToList();
+        }
+        else if (discount == 75)
+        {
+            FilteredProducts = Products.Where(i => i.DiscountPercentage <= 75).ToList();
         }
     }
 }

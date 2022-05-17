@@ -39,6 +39,7 @@ namespace Business
             var storeAdminId = _db.Users.FirstOrDefault(i => i.UserName == store.AdminName).Id;
             Store newStore = _mapper.Map<StoreDTO, Store>(store);
             newStore.UserId = storeAdminId;
+            newStore.maxDiscount = 0;
             await _db.Stores.AddAsync(newStore);
             await _db.SaveChangesAsync();
             return _mapper.Map<Store, StoreDTO>(newStore);
@@ -76,7 +77,6 @@ namespace Business
             }
             return _mapper.Map<Store, StoreDTO>(find);
         }
-
         public async Task<StoreDTO> GetStoreByID(int storeID)
             {
             var store = await _db.Stores.FirstOrDefaultAsync(i => i.Id == storeID);

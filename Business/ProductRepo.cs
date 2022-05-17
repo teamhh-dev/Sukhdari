@@ -22,34 +22,48 @@ namespace Business
             _db = db;
             _mapper = map;
         }
-        public async Task<ProductDTO> createProduct(ProductDTO product)
+        public async Task<ProductDTO> createProduct(ProductDTO productDTO)
         {
-            if (product.Id != 0)
+            Product product;
+            var store = await _db.Stores.FindAsync(productDTO.StoreId);
+            if (productDTO.Id != 0)
             {
-                var oldCategory = _db.Products.FirstOrDefault(i => i.Id == product.Id);
-                oldCategory.Name = product.Name;
-                oldCategory.Price = product.Price;
-                oldCategory.Description = product.Description;
-                oldCategory.CategoryId = product.CategoryId;
-                oldCategory.Image = product.Image;
-                oldCategory.Quantity = product.Quantity;
-                if (product.DiscountPercentage >= 0 && product.DiscountPercentage <= 100)
+                product = _db.Products.FirstOrDefault(i => i.Id == productDTO.Id);
+                product.Name = productDTO.Name;
+                product.Price = productDTO.Price;
+                product.Description = productDTO.Description;
+                product.CategoryId = productDTO.CategoryId;
+                product.Image = productDTO.Image;
+                product.Quantity = productDTO.Quantity;
+                if (productDTO.DiscountPercentage >= 0 && productDTO.DiscountPercentage <= 100)
                 {
-                    oldCategory.DiscountPercentage = product.DiscountPercentage;
-                    oldCategory.DiscountPrice = product.DiscountPrice;
+                    product.DiscountPercentage = productDTO.DiscountPercentage;
+                    product.DiscountPrice = productDTO.DiscountPrice;
                 }
                 else
                 {
-                    oldCategory.DiscountPercentage=null;
-                    oldCategory.DiscountPrice=null;
-                }
-                await _db.SaveChangesAsync();
-                return _mapper.Map<Product, ProductDTO>(oldCategory);
+                    product.DiscountPercentage=null;
+                    product.DiscountPrice=null;
+                } 
             }
-            Product newProd = _mapper.Map<ProductDTO, Product>(product);
-            await _db.Products.AddAsync(newProd);
+            else
+            {
+                product = _mapper.Map<ProductDTO, Product>(productDTO);
+                await _db.Products.AddAsync(product);
+            }
             await _db.SaveChangesAsync();
-            return _mapper.Map<Product, ProductDTO>(newProd);
+            var products = _db.Products.Where(i => i.StoreId == store.Id);
+            float? max = 0f;
+            foreach (var p in products)
+            {
+                if (p.DiscountPercentage > max)
+                {
+                    max = p.DiscountPercentage;
+                }
+            }
+            store.maxDiscount = max;
+            await _db.SaveChangesAsync();
+            return _mapper.Map<Product, ProductDTO>(product);
         }
         public async Task<int> deleteProduct(int id)
         {

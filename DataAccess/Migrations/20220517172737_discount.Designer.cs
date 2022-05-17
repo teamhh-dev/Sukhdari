@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220413172852_completeDatabase")]
-    partial class completeDatabase
+    [Migration("20220517172737_discount")]
+    partial class discount
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -155,6 +155,9 @@ namespace DataAccess.Migrations
 
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("maxDiscount")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
