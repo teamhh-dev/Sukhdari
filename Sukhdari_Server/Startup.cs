@@ -36,7 +36,7 @@ namespace Sukhdari_Server
         {
             services.AddDbContext<ApplicationDbContext>(options =>
 
-            options.UseSqlServer(Configuration.GetConnectionString("AyinConnection")));
+            options.UseSqlServer(Configuration.GetConnectionString("IrhaConnection")));
 
             services.AddIdentity<IdentityUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders()
@@ -50,6 +50,7 @@ namespace Sukhdari_Server
             services.AddScoped<IImageUpload, ImageUpload>();
             services.AddScoped<IUserIPRepo, UserIPRepo>();
             services.AddScoped<IStoreImageRepo, StoreImageRepo>();
+            services.AddScoped<ITagRepo, TagRepo>();
 
             services.AddHttpContextAccessor();
             services.AddRazorPages();
