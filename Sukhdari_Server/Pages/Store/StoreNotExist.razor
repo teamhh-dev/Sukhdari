@@ -3,7 +3,7 @@
 
 @inject IStoreRepo Store
 @inject NavigationManager Navigator
-@attribute [Authorize]
+@attribute [Authorize(Roles = Common.StaticDetails.Role_StoreAdmin)]
 
 <h2>Look like you don't have a store :(</h2>
 <a class="btn btn-dark" href="/createStore">Create Store</a>

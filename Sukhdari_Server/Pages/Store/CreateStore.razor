@@ -7,7 +7,7 @@
 @using Sukhdari_Server.Service.IService
 @inject IImageUpload imageUplaod
 @inject IStoreImageRepo storeImageRepo
-@attribute [Authorize]
+@attribute [Authorize(Roles = Common.StaticDetails.Role_StoreAdmin)]
 
 <h3>@Title</h3>
 <EditForm Model="StoreDetails" OnValidSubmit="@CreateStoreWithDTO" class="form-horizontal">
@@ -20,12 +20,12 @@
 
             @*@if (StoreAvailability)
                 {
-                    <span class="oi oi-check" style="color:green" )></span>
+                <span class="oi oi-check" style="color:green" )></span>
 
                 }
                 else
                 {
-                    <span class="oi oi-warning" style="color:red" )></span>
+                <span class="oi oi-warning" style="color:red" )></span>
 
                 }*@
             <ValidationMessage For="()=>StoreDetails.Name"></ValidationMessage>
@@ -64,7 +64,7 @@
 
 
                         <button type="button" @onclick="()=>DeleteImage(image)"
-                                class="btn btn-danger mt-1">
+                        class="btn btn-danger mt-1">
                             <i class="oi oi-trash"></i>
                         </button>
                     </div>
@@ -120,10 +120,10 @@
 
                 {
                     StoreImage = new StoreImageDTO()
-                    {
-                        StoreId = store.Id,
-                        StoreImageUrl = image
-                    };
+                        {
+                            StoreId = store.Id,
+                            StoreImageUrl = image
+                        };
                     await storeImageRepo.CreateStoreImage(StoreImage);
                 }
             }

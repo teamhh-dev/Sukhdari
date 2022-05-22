@@ -5,7 +5,7 @@
 @inject IUserIPRepo IpRepo
 @inject NavigationManager Navigator
 @inject IJSRuntime js
-@attribute [Authorize]
+@attribute [Authorize(Roles = Common.StaticDetails.Role_StoreAdmin)]
 
 <div class="container-fluid">
     <div class="row mb-2">
@@ -47,12 +47,12 @@
     {
         var authState = await AuthenticationState;
 
-        for (int i = 6; i >=0; i--)
+        for (int i = 6; i >= 0; i--)
         {
             pastWeekDates.Add(DateTime.Now.AddDays(Convert.ToDouble(-i)).ToLongDateString());
         }
-        weekUniqueUsersCount= IpRepo.getPastWeekUniqueUsersCount(Store.GetStoreByAdminName(authState.User.Identity.Name).Id);
+        weekUniqueUsersCount = IpRepo.getPastWeekUniqueUsersCount(Store.GetStoreByAdminName(authState.User.Identity.Name).Id);
 
-        await js.InvokeVoidAsync("loadChart",weekUniqueUsersCount, pastWeekDates);
+        await js.InvokeVoidAsync("loadChart", weekUniqueUsersCount, pastWeekDates);
     }
 }

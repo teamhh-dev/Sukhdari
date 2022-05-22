@@ -4,7 +4,7 @@
 @inject ICategoryRepo Category
 @inject IProductRepo Product
 @inject NavigationManager Navigator
-@attribute [Authorize]
+@attribute [Authorize(Roles = Common.StaticDetails.Role_StoreAdmin)]
 
 
 <div class="card card-info">
@@ -16,7 +16,8 @@
 
             <div class="d-flex float-right">
                 <a href="/addProduct">
-                    <button class="btn btn-info text-white"><span class="oi oi-plus mr-0 mr-md-2" />
+                    <button class="btn btn-info text-white">
+                        <span class="oi oi-plus mr-0 mr-md-2" />
                         <h5 class="d-md-inline-block d-none pt-1">Add Product</h5>
                     </button>
                 </a>
