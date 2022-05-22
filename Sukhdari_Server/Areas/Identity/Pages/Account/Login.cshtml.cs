@@ -21,7 +21,7 @@ namespace Sukhdari_Server.Areas.Identity.Pages.Account
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly ILogger<LoginModel> _logger;
 
-        public LoginModel(SignInManager<IdentityUser> signInManager, 
+        public LoginModel(SignInManager<IdentityUser> signInManager,
             ILogger<LoginModel> logger,
             UserManager<IdentityUser> userManager)
         {
@@ -73,10 +73,21 @@ namespace Sukhdari_Server.Areas.Identity.Pages.Account
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
-            returnUrl ??= Url.Content("~/store/dashboard");
+            var currentUser = _userManager.Users.FirstOrDefault(i => i.Email == Input.Email);
+            bool isInRoleAdmin = await _userManager.IsInRoleAsync(currentUser, Common.StaticDetails.Role_Admin);
+            if (!isInRoleAdmin)
+            {
+                returnUrl ??= Url.Content("~/store/dashboard");
+
+            }
+            else
+            {
+                returnUrl ??= Url.Content("~/admin/dashboard");
+
+            }
 
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
-        
+
             if (ModelState.IsValid)
             {
                 // This doesn't count login failures towards account lockout
