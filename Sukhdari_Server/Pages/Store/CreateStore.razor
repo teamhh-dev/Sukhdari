@@ -2,19 +2,163 @@
 @page "/details"
 @layout StoreAdminLayoutT
 @inject IStoreRepo Store
+@inject ITagRepo Tag
 @inject NavigationManager Navigator
 @using System.IO
+@using System;
+@using System.Collections.Generic;
+@using System.Linq;
+@using System.Text.RegularExpressions;
 @using Sukhdari_Server.Service.IService
 @inject IImageUpload imageUplaod
 @inject IStoreImageRepo storeImageRepo
 @attribute [Authorize]
 
+<style>
+
+.suggestion-container {
+    position: relative;
+}
+
+.tagsinput, .tagsinput * {
+    box-sizing: border-box
+}
+
+.tagsinput {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-flex-wrap: wrap;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    background: #fff;
+    font-size: 14px;
+    line-height: 20px;
+    color: #556270;
+    padding: 5px 5px 0;
+    border: 1px solid #e6e6e6;
+    border-radius: 2px
+}
+
+    .tagsinput.focus {
+        border-color: #ccc
+    }
+
+    .tagsinput .tag {
+        position: relative;
+        background: #556270;
+        display: block;
+        max-width: 100%;
+        word-wrap: break-word;
+        color: #fff;
+        padding: 5px 30px 5px 5px;
+        border-radius: 2px;
+        margin: 0 5px 5px 0
+    }
+
+        .tagsinput .tag .tag-remove {
+            position: absolute;
+            background: 0 0;
+            display: block;
+            width: 30px;
+            height: 30px;
+            top: 0;
+            right: 0;
+            cursor: pointer;
+            text-decoration: none;
+            text-align: center;
+            color: #ff6b6b;
+            line-height: 30px;
+            padding: 0;
+            border: 0
+        }
+
+            .tagsinput .tag .tag-remove:after, .tagsinput .tag .tag-remove:before {
+                background: #ff6b6b;
+                position: absolute;
+                display: block;
+                width: 10px;
+                height: 2px;
+                top: 14px;
+                left: 10px;
+                content: ''
+            }
+
+            .tagsinput .tag .tag-remove:before {
+                -webkit-transform: rotateZ(45deg);
+                transform: rotateZ(45deg)
+            }
+
+            .tagsinput .tag .tag-remove:after {
+                -webkit-transform: rotateZ(-45deg);
+                transform: rotateZ(-45deg)
+            }
+
+    .tagsinput div {
+        -webkit-box-flex: 1;
+        -webkit-flex-grow: 1;
+        -ms-flex-positive: 1;
+        flex-grow: 1
+    }
+
+        .tagsinput div input {
+            background: 0 0;
+            display: block;
+            width: 100%;
+            font-size: 14px;
+            line-height: 20px;
+            padding: 5px;
+            border: 0;
+            margin: 0 5px 5px 0
+        }
+
+            .tagsinput div input:focus {
+                color: #495057;
+                background-color: #fff;
+                border-color: #80bdff;
+                outline: 0;
+                box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+            }
+
+            .tagsinput div input.error {
+                color: #ff6b6b
+            }
+
+            .tagsinput div input::-ms-clear {
+                display: none
+            }
+
+            .tagsinput div input::-webkit-input-placeholder {
+                color: #ccc;
+                opacity: 1
+            }
+
+            .tagsinput div input:-moz-placeholder {
+                color: #ccc;
+                opacity: 1
+            }
+
+            .tagsinput div input::-moz-placeholder {
+                color: #ccc;
+                opacity: 1
+            }
+
+            .tagsinput div input:-ms-input-placeholder {
+                color: #ccc;
+                opacity: 1
+            }
+</style>
+
+
+
+
+
+
 <h3>@Title</h3>
-<br />
 <EditForm Model="StoreDetails" OnValidSubmit="@CreateStoreWithDTO" class="form-horizontal">
     <DataAnnotationsValidator></DataAnnotationsValidator>
-    <ValidationSummary></ValidationSummary>
-    <br />
+
     <div class="form-group">
         <label class="col-md-7 control-label" for="store_name">STORE NAME</label>
         <div class="col-md-7 d-flex flex-row">
@@ -30,7 +174,6 @@
                     <span class="oi oi-warning" style="color:red" )></span>
 
                 }*@
-
             <ValidationMessage For="()=>StoreDetails.Name"></ValidationMessage>
         </div>
     </div>
@@ -43,10 +186,55 @@
         </div>
     </div>
     <div class="form-group">
+        <label class="col-md-7 control-label" for="store_tags">Store Tags</label>
+        <div class="suggestion-container form-group col-md-7">
+    <div id="@($"{Id}_tagsinput")" class="tagsinput">
+
+        @if (Tags != null && Tags.Any())
+        {
+            @foreach (var tag in Tags)
+            {
+                <span class="tag">
+                    <span class="tag-text">@tag</span>
+                    <span class="tag-remove" @onclick="() => DeleteTag(tag)" />
+                </span>
+            }
+        }
+
+        <div id="@($"{Id}_addTag")">
+            <div class="@(IsContainSpecialCharacter ? "tag-tooltip" : string.Empty)">
+                <input id="@($"{Id}_tag")"
+                       class="tag-input"
+                       placeholder="Add tags"
+                       autocomplete="off"
+                       @bind-value="Value"
+                       @bind-value:event="oninput"
+                       @onkeyup="AddTags" />
+
+                @if (IsContainSpecialCharacter)
+                {
+                    <div class="error-right d-inline-flex p-2">
+                        <i class="oi oi-warning text-warning p-1"></i>
+                        <p class="text-left m-0 p-1">Special characters not allowed.</p>
+                        <i></i>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+    </div>
+    <div class="form-group">
+        <label class="col-md-7 control-label" for="store_type">Search Tags</label>
+        <div class="col-md-7">
+             </div>
+    </div>
+    <div class="form-group">
         <label class="col-md-7 control-label" for="store_type">Country</label>
         <div class="col-md-7">
             <InputText @bind-Value="StoreDetails.Country" id="store_type" name="store_type" placeholder="Pakistan" class="form-control input-md" />
             <ValidationMessage For="()=>StoreDetails.Country"></ValidationMessage>
+
         </div>
     </div>
     <div class="form-group">
@@ -74,13 +262,21 @@
             }
         </div>
     </div>
+
     <div class="col-md-7">
-        <button type="submit" class="btn btn-dark text-white">@SubmitBtnTxt</button>
+        <button type="submit" disabled="@ShowButton" class="btn btn-dark text-white">@SubmitBtnTxt</button>
     </div>
 </EditForm>
 
-@code {
-
+       
+@code 
+{
+    private Guid Id => Guid.NewGuid();
+    public List<TagDTO> tagString = new List<TagDTO>();
+    protected string Value { get; set; }
+    protected bool MenuVisibility { get; set; }
+    protected bool IsContainSpecialCharacter { get; set; }
+    protected List<string> Tags { get; set; } = new List<string>();
     public string Title = "Create Store";
     public string SubmitBtnTxt = "Add";
     public bool StoreAvailability { get; set; } = true;
@@ -101,12 +297,17 @@
         {
             Title = "Store Details";
             SubmitBtnTxt = "Update";
-            if(store.StoreImages!=null)
+            if (store.StoreImages != null)
             {
                 store.ImageUrls = store.StoreImages.Select(i => i.StoreImageUrl).ToList();
             }
             StoreDetails = store;
             StoreDetails.AdminName = authState.User.Identity.Name;
+            var allTags = await Tag.GetAllTags(StoreDetails.Id);
+            foreach(var tag in allTags)
+            {
+                Tags.Add(tag.Name);
+            }
         }
         StoreDetails.AdminName = adminName;
     }
@@ -155,11 +356,11 @@
     }
     private async void CreateStoreWithDTO()
     {
-        if(StoreDetails.Id != 0 && Title == "Store Details")
+        if (StoreDetails.Id != 0 && Title == "Store Details")
         {
-            if(DeleteImagesName!= null && DeleteImagesName.Any())
+            if (DeleteImagesName != null && DeleteImagesName.Any())
             {
-                foreach(var deletedImage in DeleteImagesName)
+                foreach (var deletedImage in DeleteImagesName)
                 {
                     var name = deletedImage.Replace($"{Navigator.BaseUri}ProductImages/", "");
                     var result = imageUplaod.DeleteImage(name);
@@ -169,11 +370,16 @@
         }
         var newStore = await Store.createStore(StoreDetails);
         await AddStoreImage(newStore);
+        foreach(var tag in tagString)
+        {
+            tag.StoreId = newStore.Id;
+            await Tag.createTag(tag);
+        }
         StoreDetails = new StoreDTO();
         StateHasChanged();
         Navigator.NavigateTo("/store/dashboard");
 
-        //var result = await Store.createStore(StoreDetails); 
+        //var result = await Store.createStore(StoreDetails);
         //Navigator.NavigateTo("/store/dashboard");
 
 
@@ -238,5 +444,34 @@
             StoreAvailability = false;
             ShowButton = true;
         }
+    }
+    protected void AddTags(KeyboardEventArgs eventArgs)
+    {
+
+        if (!String.IsNullOrEmpty(Value))
+        {
+            if (eventArgs.Key.Equals(","))
+            {
+                if (!Tags.Exists(t => t.Equals(Value, StringComparison.CurrentCultureIgnoreCase)))
+                {
+                    Value = Value.Remove(Value.Length-1);
+                    Tags.Add(Value);
+                    TagDTO tag = new TagDTO();
+                    tag.Name = Value;
+                    tagString.Add(tag);
+                }
+
+                Value = string.Empty;
+            }
+        }       
+    }
+    protected void DeleteTag(string value)
+    {
+        if (String.IsNullOrEmpty(value)) return;
+
+        var tag = Tags.FirstOrDefault(t => t == value);
+        if (tag == null) return;
+
+        Tags.Remove(tag);
     }
 }

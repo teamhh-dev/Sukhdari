@@ -23,11 +23,9 @@ namespace Business
         }
         public async Task<StoreDTO> createStore(StoreDTO store)
         {
-            //Store oldStore = await _db.Stores.FindAsync(store.Id);
             if (store.Id != 0)
             {
                 Store oldStore = await _db.Stores.FindAsync(store.Id);
-                
                 oldStore.Name = store.Name;
                 oldStore.Type = store.Type;
                 oldStore.Country = store.Country;
