@@ -12,7 +12,7 @@ namespace Business.IRepo
         public Task<int> createTagType(TagTypeDTO tag);
         public Task<int> deleteTagType(int id);
         public Task<int> updateTagType(TagTypeDTO tag);
-        public Task<IEnumerable<TagTypeDTO>> GetAllTags();
+        public Task<IEnumerable<TagTypeDTO>> GetAllTagsType();
         public Task<TagTypeDTO> GetTagType(int id);
     }
 }

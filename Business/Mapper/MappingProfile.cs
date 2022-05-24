@@ -20,7 +20,7 @@ namespace Business.Mapper
             CreateMap<IPAddress, UserIpDTO>().ReverseMap();
             CreateMap<StoreImage, StoreImageDTO>().ReverseMap();
             CreateMap<TagType, TagTypeDTO>().ReverseMap();
-
+            CreateMap<Tag, TagDTO>().ReverseMap();
         }
     }
 }

@@ -45,7 +45,7 @@ namespace Business
             return 0;
         }
 
-        public async Task<IEnumerable<TagTypeDTO>> GetAllTags()
+        public async Task<IEnumerable<TagTypeDTO>> GetAllTagsType()
         {
             return _mapper.Map<IEnumerable<TagType>, IEnumerable<TagTypeDTO>>(_db.tagTypes);
         }
