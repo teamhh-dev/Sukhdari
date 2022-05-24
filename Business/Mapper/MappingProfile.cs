@@ -19,6 +19,7 @@ namespace Business.Mapper
             CreateMap<ProductImage, ProductImageDTO>().ReverseMap();
             CreateMap<IPAddress, UserIpDTO>().ReverseMap();
             CreateMap<StoreImage, StoreImageDTO>().ReverseMap();
+            CreateMap<TagType, TagTypeDTO>().ReverseMap();
 
         }
     }
