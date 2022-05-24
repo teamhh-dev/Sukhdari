@@ -18,5 +18,7 @@ namespace DataAccess.Data
         public DbSet<ProductImage> productImages { get; set; }
         public DbSet<IPAddress> ipAddresses { get; set; }
         public DbSet<StoreImage> storeImages { get; set; }
+        public DbSet<TagType> tagTypes { get; set; }
+        public DbSet<Tag> tags { get; set; }
     }
 }
