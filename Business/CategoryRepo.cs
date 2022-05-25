@@ -22,6 +22,11 @@ namespace Business
         }
         public async Task<int> createCategory(CategoryDTO category)
         {
+            var categories = await _db.Categories.FirstOrDefaultAsync(i => i.Name.ToLower() == category.Name.ToLower());
+            if(categories != null)
+            {
+                return 0;
+            }
             if (category.Id != 0)
             {
                 var oldCategory = _db.Categories.FirstOrDefault(i => i.Id == category.Id);
@@ -60,6 +65,7 @@ namespace Business
                 return await _db.SaveChangesAsync();
 
             }
+            
             Category newCategory = _mapper.Map<CategoryDTO, Category>(category);
             await _db.Categories.AddAsync(newCategory);
             return await _db.SaveChangesAsync();
