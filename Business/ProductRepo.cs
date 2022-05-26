@@ -168,6 +168,10 @@ namespace Business
             {
             return _mapper.Map<IEnumerable<Product>, IEnumerable<ProductDTO>>(await _db.Products.Include(i => i.ProductImages).Where(i => i.CategoryId == categoryId).ToListAsync());
             }
-  
-    }
+        public async Task<int> getProductCount(int storeId)
+            {
+            return _db.Products.Where(i => i.StoreId == storeId).Count();
+            }
+
+        }
 }

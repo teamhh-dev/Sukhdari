@@ -1,5 +1,6 @@
 ﻿@page "/category"
 @layout StoreAdminLayoutT
+@inject IJSRuntime JS
 @inject IStoreRepo Store
 @inject ICategoryRepo CategoryRepo
 @inject NavigationManager Navigator
@@ -27,7 +28,7 @@
 
 
         <div class="table-responsive mt-2">
-            <table class="table">
+            <table class="table" id="category_table">
                 <caption>List of All Categories</caption>
                 <thead class="thead-light bg-info">
                     <tr>
@@ -44,28 +45,22 @@
                             <tr>
                                 <td>@category.Name</td>
                                 <td>@category.Description</td>
-                                <td class="d-flex align-items-center justify-content-center  flex-column flex-md-row"
-                            style="gap: 0.3rem;">
+                                <td class="d-flex align-items-center justify-content-center  flex-column flex-md-row" style="gap: 0.3rem;">
                                     <a href="@($"/category/update/{category.Id}")">
                                         <div class="btn btn-secondary">
 
                                             <span class="oi oi-eye"></span>
                                         </div>
                                     </a>
-
                                     <a href="@($"/category/delete/{category.Id}")">
                                         <div class="btn btn-danger">
                                             <span class="oi oi-trash"></span>
                                         </div>
                                     </a>
                                 </td>
-
                             </tr>
-
                         }
-                       
                     }
-
                 </tbody>
             </table>
         </div>
@@ -90,5 +85,13 @@
             var store = Store.GetStoreByAdminName(authState.User.Identity.Name);
             Categories = await CategoryRepo.GetAllCategories(store.Id);
         }
+    }
+    protected override Task OnAfterRenderAsync(bool firstRender)
+    {
+        if(firstRender)
+        {
+            JS.InvokeVoidAsync("CategoryTable");
+        }
+        return base.OnAfterRenderAsync(firstRender);
     }
 }

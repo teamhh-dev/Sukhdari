@@ -129,5 +129,10 @@ namespace Business
             {
             return _mapper.Map<IEnumerable<Category>, IEnumerable<CategoryDTO>>(await _db.Categories.Where(i => i.DiscountPercentage != null).ToListAsync());
             }
+        public async Task<int> getCategoryCount(int storeID)
+            {
+            var count = _db.Categories.Where(i => i.StoreId == storeID).Count();
+            return count;
+            }
         }       
 }

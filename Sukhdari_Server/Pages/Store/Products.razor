@@ -1,5 +1,6 @@
 ﻿@page "/products"
 @layout StoreAdminLayoutT
+@inject IJSRuntime JS
 @inject IStoreRepo Store
 @inject ICategoryRepo Category
 @inject IProductRepo Product
@@ -25,9 +26,8 @@
 
     </div>
     <div class="card-body">
-
         <div class="table-responsive mt-2">
-            <table class="table">
+            <table class="table" id="product_table">
                 <caption>List of All Products</caption>
                 <thead class="thead-light bg-info">
                     <tr>
@@ -84,7 +84,6 @@
 @code {
     [CascadingParameter]
     public Task<AuthenticationState> AuthenticationState { get; set; }
-
     public IEnumerable<ProductDTO> AllProducts { get; set; }
     public IEnumerable<CategoryDTO> AllCategories { get; set; }
 
@@ -110,7 +109,14 @@
             AllProducts = await Product.getAllProducts(store.Id);
         }
     }
-
+    protected override Task OnAfterRenderAsync(bool firstRender)
+    {
+        if(firstRender)
+        {
+            JS.InvokeVoidAsync("ProductTable");
+        }
+        return base.OnAfterRenderAsync(firstRender);
+    }
 
     private string getProductCategoryName(int id)
     {

@@ -19,7 +19,6 @@
                 <button @onclick="DeleteCategory" class="btn btn-info text-white"><span class="oi oi-trash mr-0 mr-md-2" />
                     <h5 class="d-md-inline-block d-none pt-1">Delete Category</h5>
                 </button>
-
             </div>
         }
     </div>
@@ -32,7 +31,7 @@
                 <label class="col-md-7 control-label" for="category_name">CATEGORY NAME</label>
                 <div class="col-md-7">
                     <InputText @bind-Value="CategoryDetails.Name" placeholder="Category Name"
-                        class="form-control input-md" />
+                        class="form-control input-md"/>
                     <ValidationMessage For="()=>CategoryDetails.Name"></ValidationMessage>
 
                 </div>
@@ -74,18 +73,14 @@
     private String btnName { get; set; } = "Add Category";
     [Parameter]
     public int? Id { get; set; }
-
     [CascadingParameter]
     public Task<AuthenticationState> AuthenticationState { get; set; }
-
     public CategoryDTO CategoryDetails { get; set; } = new CategoryDTO();
-
     public String StoreName { get; set; }
-
+    private List<string> categoryNames = new List<string>();
     protected override async Task OnInitializedAsync()
     {
         var authState = await AuthenticationState;
-
         var store = Store.GetStoreByAdminName(authState.User.Identity.Name);
         if (store == null)
         {
@@ -94,6 +89,8 @@
         else
         {
             CategoryDetails.StoreId = store.Id;
+            var categories = await Category.GetAllCategories(CategoryDetails.StoreId);
+            categoryNames = categories.Select(x => x.Name).ToList();
             if (!authState.User.IsInRole(Common.StaticDetails.Role_StoreAdmin))
             {
                 var uri = new Uri(Navigator.Uri);
@@ -108,23 +105,18 @@
                 CategoryDetails = category;
             }
         }
-
     }
     private async void SaveCategory()
     {
-
         await Category.createCategory(CategoryDetails);
         CategoryDetails = new CategoryDTO();
         StateHasChanged();
         Navigator.NavigateTo("/category");
     }
-
     private async void DeleteCategory()
     {
         await Category.deleteCategory(Id.Value);
         StateHasChanged();
         Navigator.NavigateTo("/category");
-
     }
-
 }

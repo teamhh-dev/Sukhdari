@@ -18,5 +18,6 @@ namespace Business.IRepo
         public Task<IEnumerable<StoreDTO>> getStoreByCategory(string categoryName);
         public Task<IEnumerable<CategoryDTO>> GetAllCategoriesWithProducts(int StoreId);
         public Task<IEnumerable<CategoryDTO>> getDicountedCategory(int storeId);
+        public Task<int> getCategoryCount(int storeID);
     }
 }

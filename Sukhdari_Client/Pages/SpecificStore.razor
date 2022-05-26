@@ -147,9 +147,9 @@
     public int caresoltag = 0;
     public UserIpDTO ipAddress { get; set; } = new UserIpDTO();
     public DateTime timeNow { get; set; }
-
     public IEnumerable<ProductDTO> Products { get; set; }
     public List<int> selectedCategories = new List<int>();
+    
     protected override async Task OnInitializedAsync()
     {
         try
@@ -219,7 +219,6 @@
             }
         }
     }
-
     public void searchProductResults()
     {
         if (SearchProduct == "")

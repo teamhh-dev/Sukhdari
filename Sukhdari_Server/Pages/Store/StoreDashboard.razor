@@ -2,11 +2,73 @@
 @page "/store/dashboard"
 @layout StoreAdminLayoutT
 @inject IStoreRepo Store
+@inject ICategoryRepo Category
+@inject IProductRepo Product
 @inject IUserIPRepo IpRepo
 @inject NavigationManager Navigator
 @inject IJSRuntime js
 @attribute [Authorize]
 
+<style>
+    .card-counter{
+    box-shadow: 2px 2px 10px #DADADA;
+    margin: 5px;
+    padding: 20px 10px;
+    background-color: #fff;
+    height: 130px;
+    border-radius: 5px;
+    transition: .3s linear all;
+  }
+
+  .card-counter:hover{
+    box-shadow: 4px 4px 20px #DADADA;
+    transition: .3s linear all;
+  }
+
+  .card-counter.primary{
+    background-color: #007bff;
+    color: #FFF;
+  }
+
+  .card-counter.danger{
+    background-color: #ef5350;
+    color: #FFF;
+  }  
+
+  .card-counter.success{
+    background-color: #66bb6a;
+    color: #FFF;
+  }  
+
+  .card-counter.info{
+    background-color: #26c6da;
+    color: #FFF;
+  }  
+
+  .card-counter i{
+    font-size: 5em;
+    opacity: 0.2;
+  }
+
+  .card-counter .count-numbers{
+    position: absolute;
+    right: 35px;
+    top: 20px;
+    font-size: 32px;
+    display: block;
+  }
+
+  .card-counter .count-name{
+    position: absolute;
+    right: 35px;
+    top: 65px;
+    font-style: italic;
+    text-transform: capitalize;
+    opacity: 0.5;
+    display: block;
+    font-size: 18px;
+  }
+</style>
 <div class="container-fluid">
     <div class="row mb-2">
         <div class="col-sm-6">
@@ -14,8 +76,40 @@
         </div>
     </div>
 </div>
-
-<div class="card  card-info">
+<div class="container">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card-counter primary">
+                <i class="fa fa-code-fork"></i>
+                <span class="count-numbers">@productCount</span>
+                <span class="count-name">Products</span>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card-counter success">
+                <i class="fa fa-database"></i>
+                <span class="count-numbers">@categoryCount</span>
+                <span class="count-name">Categories</span>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card-counter info">
+                <i class="fa fa-users"></i>
+                <span class="count-numbers">10</span>
+                <span class="count-name">Users</span>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card-counter danger">
+                <i class="fa fa-shopping-bag"></i>
+                <span class="count-numbers">10</span>
+                <span class="count-name">Orders</span>
+            </div>
+        </div>
+    </div>
+</div>
+<hr />
+<div class="card card-info">
     <div class="card-header">
         <h3 class="card-title">Daily Unique Visitors</h3>
     </div>
@@ -32,16 +126,18 @@
     public Task<AuthenticationState> AuthenticationState { get; set; }
     public List<int> weekUniqueUsersCount { get; set; }
     public List<string> pastWeekDates { get; set; } = new List<string>();
-
+    int productCount;
+    int categoryCount = 0;
     protected override async Task OnInitializedAsync()
     {
         var authState = await AuthenticationState;
-
-
         if (Store.GetStoreByAdminName(authState.User.Identity.Name) == null)
         {
             Navigator.NavigateTo("/storeNotExist");
         }
+        categoryCount = await Category.getCategoryCount(Store.GetStoreByAdminName(authState.User.Identity.Name).Id);
+        productCount = await Product.getProductCount(Store.GetStoreByAdminName(authState.User.Identity.Name).Id);
+
     }
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
