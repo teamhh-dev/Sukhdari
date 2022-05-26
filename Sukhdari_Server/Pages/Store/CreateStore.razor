@@ -7,6 +7,7 @@
 @using Sukhdari_Server.Service.IService
 @inject IImageUpload imageUplaod
 @inject IStoreImageRepo storeImageRepo
+@inject IJSRuntime JsRuntime
 @attribute [Authorize(Roles = Common.StaticDetails.Role_StoreAdmin)]
 
 <h3>@Title</h3>
@@ -146,6 +147,7 @@
                 DeleteImagesName.Add(imageUrl);
             }
             StoreDetails.ImageUrls.RemoveAt(imageIndex);
+            await JsRuntime.ToastrSuccess("Image Deleted Successfully");
         }
         catch (Exception e)
         {
@@ -154,6 +156,7 @@
     }
     private async void CreateStoreWithDTO()
     {
+        string message = "Store Details Added Successfully";
         if (StoreDetails.Id != 0 && Title == "Store Details")
         {
             if (DeleteImagesName != null && DeleteImagesName.Any())
@@ -165,13 +168,14 @@
                     await storeImageRepo.DeleteStoreImageByName(deletedImage);
                 }
             }
+            message = "Store Details Updated";
         }
         var newStore = await Store.createStore(StoreDetails);
         await AddStoreImage(newStore);
         StoreDetails = new StoreDTO();
         StateHasChanged();
         Navigator.NavigateTo("/store/dashboard");
-
+        await JsRuntime.ToastrSuccess(message);
         //var result = await Store.createStore(StoreDetails);
         //Navigator.NavigateTo("/store/dashboard");
 
@@ -204,11 +208,13 @@
                     if (StoreDetails.ImageUrls != null && StoreDetails.ImageUrls.Any())
                     {
                         StoreDetails.ImageUrls.AddRange(images);
+                        await JsRuntime.ToastrSuccess("Store Images updated");
                     }
                     else
                     {
                         StoreDetails.ImageUrls = new List<string>();
                         StoreDetails.ImageUrls.AddRange(images);
+                        await JsRuntime.ToastrSuccess("Store Images Added Successfully");
                     }
                 }
                 else

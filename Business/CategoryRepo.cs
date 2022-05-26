@@ -23,14 +23,22 @@ namespace Business
         public async Task<int> createCategory(CategoryDTO category)
         {
             var categories = await _db.Categories.FirstOrDefaultAsync(i => i.Name.ToLower() == category.Name.ToLower());
-            if(categories != null)
+            if(category.Id ==0 && categories!=null)
             {
                 return 0;
             }
-            if (category.Id != 0)
+            
+            else if (category.Id != 0)
             {
                 var oldCategory = _db.Categories.FirstOrDefault(i => i.Id == category.Id);
-                oldCategory.Name = category.Name;
+                if (categories != null && oldCategory.Name.ToLower() == category.Name.ToLower())
+                {
+                    oldCategory.Name = category.Name;
+                }
+                else if (categories != null && oldCategory.Name.ToLower() != category.Name.ToLower())
+                {
+                    return 0;
+                }
                 oldCategory.Description = category.Description;
                 if (category.DiscountPercentage >= 0 && category.DiscountPercentage <= 100)
                 {
@@ -65,11 +73,16 @@ namespace Business
                 return await _db.SaveChangesAsync();
 
             }
-            
+
             Category newCategory = _mapper.Map<CategoryDTO, Category>(category);
             await _db.Categories.AddAsync(newCategory);
             return await _db.SaveChangesAsync();
 
+        }
+        public async Task<CategoryDTO> getCategoryByName(string categoryName)
+        {
+            var categories = await _db.Categories.FirstOrDefaultAsync(i => i.Name.ToLower() == categoryName.ToLower());
+            return _mapper.Map<Category, CategoryDTO>(categories);
         }
         public async Task<int> deleteCategory(int id)
         {

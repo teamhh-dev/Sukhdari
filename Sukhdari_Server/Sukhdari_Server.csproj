@@ -5,6 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="Shared\DeleteConfirmationComponent.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AutoMapper" Version="11.0.1" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.4" />
@@ -25,7 +29,15 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Helper\" />
+    <UpToDateCheckInput Remove="Shared\DeleteConfirmationComponent.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="Shared\DeleteConfirmationComponent.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Shared\DeleteConfirmationComponent.razor" />
   </ItemGroup>
 
 </Project>

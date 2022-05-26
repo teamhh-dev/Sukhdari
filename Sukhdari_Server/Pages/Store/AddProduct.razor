@@ -1,9 +1,11 @@
-﻿@page "/addProduct"@page "/product/update/{Id:int}"@page "/product/delete/{Id:int}"@inject IStoreRepo Store@inject ICategoryRepo Category@inject IProductRepo Product@inject IProductImageRepo productImageRepo@using System.IO@using Sukhdari_Server.Service.IService@inject IImageUpload imageUplaod@inject NavigationManager Navigator@layout StoreAdminLayoutT@attribute [Authorize(Roles = Common.StaticDetails.Role_StoreAdmin)]<div class="card card-info">    <div class="card-header">        <div class="card-title float-left pt-2">            <h3>@Title</h3>        </div>        @if (Id != null)
+﻿@page "/addProduct"@page "/product/update/{Id:int}"@page "/product/delete/{Id:int}"@inject IStoreRepo Store@inject ICategoryRepo Category@inject IProductRepo Product@inject IProductImageRepo productImageRepo@using System.IO@using Sukhdari_Server.Service.IService@inject IImageUpload imageUplaod@inject NavigationManager Navigator@inject IJSRuntime JsRuntime@layout StoreAdminLayoutT@attribute [Authorize(Roles = Common.StaticDetails.Role_StoreAdmin)]<div class="card card-info">    <div class="card-header">        <div class="card-title float-left pt-2">            <h3>@Title</h3>        </div>        @if (Id != null)
         {            <div class="d-flex float-right">                <button @onclick="DeleteProduct" class="btn btn-info text-white">                    <span class="oi oi-trash mr-0 mr-md-2" />                    <h5 class="d-md-inline-block d-none pt-1">Delete Product</h5>                </button>            </div>        }    </div>    <EditForm Model="ProductDetails" OnValidSubmit="SaveProduct" class="form-horizontal">        <div class="card-body">            <DataAnnotationsValidator></DataAnnotationsValidator>            <div class="form-group">                <label class="col-md-7 control-label" for="product_name">PRODUCT NAME</label>                <div class="col-md-7">                    <InputText @bind-Value="ProductDetails.Name" placeholder="PRODUCT NAME" class="form-control input-md" />                    <ValidationMessage For="()=>ProductDetails.Name"></ValidationMessage>                </div>            </div>            <div class="form-group">                <label class="col-md-7 control-label" for="product_categorie">PRODUCT CATEGORY</label>                <div class="col-md-7">                    <InputSelect @bind-Value="ProductDetails.CategoryId" class="form-control">                        @foreach (var category in Categories)
                         {                            <option value="@category.Id">@category.Name</option>                        }                    </InputSelect>                    <ValidationMessage For="()=>ProductDetails.CategoryId"></ValidationMessage>                </div>            </div>            <div class="form-group">                <label class="col-md-7 control-label" for="price">PRICE</label>                <div class="col-md-7">                    <InputNumber @bind-Value="ProductDetails.Price" placeholder="Price" class="form-control input-md" />                    <ValidationMessage For="()=>ProductDetails.Price"></ValidationMessage>                </div>            </div>            <div class="form-group">                <label class="col-md-7 control-label" for="discount percentage">Discount Percentage</label>                <div class="col-md-7">                    <InputNumber @bind-Value="ProductDetails.DiscountPercentage" placeholder="Discount Percentage" class="form-control input-md" />                    <ValidationMessage For="()=>ProductDetails.DiscountPercentage"></ValidationMessage>                </div>            </div>            <div class="form-group">                <label class="col-md-7 control-label" for="discount percentage">Discount Price</label>                <div class="col-md-7">                    <input readonly value="@ProductDetails.DiscountPrice" placeholder="Discount Price" class="form-control input-md" />                </div>            </div>            <div class="form-group">                <label class="col-md-7 control-label" for="available_quantity">AVAILABLE QUANTITY</label>                <div class="col-md-7">                    <InputNumber @bind-Value="ProductDetails.Quantity" placeholder="AVAILABLE QUANTITY" class="form-control input-md" />                    <ValidationMessage For="()=>ProductDetails.Quantity"></ValidationMessage>                </div>            </div>            <div class="form-group">                <label class="col-md-7 control-label" for="product_description">PRODUCT DESCRIPTION</label>                <div class="col-md-7">                    <InputTextArea @bind-Value="ProductDetails.Description" class="form-control" name="product_description">                    </InputTextArea>                    <ValidationMessage For="()=>ProductDetails.Description"></ValidationMessage>                </div>            </div>            @*<div class="form-group">                <label class="col-md-7 control-label" for="percentage_discount">PERCENTAGE DISCOUNT</label>                <div class="col-md-7">                <InputNumber id="percentage_discount" name="percentage_discount" placeholder="PERCENTAGE DISCOUNT"                class="form-control input-md" required="" type="text">                </div>                </div>                <div class="form-group">                <label class="col-md-7 control-label" for="product_tag">PRODUCT SEARCH TAGS</label>                <div class="col-md-7">                <textarea class="form-control" id="product_tag" name="product_tag"></textarea>                </div>                </div>*@            @*<div class="form-group">                <label class="col-md-7 control-label" for="filebutton">IMAGE</label>                <div class="col-md-7">                <input id="filebutton" name="filebutton" class="input-file" type="file">                </div>                </div>*@            <div class="form-group">                <InputFile OnChange="HandleImageUpload" multiple></InputFile>                <div class="row">                    @if (ProductDetails.ImageUrls != null && ProductDetails.ImageUrls.Count > 0)
                     {                        int no = 1;                        foreach (var image in ProductDetails.ImageUrls)                        {                            <div class="col-md-3 mt-3">                                <div style="object-fit: cover;">                                    <span class="badge badge-danger">@no</span>                                    <img src="@image" alt="Product Image" style="width: 5rem;height: 5rem;object-fit: cover;">                                </div>                                <button type="button" @onclick="()=>DeleteImage(image)" class="btn btn-danger mt-1">                                    <i class="oi oi-trash"></i>                                </button>                            </div>                            no += 1;                        }
-                    }                </div>            </div>            <div class="form-group">                <div class="col-md-7">                    <button type="submit" class="btn btn-info">@btnName</button>                </div>            </div>        </div>    </EditForm></div>@code {    private string Title { get; set; } = "Add Product";
+                    }                </div>            </div>            <div class="form-group">                <div class="col-md-7">                    <button type="submit" class="btn btn-info">@btnName</button>                </div>            </div>        </div>    </EditForm></div>@code {
+    private string Title { get; set; } = "Add Product";
     private string btnName { get; set; } = "Add Product";
+    private string message { get; set; } = "Product Added Successfully";
     [Parameter]
     public int? Id { get; set; }
     private List<string> DeletedImagesNames { get; set; } = new List<string>();
@@ -51,6 +53,7 @@
 
     private async void SaveProduct()
     {
+
         if (ProductDetails.Id != 0 && Title == "Update Product")
         {
             if (DeletedImagesNames != null && DeletedImagesNames.Any())
@@ -63,11 +66,27 @@
                 }
             }
         }
+
         var newProduct = await Product.createProduct(ProductDetails);
+        if(newProduct == null || ProductDetails.Id ==0 && newProduct == null  )
+        {
+            message = "Product With same name already exist";
+            await JsRuntime.ToastrWarning(message);
+            return;
+        }
+        else if(ProductDetails.Id !=0)
+        {
+            message = "Product Updated Successfully";
+        }
+        else
+        {
+            message = "Product Added Successfully";
+        }
         await AddProductImage(newProduct);
         ProductDetails = new ProductDTO();
         StateHasChanged();
         Navigator.NavigateTo("/products");
+        await JsRuntime.ToastrSuccess(message);
     }
 
     private async void DeleteProduct()
@@ -83,6 +102,8 @@
         await Product.deleteProduct(Id.Value);
         StateHasChanged();
         Navigator.NavigateTo("/products");
+        message="Product Deletd Successfully";
+        await JsRuntime.ToastrSuccess(message);
 
     }
 
@@ -115,11 +136,13 @@
                     if (ProductDetails.ImageUrls != null && ProductDetails.ImageUrls.Any())
                     {
                         ProductDetails.ImageUrls.AddRange(images);
+                        await JsRuntime.ToastrSuccess("Image Added Successfully");  
                     }
                     else
                     {
                         ProductDetails.ImageUrls = new List<string>();
                         ProductDetails.ImageUrls.AddRange(images);
+                        await JsRuntime.ToastrSuccess("Image Added Successfully");  
                     }
                     foreach (var i in ProductDetails.ImageUrls)
                     {
@@ -154,10 +177,14 @@
                             ProductId = product.Id,
                             ProductImageUrl = image
                         };
-                    await productImageRepo.CreateProductImage(ProductImage);
+                   await productImageRepo.CreateProductImage(ProductImage);
+                  
                 }
+                
             }
+            
         }
+        
 
     }
 
@@ -178,6 +205,7 @@
                 DeletedImagesNames.Add(imageUrl);
             }
             ProductDetails.ImageUrls.RemoveAt(imageIndex);
+            await JsRuntime.ToastrSuccess("Image Deleted Successfully");
         }
         catch (Exception e)
         {

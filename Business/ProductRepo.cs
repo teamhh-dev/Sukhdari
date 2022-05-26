@@ -24,10 +24,22 @@ namespace Business
         }
         public async Task<ProductDTO> createProduct(ProductDTO product)
         {
+            var getValues = await _db.Products.FirstOrDefaultAsync(i => i.Name.ToLower() == product.Name.ToLower());
+            if(product.Id == 0 && getValues != null )
+            {
+                return null;
+            }
             if (product.Id != 0)
             {
                 var oldCategory = _db.Products.FirstOrDefault(i => i.Id == product.Id);
-                oldCategory.Name = product.Name;
+                if (getValues != null && oldCategory.Name.ToLower() == product.Name.ToLower())
+                {
+                    oldCategory.Name = product.Name;
+                }
+                else if(getValues != null && oldCategory.Name.ToLower()!= product.Name.ToLower())
+                {
+                    return null;
+                }
                 oldCategory.Price = product.Price;
                 oldCategory.Description = product.Description;
                 oldCategory.CategoryId = product.CategoryId;
