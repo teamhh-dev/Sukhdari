@@ -70,8 +70,6 @@
         await JsRuntime.ToastrSuccess(message);
 
     }
-
-
     private async void DeleteCategory()
     {
         await JsRuntime.InvokeVoidAsync("ShowDeleteConfirmationModal");
@@ -87,5 +85,4 @@
         }
         await JsRuntime.InvokeVoidAsync("HideDeleteConfirmationModal");
         IsProcessing = false;
-
-    }         }
+    } }
