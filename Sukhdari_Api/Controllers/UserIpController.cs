@@ -19,7 +19,6 @@ namespace Sukhdari_Api.Controllers
         }
 
         [HttpPost]
-
         public async Task<IActionResult> Create([FromBody] UserIpDTO dto)
         {
             var res=await _userIPRepo.createIp(dto);

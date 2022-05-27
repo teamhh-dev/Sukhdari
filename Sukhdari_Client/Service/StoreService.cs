@@ -5,17 +5,19 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Json;
 using System.Threading.Tasks;
-
 namespace Sukhdari_Client.Service
 {
     public class StoreService : IStoreService
     {
+        private readonly IHttpClientFactory _httpClientFactory;
         private readonly HttpClient _httpClient;
-        public StoreService(HttpClient client)
-        {
-            _httpClient = client;
-        }
+        public StoreService(IHttpClientFactory httpClientFactory, HttpClient httpClient)
+            {
+            _httpClientFactory = httpClientFactory;
+            _httpClient = httpClient;
+            }
         public async Task<IEnumerable<StoreDTO>> getAllStores()
         {
             var response = await _httpClient.GetAsync($"api/Store/getAllStores");
@@ -100,5 +102,23 @@ namespace Sukhdari_Client.Service
             var products = JsonConvert.DeserializeObject<IEnumerable<ProductDTO>>(content);
             return products;
             }
-    }
+        public async Task<ProductDTO> getSpecificProduct(int storeId, int productId)
+            {
+            var response = await _httpClient.GetAsync($"api/Product/getProduct/{storeId}/{productId}");
+            var content = await response.Content.ReadAsStringAsync();
+            var product = JsonConvert.DeserializeObject<ProductDTO>(content);
+            return product;
+            }
+        public async void AddCategoryClickCount(int categoryId)
+            {
+            var response = await _httpClient.GetAsync($"api/Category/AddCategoryClickCount/{categoryId}");
+            }
+        public async Task<CategoryDTO> getCategory(int categoryId, int storeID)
+            {
+            var response = await _httpClient.GetAsync($"api/Category/GetCategory/{categoryId}/{storeID}");
+            var content = await response.Content.ReadAsStringAsync();
+            var category = JsonConvert.DeserializeObject<CategoryDTO>(content);
+            return category;
+            }
+        }
 }

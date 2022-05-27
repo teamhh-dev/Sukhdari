@@ -1,0 +1,27 @@
+﻿@page "/store-requests"
+@layout StoreAdminLayoutT
+
+@inject IStoreRepo Store
+@inject NavigationManager Navigator
+@attribute [Authorize]
+
+<h2>Welcome to Users Requests Page</h2>
+
+
+@code {
+
+    [CascadingParameter]
+    public Task<AuthenticationState> AuthenticationState { get; set; }
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationState;
+        var user = (await AuthenticationState).User;
+        if (user.IsInRole("Admin"))
+        {
+            
+        }
+
+        
+    }
+
+}

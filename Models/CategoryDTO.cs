@@ -9,6 +9,7 @@ namespace Models
         public string Name { get; set; }
         public string Description { get; set; }
         public int StoreId { get; set; }
+        public int? ClickCount { get; set; }
         [Range(0,100, ErrorMessage ="Discount value must be from 0 to 100")]
         public float? DiscountPercentage { get; set; }
         public List<ProductDTO> Products { get; set; }

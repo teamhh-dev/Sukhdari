@@ -393,7 +393,7 @@
             {
                 foreach (var image in e.GetMultipleFiles())
                 {
-                    FileInfo imageInfo = new FileInfo(image.Name);
+                    System.IO.FileInfo imageInfo = new System.IO.FileInfo(image.Name);
                     if (imageInfo.Extension.ToLower() == ".jpg" ||
                     imageInfo.Extension.ToLower() == ".png" ||
                     imageInfo.Extension.ToLower() == ".jpeg")

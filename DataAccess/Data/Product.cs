@@ -25,6 +25,7 @@ namespace DataAccess.Data
         public Category Category { get; set; }
         public int StoreId { get; set; }
         public Store Store { get; set; }
+        public int? ClickCount { get; set; }
         public virtual ICollection<ProductImage> ProductImages { get; set; }
     }
 }

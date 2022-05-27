@@ -40,6 +40,7 @@ namespace Models
                 return null;
             }
         }
+        public int? ClickCount { get; set; }
         public virtual ICollection<ProductImageDTO> ProductImages { get; set; }
         public List<string> ImageUrls { get; set; }
     }

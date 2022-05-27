@@ -9,70 +9,11 @@
 @inject IJSRuntime js
 @attribute [Authorize]
 
-<style>
-    .card-counter{
-    box-shadow: 2px 2px 10px #DADADA;
-    margin: 5px;
-    padding: 20px 10px;
-    background-color: #fff;
-    height: 130px;
-    border-radius: 5px;
-    transition: .3s linear all;
-  }
-
-  .card-counter:hover{
-    box-shadow: 4px 4px 20px #DADADA;
-    transition: .3s linear all;
-  }
-
-  .card-counter.primary{
-    background-color: #007bff;
-    color: #FFF;
-  }
-
-  .card-counter.danger{
-    background-color: #ef5350;
-    color: #FFF;
-  }  
-
-  .card-counter.success{
-    background-color: #66bb6a;
-    color: #FFF;
-  }  
-
-  .card-counter.info{
-    background-color: #26c6da;
-    color: #FFF;
-  }  
-
-  .card-counter i{
-    font-size: 5em;
-    opacity: 0.2;
-  }
-
-  .card-counter .count-numbers{
-    position: absolute;
-    right: 35px;
-    top: 20px;
-    font-size: 32px;
-    display: block;
-  }
-
-  .card-counter .count-name{
-    position: absolute;
-    right: 35px;
-    top: 65px;
-    font-style: italic;
-    text-transform: capitalize;
-    opacity: 0.5;
-    display: block;
-    font-size: 18px;
-  }
-</style>
+<AuthorizeView Roles="StoreAdmin">
 <div class="container-fluid">
     <div class="row mb-2">
         <div class="col-sm-6">
-            <h1>Dashboard</h1>
+            <h1>Welcome Store Admin</h1>
         </div>
     </div>
 </div>
@@ -118,37 +59,100 @@
 
     </div>
 </div>
+<div class="row col-md-12">
+    <div class="card card-danger col-md-4">
+        <div class="card-header">
+            <h3 class="card-title">Top Categories</h3>
+        </div>
+        <div class="card-body">
+            <RadzenChart>
+                <RadzenPieSeries Data=@categoryClick Title="Clicks" CategoryProperty="name" ValueProperty="clicks">
 
-<hr />
-
+                </RadzenPieSeries>
+            </RadzenChart>
+        </div>
+    </div>
+    <div class="card card-info col-md-6">
+        <div class="card-header">
+            <h3 class="card-title">Top 5 Products</h3>
+        </div>
+        <div class="card-body">
+            <MudPaper Class="pa-4">
+                <MudChart ChartType="ChartType.Donut" Width="300px" Height="300px"  InputData="@clicksData" InputLabels="@productNames">
+                     <CustomGraphics>
+		                <text class="donut-inner-text" x="47%" y="35%" dominant-baseline="middle" text-anchor="middle" fill="black" font-family="Helvetica" font-size="2">Total Clicks</text>
+		                <text class="donut-inner-text" x="47%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="black" font-family="Helvetica" font-size="5">@totalClickCount</text>
+	                </CustomGraphics>
+                </MudChart>
+            </MudPaper>
+        </div>
+    </div>
+</div>
+</AuthorizeView>
 @code {
     [CascadingParameter]
     public Task<AuthenticationState> AuthenticationState { get; set; }
     public List<int> weekUniqueUsersCount { get; set; }
     public List<string> pastWeekDates { get; set; } = new List<string>();
     int productCount;
-    int categoryCount = 0;
+    int categoryCount;
+    int count = 0;
+    int? totalClickCount = 0;
+    double[] clicksData;
+    string[] productNames;
+    class CategoryClickCount
+    {
+        public string name { get; set; }
+        public int? clicks { get; set; }
+    }
+    List<CategoryClickCount> categoryClick = new List<CategoryClickCount>();
     protected override async Task OnInitializedAsync()
     {
         var authState = await AuthenticationState;
-        if (Store.GetStoreByAdminName(authState.User.Identity.Name) == null)
+        var user = (await AuthenticationState).User;
+        if (user.IsInRole("Admin"))
         {
-            Navigator.NavigateTo("/storeNotExist");
+            Navigator.NavigateTo("/AdminDashboard");
         }
-        categoryCount = await Category.getCategoryCount(Store.GetStoreByAdminName(authState.User.Identity.Name).Id);
-        productCount = await Product.getProductCount(Store.GetStoreByAdminName(authState.User.Identity.Name).Id);
-
+        else
+        {
+            if (user.IsInRole("StoreAdmin") && Store.GetStoreByAdminName(authState.User.Identity.Name) == null)
+            {
+                Navigator.NavigateTo("/storeNotExist");
+            }
+            categoryCount = await Category.getCategoryCount(Store.GetStoreByAdminName(authState.User.Identity.Name).Id);
+            productCount = await Product.getProductCount(Store.GetStoreByAdminName(authState.User.Identity.Name).Id);
+            var products = await Product.getAllProducts(Store.GetStoreByAdminName(authState.User.Identity.Name).Id);
+            var topProducts = products.OrderByDescending(i => i.ClickCount).Take(5);
+            totalClickCount = products.Sum(i => i.ClickCount);
+            clicksData = new double[topProducts.Count()];
+            productNames = new string[topProducts.Count()];
+            foreach (var product in topProducts)
+            {
+                double temp = (double)product.ClickCount;
+                clicksData[count] = temp;
+                productNames[count] = product.Name;
+                count++;
+            }
+        }
     }
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         var authState = await AuthenticationState;
-
-        for (int i = 6; i >=0; i--)
+        for (int i = 6; i >= 0; i--)
         {
             pastWeekDates.Add(DateTime.Now.AddDays(Convert.ToDouble(-i)).ToLongDateString());
         }
         weekUniqueUsersCount= IpRepo.getPastWeekUniqueUsersCount(Store.GetStoreByAdminName(authState.User.Identity.Name).Id);
-
         await js.InvokeVoidAsync("loadChart",weekUniqueUsersCount, pastWeekDates);
+
+        var categories = await Category.GetAllCategories(Store.GetStoreByAdminName(authState.User.Identity.Name).Id);
+        foreach(var category in categories)
+        {
+            CategoryClickCount temp = new CategoryClickCount();
+            temp.name = category.Name;
+            temp.clicks = category.ClickCount;
+            categoryClick.Add(temp);
+        }
     }
 }

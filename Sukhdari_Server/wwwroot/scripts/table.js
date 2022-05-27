@@ -4,3 +4,4 @@
 function CategoryTable() {
     $("#category_table").DataTable();
 }
+

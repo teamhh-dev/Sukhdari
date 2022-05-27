@@ -61,6 +61,7 @@ namespace Business
 
                 }
             Category newCategory = _mapper.Map<CategoryDTO, Category>(category);
+            newCategory.ClickCount = 0;
             await _db.Categories.AddAsync(newCategory);
             return await _db.SaveChangesAsync();
 
@@ -133,6 +134,19 @@ namespace Business
             {
             var count = _db.Categories.Where(i => i.StoreId == storeID).Count();
             return count;
+            }
+        public async Task<int> clickCategoryCount(int categoryID)
+            {
+            var category=_db.Categories.FirstOrDefault(i => i.Id == categoryID);
+            if (category.ClickCount == null)
+                {
+                category.ClickCount = 1;
+                }
+            else
+                {
+                category.ClickCount++;
+                }
+            return await _db.SaveChangesAsync();
             }
         }       
 }

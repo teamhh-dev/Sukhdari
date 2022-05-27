@@ -34,22 +34,35 @@
             </NavLink>
           </li>
           <li class="nav-item">
-            <NavLink class="nav-link d-flex align-items-center" href="/category" Match="NavLinkMatch.All">
-                <span class="nav-icon oi oi-tag ml-2" aria-hidden="true"></span> 
-                @* <i class="right nav-icon fas fa-tag"></i> *@
-                <p class="ml-2">
-                Categories
-              </p>
-            </NavLink>
+              <AuthorizeView Roles="Admin">
+                  <NavLink class="nav-link d-flex align-items-center" href="/store-requests" Match="NavLinkMatch.All">
+                      <span class="nav-icon oi oi-tag ml-2" aria-hidden="true"></span> 
+                      @* <i class="right nav-icon fas fa-tag"></i> *@
+                      <p class="ml-2">
+                         Requests
+                      </p>
+                 </NavLink>
+              </AuthorizeView>
+              <AuthorizeView Roles="StoreAdmin">
+                  <NavLink class="nav-link d-flex align-items-center" href="/category" Match="NavLinkMatch.All">
+                    <span class="nav-icon oi oi-tag ml-2" aria-hidden="true"></span> 
+                    @* <i class="right nav-icon fas fa-tag"></i> *@
+                    <p class="ml-2">
+                    Categories
+                  </p>
+                </NavLink>
+            </AuthorizeView>
           </li>
           <li class="nav-item">
-            <NavLink class="nav-link d-flex align-items-center" href="/products" Match="NavLinkMatch.All">
-                <span class="nav-icon oi oi-grid-three-up ml-2" aria-hidden="true"></span> 
-                @* <i class="right nav-icon fas fa-tag"></i> *@
-                <p class="ml-2">
-                Products
-              </p>
-            </NavLink>
+               <AuthorizeView Roles="StoreAdmin">
+                <NavLink class="nav-link d-flex align-items-center" href="/products" Match="NavLinkMatch.All">
+                    <span class="nav-icon oi oi-grid-three-up ml-2" aria-hidden="true"></span> 
+                    @* <i class="right nav-icon fas fa-tag"></i> *@
+                    <p class="ml-2">
+                    Products
+                  </p>
+                </NavLink>
+            </AuthorizeView>
           </li>
       
 

@@ -22,6 +22,7 @@ namespace Models
         public string AdminName { get; set; }
         public string Image { get; set; }
         public float? maxDiscount { get; set; }
+        public int? ClickCount { get; set; }
         public virtual ICollection<StoreImageDTO> StoreImages { get; set; }
         public List<string> ImageUrls { get; set; }
 

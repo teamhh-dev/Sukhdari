@@ -35,6 +35,7 @@ namespace Business
                 product.CategoryId = productDTO.CategoryId;
                 product.Image = productDTO.Image;
                 product.Quantity = productDTO.Quantity;
+                product.ClickCount = productDTO.ClickCount;
                 if (productDTO.DiscountPercentage >= 0 && productDTO.DiscountPercentage <= 100)
                 {
                     product.DiscountPercentage = productDTO.DiscountPercentage;
@@ -49,6 +50,7 @@ namespace Business
             else
             {
                 product = _mapper.Map<ProductDTO, Product>(productDTO);
+                product.ClickCount = 0;
                 await _db.Products.AddAsync(product);
             }
             await _db.SaveChangesAsync();
@@ -171,6 +173,19 @@ namespace Business
         public async Task<int> getProductCount(int storeId)
             {
             return _db.Products.Where(i => i.StoreId == storeId).Count();
+            }
+        public async Task<int> clickProductCount(int productID)
+            {
+            var product = _db.Products.FirstOrDefault(i => i.Id == productID);
+            if (product.ClickCount == null)
+                {
+                product.ClickCount = 1;
+                }
+            else
+                {
+                product.ClickCount++;
+                }
+            return await _db.SaveChangesAsync();
             }
 
         }

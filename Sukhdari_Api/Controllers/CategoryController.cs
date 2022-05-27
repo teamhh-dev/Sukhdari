@@ -65,6 +65,13 @@ namespace Sukhdari_Api.Controllers
             var products = await _productRepo.getDiscountedCategoryProducts(storeId);
             return Ok(products);
             }
-    }
+
+        [HttpGet("{categoryID}")]
+        public async Task<IActionResult> AddCategoryClickCount(int categoryID)
+            {
+             var res = await _categoryRepo.clickCategoryCount(categoryID);
+             return Ok();
+            }
+        }
 
 }
