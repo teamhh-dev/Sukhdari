@@ -23,5 +23,6 @@ namespace Sukhdari_Client.Service.IService
         public Task<CategoryDTO> getCategory(int categoryId, int storeID);
         public Task<ProductDTO> getSpecificProduct(int storeId, int productId);
         public void AddCategoryClickCount(int categoryId);
+        public void AddStoreClickCount(int storeID);
     }
 }

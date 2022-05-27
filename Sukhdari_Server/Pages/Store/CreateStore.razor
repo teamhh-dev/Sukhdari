@@ -162,7 +162,7 @@
     <div class="form-group">
         <label class="col-md-7 control-label" for="store_name">STORE NAME</label>
         <div class="col-md-7 d-flex flex-row">
-            <InputText @bind-Value="StoreDetails.Name" @oninput="CheckStoreAvailability" id="store_name" name="store_name" placeholder="STORE NAME" class="@(StoreAvailability?"form-control input-md is-valid":"form-control input-md  is-invalid")" />
+            <InputText spellcheck="true" @bind-Value="StoreDetails.Name" @oninput="CheckStoreAvailability" id="store_name" name="store_name" placeholder="STORE NAME" class="@(StoreAvailability?"form-control input-md is-valid":"form-control input-md  is-invalid")" />
 
             @*@if (StoreAvailability)
                 {
