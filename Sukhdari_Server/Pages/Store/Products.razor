@@ -4,6 +4,7 @@
 @inject ICategoryRepo Category
 @inject IProductRepo Product
 @inject NavigationManager Navigator
+@inject IJSRuntime JsRuntime
 @attribute [Authorize(Roles = Common.StaticDetails.Role_StoreAdmin)]
 
 
@@ -67,11 +68,11 @@
                                         </div>
                                     </a>
 
-                                    <a href="@($"/product/delete/{product.Id}")">
-                                        <div class="btn btn-danger">
+                                    @*<a href="@($"/product/delete/{product.Id}")">*@
+                                        <div class="btn btn-danger" @onclick="()=>DeleteConfirmation(product.Id)">
                                             <span class="oi oi-trash"></span>
                                         </div>
-                                    </a>
+                                    @*</a>*@
                                 </td>
                             </tr>
                         }
@@ -82,10 +83,15 @@
         </div>
     </div>
 </div>
+
+<DeleteConfirmationComponent IsParentComponentProcessing="IsProcessing" CconfirmationChanged="DeleteProduct">
+</DeleteConfirmationComponent>
+
 @code {
     [CascadingParameter]
     public Task<AuthenticationState> AuthenticationState { get; set; }
-
+    private bool IsProcessing { get; set; } = false;
+    int productId;
     public IEnumerable<ProductDTO> AllProducts { get; set; }
     public IEnumerable<CategoryDTO> AllCategories { get; set; }
 
@@ -116,5 +122,23 @@
     private string getProductCategoryName(int id)
     {
         return AllCategories.FirstOrDefault(i => i.Id == id).Name;
+    }
+
+    protected async void DeleteConfirmation(int id)
+    {
+        productId = id;
+        await JsRuntime.InvokeVoidAsync("ShowDeleteConfirmationModal");
+    }
+    protected async void DeleteProduct(bool isConfirmed)
+    {
+        if(isConfirmed)
+        {
+            await Product.deleteProduct(productId);
+
+            Navigator.NavigateTo("/category",true);
+            await JsRuntime.ToastrSuccess("Product Deleted Successfully");
+        }
+        await JsRuntime.InvokeVoidAsync("HideDeleteConfirmationModal");
+        IsProcessing = false;
     }
 }

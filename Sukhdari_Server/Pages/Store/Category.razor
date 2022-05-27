@@ -94,8 +94,9 @@
         if(isConfirmed)
         {
             await CategoryRepo.deleteCategory(categoryID);
+            
+            Navigator.NavigateTo("/category",true);
             await JS.ToastrSuccess("Category Deleted Successfully");
-            Navigator.NavigateTo("/category", true);
         }
         await JS.InvokeVoidAsync("HideDeleteConfirmationModal");
         IsProcessing = false;
