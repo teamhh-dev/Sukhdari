@@ -30,10 +30,11 @@
     </div>
 </div>
 @code {
+
     public bool isProcessing { get; set; } = false;
     [Parameter]
     public EventCallback<bool> CconfirmationChanged{ get; set; }
-     [Parameter]
+    [Parameter]
     public bool IsParentComponentProcessing { get; set; }
 
     protected override void OnParametersSet()
@@ -50,5 +51,4 @@
         }
         await CconfirmationChanged.InvokeAsync(value);
     }
-
 }
