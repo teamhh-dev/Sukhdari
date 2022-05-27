@@ -1,10 +1,10 @@
 ﻿@page "/category"
 @layout StoreAdminLayoutT
-@inject IJSRuntime JS
 @inject IStoreRepo Store
+@inject IJSRuntime JS
 @inject ICategoryRepo CategoryRepo
 @inject NavigationManager Navigator
-@attribute [Authorize]
+@attribute [Authorize(Roles = Common.StaticDetails.Role_StoreAdmin)]
 
 <div class="card card-info">
     <div class="card-header">
@@ -15,7 +15,8 @@
 
             <div class="d-flex float-right">
                 <a href="/addCategory">
-                    <button class="btn btn-info text-white"><span class="oi oi-plus mr-0 mr-md-2" />
+                    <button class="btn btn-info text-white">
+                        <span class="oi oi-plus mr-0 mr-md-2" />
                         <h5 class="d-md-inline-block d-none pt-1">Add Category</h5>
                     </button>
                 </a>
@@ -24,11 +25,8 @@
 
     </div>
     <div class="card-body">
-
-
-
         <div class="table-responsive mt-2">
-            <table class="table" id="category_table">
+            <table class="table">
                 <caption>List of All Categories</caption>
                 <thead class="thead-light bg-info">
                     <tr>
@@ -45,19 +43,18 @@
                             <tr>
                                 <td>@category.Name</td>
                                 <td>@category.Description</td>
-                                <td class="d-flex align-items-center justify-content-center  flex-column flex-md-row" style="gap: 0.3rem;">
+                                <td class="d-flex align-items-center justify-content-center  flex-column flex-md-row"
+                            style="gap: 0.3rem;">
                                     <a href="@($"/category/update/{category.Id}")">
                                         <div class="btn btn-secondary">
 
-                                            <span class="oi oi-eye"></span>
+                                            <span class="oi oi-pencil"></span>
                                         </div>
                                     </a>
-                                    <a href="@($"/category/delete/{category.Id}")">
-                                        <div class="btn btn-danger">
-                                            <span class="oi oi-trash"></span>
-                                        </div>
-                                    </a>
-                                </td>
+                                    <div class="btn btn-danger" @onclick="()=>DeleteConfirmation(category.Id)">
+                                        <span class="oi oi-trash"></span>
+                                    </div>
+                                </td
                             </tr>
                         }
                     }
@@ -66,16 +63,17 @@
         </div>
     </div>
 </div>
+<DeleteConfirmationComponent IsParentComponentProcessing="IsProcessing" CconfirmationChanged="DeleteCategory">
+</DeleteConfirmationComponent>
 @code {
     [CascadingParameter]
     public Task<AuthenticationState> AuthenticationState { get; set; }
-
     public IEnumerable<CategoryDTO> Categories { get; set; }
+    private bool IsProcessing { get; set; } = false;
+    int categoryID;
     protected override async Task OnInitializedAsync()
     {
         var authState = await AuthenticationState;
-
-
         if (Store.GetStoreByAdminName(authState.User.Identity.Name) == null)
         {
             Navigator.NavigateTo("/storeNotExist");
@@ -86,12 +84,20 @@
             Categories = await CategoryRepo.GetAllCategories(store.Id);
         }
     }
-    protected override Task OnAfterRenderAsync(bool firstRender)
+    protected async void DeleteConfirmation(int id)
     {
-        if(firstRender)
+        categoryID = id;
+        await JS.InvokeVoidAsync("ShowDeleteConfirmationModal");
+    }
+    protected async void DeleteCategory(bool isConfirmed)
+    {
+        if(isConfirmed)
         {
-            JS.InvokeVoidAsync("CategoryTable");
+            await CategoryRepo.deleteCategory(categoryID);
+            await JS.ToastrSuccess("Category Deleted Successfully");
+            Navigator.NavigateTo("/category", true);
         }
-        return base.OnAfterRenderAsync(firstRender);
+        await JS.InvokeVoidAsync("HideDeleteConfirmationModal");
+        IsProcessing = false;
     }
 }
