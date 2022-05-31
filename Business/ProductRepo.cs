@@ -45,6 +45,7 @@ namespace Business
                 oldCategory.CategoryId = product.CategoryId;
                 oldCategory.Image = product.Image;
                 oldCategory.Quantity = product.Quantity;
+                oldCategory.ClickCount = product.ClickCount;
                 if (product.DiscountPercentage >= 0 && product.DiscountPercentage <= 100)
                 {
                     oldCategory.DiscountPercentage = product.DiscountPercentage;
@@ -59,6 +60,7 @@ namespace Business
                 return _mapper.Map<Product, ProductDTO>(oldCategory);
             }
             Product newProd = _mapper.Map<ProductDTO, Product>(product);
+            newProd.ClickCount = 0;
             await _db.Products.AddAsync(newProd);
             await _db.SaveChangesAsync();
             return _mapper.Map<Product, ProductDTO>(newProd);
@@ -165,6 +167,24 @@ namespace Business
         public async Task<IEnumerable<ProductDTO>> getCategoryProducts(int categoryId)
         {
             return _mapper.Map<IEnumerable<Product>, IEnumerable<ProductDTO>>(await _db.Products.Include(i => i.ProductImages).Where(i => i.CategoryId == categoryId).ToListAsync());
+        }
+        public async Task<int> getProductCount(int storeId)
+        {
+            return _db.Products.Where(i => i.StoreId == storeId).Count();
+        }
+
+        public async Task<int> clickProductCount(int productID)
+        {
+            var product = _db.Products.FirstOrDefault(i => i.Id == productID);
+            if (product.ClickCount == null)
+            {
+                product.ClickCount = 1;
+            }
+            else
+            {
+                product.ClickCount++;
+            }
+            return await _db.SaveChangesAsync();
         }
 
     }

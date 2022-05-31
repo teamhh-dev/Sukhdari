@@ -18,6 +18,7 @@ namespace DataAccess.Data
         [ForeignKey("StoreId")]
         public int StoreId { get; set; }
         public float? DiscountPercentage { get; set; }
+        public int? ClickCount { get; set; }
         public List<Product> Products { get; set; }
         //public List<Store> Stores{get;set;}
     }

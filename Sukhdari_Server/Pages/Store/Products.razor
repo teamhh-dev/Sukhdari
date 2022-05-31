@@ -27,23 +27,24 @@
 
     </div>
     <div class="card-body">
-
         <div class="table-responsive mt-2">
-            <table class="table">
-                <caption>List of All Products</caption>
-                <thead class="thead-light bg-info">
-                    <tr>
-                        <th scope="col">Name</th>
-                        <th scope="col">Category</th>
-                        <th scope="col">Price (PKR)</th>
-                        @*<th scope="col">Discount %</th>
-                            <th scope="col">Weight (kg)</th>*@
-                        <th scope="col">Quantity</th>
-                        <th scope="col">Description</th>
-                        <th scope="col">Action</th>
-                    </tr>
-                </thead>
-                <tbody>
+            @if (AllProducts != null && AllProducts.Any())
+            {
+                <table class="table" id="product_table">
+                    <caption>List of All Products</caption>
+                    <thead class="thead-light bg-info">
+                        <tr>
+                            <th scope="col">Name</th>
+                            <th scope="col">Category</th>
+                            <th scope="col">Price (PKR)</th>
+                            @*<th scope="col">Discount %</th>
+                                <th scope="col">Weight (kg)</th>*@
+                            <th scope="col">Quantity</th>
+                            <th scope="col">Description</th>
+                            <th scope="col">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
                     @if (AllProducts != null && AllProducts.Any())
                     {
 
@@ -79,7 +80,14 @@
                     }
 
                 </tbody>
-            </table>
+                </table>
+            }
+            else
+            {
+               <p>You have no Products</p>
+            }
+
+            
         </div>
     </div>
 </div>
@@ -135,10 +143,19 @@
         {
             await Product.deleteProduct(productId);
 
-            Navigator.NavigateTo("/category",true);
+            Navigator.NavigateTo("/products",true);
             await JsRuntime.ToastrSuccess("Product Deleted Successfully");
         }
         await JsRuntime.InvokeVoidAsync("HideDeleteConfirmationModal");
         IsProcessing = false;
     }
+    protected override Task OnAfterRenderAsync(bool firstRender)
+    {
+        if(firstRender)
+        {
+            JsRuntime.InvokeVoidAsync("ProductTable");
+        }
+        return base.OnAfterRenderAsync(firstRender);
+    }
+
 }

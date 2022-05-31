@@ -24,6 +24,7 @@ namespace DataAccess.Data
         //[ForeignKey("UserId")]
         public string UserId { get; set; }
         public string Image { get; set; }
+        public int? ClickCount { get; set; }
         public virtual ICollection<StoreImage> StoreImages { get; set; }
     }
 }

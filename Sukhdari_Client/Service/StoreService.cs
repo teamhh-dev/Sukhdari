@@ -108,5 +108,18 @@ namespace Sukhdari_Client.Service
             var product = JsonConvert.DeserializeObject<ProductDTO>(content);
             return product;
         }
+        public async void AddCategoryClickCount(int categoryId)
+        {
+            var response = await _httpClient.GetAsync($"api/Category/AddCategoryClickCount/{categoryId}");
+        }
+
+        public async void AddStoreClickCount(int storeID)
+        {
+            var response = await _httpClient.GetAsync($"api/Store/AddStoreClickCount/{storeID}");
+        }
+        public async void AddProductClickCount(int productID)
+        {
+            var response = await _httpClient.GetAsync($"api/Product/AddProductClickCount/{productID}");
+        }
     }
 }

@@ -178,6 +178,7 @@
         Products = await Store.GetStoreProducts(Id);
         FilteredProducts = Products;
         allCategories = await Store.getStoreCategories(Id);
+        Store.AddStoreClickCount(Id);
     }
     public async Task DiscountCheckboxClicked(object checkedValue)
     {

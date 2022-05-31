@@ -21,5 +21,7 @@ namespace Business.IRepo
         public Task<IEnumerable<ProductDTO>> getDiscountedProducts(int storeId);
         public Task<IEnumerable<ProductDTO>> getDiscountedCategoryProducts(int storeId);
         public Task<IEnumerable<ProductDTO>> getCategoryProducts(int categoryId);
+        public Task<int> getProductCount(int storeId);
+        public Task<int> clickProductCount(int productID);
     }
 }

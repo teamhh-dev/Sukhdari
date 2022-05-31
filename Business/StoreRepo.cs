@@ -23,27 +23,31 @@ namespace Business
         }
         public async Task<StoreDTO> createStore(StoreDTO store)
         {
-            //Store oldStore = await _db.Stores.FindAsync(store.Id);
             if (store.Id != 0)
             {
                 Store oldStore = await _db.Stores.FindAsync(store.Id);
-
                 oldStore.Name = store.Name;
                 oldStore.Type = store.Type;
                 oldStore.Country = store.Country;
                 oldStore.Image = store.Image;
+                if(oldStore.ClickCount != null)
+                {
+                    oldStore.ClickCount = store.ClickCount;
+                }
+                else
+                {
+                    oldStore.ClickCount = 0;
+                }
                 await _db.SaveChangesAsync();
                 return _mapper.Map<Store, StoreDTO>(oldStore);
             }
-
             var storeAdminId = _db.Users.FirstOrDefault(i => i.UserName == store.AdminName).Id;
             Store newStore = _mapper.Map<StoreDTO, Store>(store);
             newStore.UserId = storeAdminId;
-
+            newStore.ClickCount = 0;
             await _db.Stores.AddAsync(newStore);
             await _db.SaveChangesAsync();
             return _mapper.Map<Store, StoreDTO>(newStore);
-
         }
         public async Task<int> deleteStore(int id)
         {
@@ -125,5 +129,23 @@ namespace Business
             _db.Stores.Update(newStore);
             return await _db.SaveChangesAsync();
         }
+        public async Task<int> getStoreCount()
+        {
+            return await _db.Stores.CountAsync();
+        }
+        public async Task<int> clickStoreCount(int storeID)
+        {
+            var store = _db.Stores.FirstOrDefault(i => i.Id == storeID);
+            if (store.ClickCount == null)
+            {
+                store.ClickCount = 1;
+            }
+            else
+            {
+                store.ClickCount++;
+            }
+            return await _db.SaveChangesAsync();
+        }
     }
 }
+

@@ -53,13 +53,13 @@
     {
         var ans =  await Category.createCategory(CategoryDetails);
         string message = "Category Added Successfully";
-        if(ans ==0) 
+        if(ans ==0 && CategoryDetails.Id==0) 
         {
             message = "Category with same name already exist";
             await JsRuntime.ToastrWarning(message);
             return;
         }
-
+        
         else if(CategoryDetails.Id !=0)
         {
             message = "Category Updated Successfully"; 

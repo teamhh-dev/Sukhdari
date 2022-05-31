@@ -70,5 +70,11 @@ namespace Sukhdari_Api.Controllers
             var stores = await _storeRepo.getStoresByCountry(country);
             return Ok(stores);
         }
+        [HttpGet("{StoreID}")]
+        public async Task<IActionResult> AddStoreClickCount(int StoreID)
+        {
+            var res = await _storeRepo.clickStoreCount(StoreID);
+            return Ok();
+        }
     }
 }

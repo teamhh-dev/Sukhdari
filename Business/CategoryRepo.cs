@@ -23,7 +23,7 @@ namespace Business
         public async Task<int> createCategory(CategoryDTO category)
         {
             var categories = await _db.Categories.FirstOrDefaultAsync(i => i.Name.ToLower() == category.Name.ToLower());
-            if(category.Id ==0 && categories!=null)
+            if(category.Id == 0 && categories != null)
             {
                 return 0;
             }
@@ -70,11 +70,13 @@ namespace Business
                         }
                     }
                 }
+                oldCategory.ClickCount = category.ClickCount;
                 return await _db.SaveChangesAsync();
 
             }
 
             Category newCategory = _mapper.Map<CategoryDTO, Category>(category);
+            newCategory.ClickCount = 0;
             await _db.Categories.AddAsync(newCategory);
             return await _db.SaveChangesAsync();
 
@@ -147,6 +149,24 @@ namespace Business
         public async Task<IEnumerable<CategoryDTO>> getDicountedCategory(int storeId)
         {
             return _mapper.Map<IEnumerable<Category>, IEnumerable<CategoryDTO>>(await _db.Categories.Where(i => i.DiscountPercentage != null).ToListAsync());
+        }
+        public async Task<int> getCategoryCount(int storeID)
+        {
+            var count = _db.Categories.Where(i => i.StoreId == storeID).Count();
+            return count;
+        }
+        public async Task<int> clickCategoryCount(int categoryID)
+        {
+            var category = _db.Categories.FirstOrDefault(i => i.Id == categoryID);
+            if (category.ClickCount == null)
+            {
+                category.ClickCount = 1;
+            }
+            else
+            {
+                category.ClickCount++;
+            }
+            return await _db.SaveChangesAsync();
         }
     }
 }

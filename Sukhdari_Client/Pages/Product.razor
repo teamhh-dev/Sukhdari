@@ -42,8 +42,8 @@
 
             <!-- Product Description -->
             <div class="product-description">
-                <h1>@Products.Name</h1>
-                <p>@Products.Description</p>
+                <h1>@specificProduct.Name</h1>
+                <p>@specificProduct.Description</p>
             </div>
 
 
@@ -59,20 +59,18 @@
 </div>
 
 @code
-{       [Parameter]
+{
+    [Parameter]
     public int Id { get; set; }
     [Parameter]
     public int StoreId { get; set; }
 
-    public ProductDTO Products { get; set; } = new ProductDTO();
+    public ProductDTO specificProduct { get; set; } = new ProductDTO();
     protected override async Task OnInitializedAsync()
     {
-        
-        Products = await Store.getSpecificProduct(StoreId, Id);
+        specificProduct = await Store.getSpecificProduct(StoreId, Id);
+        int categoryID = specificProduct.CategoryId;
+        Store.AddCategoryClickCount(categoryID);
+        Store.AddProductClickCount(Id);
     }
 }
-
-
-
-
-  }

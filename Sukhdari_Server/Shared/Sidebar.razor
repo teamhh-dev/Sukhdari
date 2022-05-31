@@ -21,35 +21,61 @@
       <!-- Sidebar Menu -->
       <nav class="mt-2">
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-          <!-- Add icons to the links using the .nav-icon class
-               with font-awesome or any other icon font library -->
-         
           <li class="nav-item">
-            <NavLink class="nav-link d-flex align-items-center" href="/store/dashboard" Match="NavLinkMatch.All">
+            <AuthorizeView Roles="StoreAdmin">
+                <NavLink class="nav-link d-flex align-items-center" href="/store/dashboard" Match="NavLinkMatch.All">
                 <span class="nav-icon oi oi-dashboard ml-2" aria-hidden="true"></span> 
-                @* <i class="right nav-icon fas fa-tag"></i> *@
-                <p class="ml-2">
-                Dashboard
-              </p>
+                <p class="ml-2">Dashboard</p>
             </NavLink>
+            </AuthorizeView>
+            <AuthorizeView Roles="Admin">
+                <NavLink class="nav-link d-flex align-items-center" href="/admin" Match="NavLinkMatch.All">
+                <span class="nav-icon oi oi-dashboard ml-2" aria-hidden="true"></span> 
+                <p class="ml-2">Dashboard</p>
+            </NavLink>
+            </AuthorizeView>
           </li>
+          
           <li class="nav-item">
-            <NavLink class="nav-link d-flex align-items-center" href="/category" Match="NavLinkMatch.All">
-                <span class="nav-icon oi oi-tag ml-2" aria-hidden="true"></span> 
-                @* <i class="right nav-icon fas fa-tag"></i> *@
-                <p class="ml-2">
-                Categories
-              </p>
-            </NavLink>
+              <AuthorizeView Roles="Admin">
+                  <NavLink class="nav-link d-flex align-items-center" href="" Match="NavLinkMatch.All">
+                      <span class="nav-icon oi oi-tag ml-2" aria-hidden="true"></span> 
+                      @* <i class="right nav-icon fas fa-tag"></i> *@
+                      <p class="ml-2">
+                         Requests
+                      </p>
+                 </NavLink>
+              </AuthorizeView>
+              <AuthorizeView Roles="StoreAdmin">
+                  <NavLink class="nav-link d-flex align-items-center" href="/category" Match="NavLinkMatch.All">
+                    <span class="nav-icon oi oi-tag ml-2" aria-hidden="true"></span> 
+                    @* <i class="right nav-icon fas fa-tag"></i> *@
+                    <p class="ml-2">
+                    Categories
+                  </p>
+                </NavLink>
+            </AuthorizeView>
           </li>
+          
           <li class="nav-item">
-            <NavLink class="nav-link d-flex align-items-center" href="/products" Match="NavLinkMatch.All">
-                <span class="nav-icon oi oi-grid-three-up ml-2" aria-hidden="true"></span> 
-                @* <i class="right nav-icon fas fa-tag"></i> *@
-                <p class="ml-2">
-                Products
-              </p>
-            </NavLink>
+               <AuthorizeView Roles="StoreAdmin">
+                <NavLink class="nav-link d-flex align-items-center" href="/products" Match="NavLinkMatch.All">
+                    <span class="nav-icon oi oi-grid-three-up ml-2" aria-hidden="true"></span> 
+                    @* <i class="right nav-icon fas fa-tag"></i> *@
+                    <p class="ml-2">
+                    Products
+                  </p>
+                </NavLink>
+            </AuthorizeView>
+             <AuthorizeView Roles="Admin">
+                <NavLink class="nav-link d-flex align-items-center" href="" Match="NavLinkMatch.All">
+                    <span class="nav-icon oi oi-grid-three-up ml-2" aria-hidden="true"></span> 
+                    @* <i class="right nav-icon fas fa-tag"></i> *@
+                    <p class="ml-2">
+                    Types and Tags
+                  </p>
+                </NavLink>
+            </AuthorizeView>
           </li>
       
 
@@ -59,10 +85,12 @@
     </div>
     <!-- /.sidebar -->
 
-    <div class="sidebar-custom">
-      <a href="/details" class="btn btn-link"><i class="fas fa-cogs"></i></a>
-      <a href="#" class="btn btn-secondary hide-on-collapse pos-right">Help</a>
-    </div>
+    <AuthorizeView Roles="StoreAdmin">
+        <div class="sidebar-custom">
+            <a href="/details" class="btn btn-link"><i class="fas fa-cogs"></i></a>
+            <a href="#" class="btn btn-secondary hide-on-collapse pos-right">Help</a>
+        </div>
+    </AuthorizeView>
     <!-- /.sidebar-custom -->
   </aside>
 

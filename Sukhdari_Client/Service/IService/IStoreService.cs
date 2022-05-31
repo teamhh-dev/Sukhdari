@@ -21,5 +21,8 @@ namespace Sukhdari_Client.Service.IService
         public Task<IEnumerable<StoreDTO>> SearchStoreByCountry(string country);
         public Task<IEnumerable<ProductDTO>> getCategoryProducts(int categoryId);
         public Task<ProductDTO> getSpecificProduct(int storeId, int productId);
+        public void AddCategoryClickCount(int categoryId);
+        public void AddStoreClickCount(int storeID);
+        public void AddProductClickCount(int productID);
     }
 }
