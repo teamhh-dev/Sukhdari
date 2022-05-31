@@ -70,6 +70,7 @@ namespace Business
                         }
                     }
                 }
+                
                 oldCategory.ClickCount = category.ClickCount;
                 return await _db.SaveChangesAsync();
 

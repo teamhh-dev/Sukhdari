@@ -20,8 +20,8 @@ namespace DataAccess.Data
         public int StoreId { get; set; }
         public float? DiscountPercentage { get; set; }
         
-        [DefaultValue(0)]
-        public int? ClickCount { get; set; }
+        
+        public int ClickCount { get; set; } 
         
         
         public List<Product> Products { get; set; }
