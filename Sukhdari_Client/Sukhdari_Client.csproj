@@ -22,4 +22,19 @@
     <ProjectReference Include="..\Models\Models.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <BlazorWebAssemblyLazyLoad Include="Microsoft.EntityFrameworkCore.Relational.dll" />
+    <BlazorWebAssemblyLazyLoad Include="System.Private.Xml.dll" />
+    <BlazorWebAssemblyLazyLoad Include="System.Text.Encoding.CodePages.dll" />
+    <BlazorWebAssemblyLazyLoad Include="Microsoft.EntityFrameworkCore.dll" />
+    <BlazorWebAssemblyLazyLoad Include="Microsoft.Identity.Client.dll" />
+    <BlazorWebAssemblyLazyLoad Include="System.Data.Common.dll" />
+    <BlazorWebAssemblyLazyLoad Include="Microsoft.IdentityModel.Tokens.dll" />
+    <BlazorWebAssemblyLazyLoad Include="System.Private.DataContractSerialization.dll" />
+    <BlazorWebAssemblyLazyLoad Include="Newtonsoft.Json.dll" />
+    <BlazorWebAssemblyLazyLoad Include="System.Linq.Expressions.dll" />
+    <BlazorWebAssemblyLazyLoad Include="Microsoft.EntityFrameworkCore.SqlServer.dll" />
+    <BlazorWebAssemblyLazyLoad Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll" />
+  
+  </ItemGroup>
 </Project>
