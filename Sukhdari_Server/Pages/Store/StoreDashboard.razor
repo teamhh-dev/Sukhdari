@@ -122,6 +122,7 @@
         }
         categoryCount = await Category.getCategoryCount(Store.GetStoreByAdminName(authState.User.Identity.Name).Id);
         productCount = await Product.getProductCount(Store.GetStoreByAdminName(authState.User.Identity.Name).Id);
+        
         var products = await Product.getAllProducts(Store.GetStoreByAdminName(authState.User.Identity.Name).Id);
         var topProducts = products.OrderByDescending(i => i.ClickCount).Take(5);
         totalClickCount = products.Sum(i => i.ClickCount);

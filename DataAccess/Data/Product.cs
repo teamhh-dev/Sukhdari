@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -25,6 +26,7 @@ namespace DataAccess.Data
         public Category Category { get; set; }
         public int StoreId { get; set; }
         public Store Store { get; set; }
+        [DefaultValue(0)]
         public int? ClickCount { get; set; }
         public virtual ICollection<ProductImage> ProductImages { get; set; }
     }

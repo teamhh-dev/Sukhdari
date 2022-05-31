@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -18,7 +19,11 @@ namespace DataAccess.Data
         [ForeignKey("StoreId")]
         public int StoreId { get; set; }
         public float? DiscountPercentage { get; set; }
+        
+        [DefaultValue(0)]
         public int? ClickCount { get; set; }
+        
+        
         public List<Product> Products { get; set; }
         //public List<Store> Stores{get;set;}
     }

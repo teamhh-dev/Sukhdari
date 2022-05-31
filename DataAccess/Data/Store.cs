@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -24,6 +25,7 @@ namespace DataAccess.Data
         //[ForeignKey("UserId")]
         public string UserId { get; set; }
         public string Image { get; set; }
+        [DefaultValue(0)]
         public int? ClickCount { get; set; }
         public virtual ICollection<StoreImage> StoreImages { get; set; }
     }
