@@ -1,0 +1,54 @@
+﻿@page "/types"
+@layout StoreAdminLayoutT
+@inject NavigationManager Navigator
+@attribute [Authorize(Roles = Common.StaticDetails.Role_Admin)]
+
+
+<div class="card card-info">
+    <div class="card-header">
+        <div class="card-header">
+            <div class="card-title float-left pt-2">
+                <h3>Store Types</h3>
+            </div>
+
+            <div class="d-flex float-right">
+                <a href="/addtype">
+                    <button class="btn btn-info text-white">
+                        <span class="oi oi-plus mr-0 mr-md-2" />
+                        <h5 class="d-md-inline-block d-none pt-1">Add New Type</h5>
+                    </button>
+                </a>
+            </div>
+        </div>
+
+    </div>
+    <div class="card-body">
+        <div class="table-responsive mt-2">
+          @if (false)
+            {
+                //show type table here
+            }
+            else
+            {
+               <p>Currentlly there are no given types </p>
+            }
+    
+        </div>
+    </div>
+</div>
+
+<DeleteConfirmationComponent IsParentComponentProcessing="IsProcessing" CconfirmationChanged="DeleteProduct">
+</DeleteConfirmationComponent>
+
+@code {
+    [CascadingParameter]
+    public Task<AuthenticationState> AuthenticationState { get; set; }
+    private bool IsProcessing { get; set; } = false;
+   
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationState;    
+    }
+
+}

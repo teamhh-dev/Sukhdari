@@ -1,0 +1,94 @@
+﻿@page "/addtype"
+@page "/type/update/{Id:int}"
+@using System.IO
+@using Sukhdari_Server.Service.IService
+@inject IJSRuntime JsRuntime
+@layout StoreAdminLayoutT
+@attribute [Authorize(Roles = Common.StaticDetails.Role_Admin)]
+
+<div class="card card-info">
+    <div class="card-header">
+        <div class="card-title float-left pt-2">
+            <h3>@Title</h3>
+        </div>
+    </div>
+    
+    @*use editform below if you want to use with modal else next is simple from is given*@
+
+   @* <EditForm Model="" OnValidSubmit="SaveType" class="form-horizontal">
+        <div class="card-body">
+            <DataAnnotationsValidator></DataAnnotationsValidator>
+
+            <div class="form-group">
+                <label class="col-md-7 control-label" for="product_name">TYPE NAME</label>
+                <div class="col-md-7">
+                    <InputText placeholder="TYPE NAME" class="form-control input-md" />
+                </div>
+            </div>
+
+
+            <div class="form-group">
+                <label class="col-md-7 control-label" for="tags">TYPE TAGS</label>
+                <div class="col-md-7">
+                    <InputTextArea class="form-control" name="tags" placeholer="enter comma seprated tags for this type">
+                    </InputTextArea>
+
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-7">
+                    <button type="submit" class="btn btn-info">@btnName</button>
+                </div>
+            </div>
+        </div>
+    </EditForm>*@
+
+
+    <form class="form-horizontal m-3">
+        <div class="form-group">
+            <div class="col-md-7">
+                <label class="col-md-7 control-label" for="product_name">TYPE NAME</label>
+                <input placeholder="TYPE NAME" class="form-control input-md" />
+            </div>
+        </div>
+
+         <div class="form-group">
+             <label class="col-md-7 control-label" for="tags">TYPE TAGS</label>
+             <p>*Enter Comma seprated tags for given type </p>
+             <div class="col-md-7">
+                 <textarea class="form-control" name="tags">
+
+                 </textarea>
+             </div>
+         </div>
+
+         <div class="form-group">
+                <div class="col-md-7">
+                    <button type="submit" class="btn btn-info">@btnName</button>
+                    <a href="/types" class="btn btn-danger ml-2">Cancel</a>
+                </div>
+         </div>
+         
+
+    </form>
+</div>
+
+
+@code {
+    private string Title { get; set; } = "Add Type";
+    private string btnName { get; set; } = "Save Type";
+    private string message { get; set; } = "Type Added Successfully";
+    [Parameter]
+    public int? Id { get; set; }
+    [CascadingParameter]
+    public Task<AuthenticationState> AuthenticationState { get; set; }
+
+   
+
+    private async void SaveType()
+    {
+        await JsRuntime.ToastrSuccess(message);
+        return;
+    }
+}
