@@ -9,11 +9,9 @@
 @*search bar*@
 <div class="bg-light p-3 col-12">
     <div class="ml-4 row">
-        <select class="btn btn-primary col-2">
-            <option value="category">Category</option>
-            <option value="product">Product</option>
-        </select>
-        <input class="form-control col-9 shadow-none border-dark ml-2 mr-2" />
+        <input placeholder="Search products by their names" class="form-control col-7 shadow-none border-dark" />
+        <a href="@($"stores/about/{Id}")" class="btn btn-primary col-2 ml-2">About</a>
+        <a href="@($"stores/contact/{Id}")" class="btn btn-primary col-2 ml-2">Contact</a>
         
     </div>
 </div>
@@ -23,13 +21,7 @@
         @if (Products != null && Products.Any())
         {
             <h4>Filters</h4>
-            @*<hr />
-            <div class="form-check ml-2">
-                <input  @onchange="@(async (e) => await DiscountCheckboxClicked(e.Value))" class="form-check-input" type="checkbox">
-                <label class="form-check-label" for="flexCheckDefault">
-                    Discount
-                </label>
-            </div>*@
+            
              <hr />
             <h5>Categories</h5>
             <div class="form-check ml-2">
