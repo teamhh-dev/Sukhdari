@@ -18,7 +18,7 @@ using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
 using System.Threading.Tasks;
-
+using Syncfusion.Blazor;
 namespace Sukhdari_Server
 {
     public class Startup
@@ -59,6 +59,7 @@ namespace Sukhdari_Server
             services.AddServerSideBlazor();
             services.AddSingleton<WeatherForecastService>();
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+            services.AddSyncfusionBlazor(options => { options.IgnoreScriptIsolation = true; });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

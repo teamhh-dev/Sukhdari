@@ -30,7 +30,12 @@ namespace Business
                 return await _db.SaveChangesAsync();
             }
             TagType newTag = _mapper.Map<TagTypeDTO, TagType>(tag);
-            await _db.tagTypes.AddAsync(newTag);
+            var searchTag = _db.tagTypes.FirstOrDefault(i => i.name == tag.name);
+            if(searchTag == null)
+            {
+                await _db.tagTypes.AddAsync(newTag);
+            }
+            
             return await _db.SaveChangesAsync();
         }
 
@@ -53,6 +58,11 @@ namespace Business
         public async Task<TagTypeDTO> GetTagType(int id)
         {
             return _mapper.Map<TagType, TagTypeDTO>(await _db.tagTypes.FirstOrDefaultAsync(i => i.id == id));
+        }
+        public int GetTagType(string name)
+        {
+            var tagType = _db.tagTypes.FirstOrDefault(i => i.name == name);
+            return tagType.id;
         }
 
         public async Task<int> updateTagType(TagTypeDTO tag)

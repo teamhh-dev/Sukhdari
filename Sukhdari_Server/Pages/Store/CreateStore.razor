@@ -1,7 +1,10 @@
 ﻿@page "/createStore"
 @page "/details"
 @layout StoreAdminLayoutT
+@using Syncfusion.Blazor.Buttons
 @inject IStoreRepo Store
+@inject ITagTypeRepo TagTypeRepo
+@inject ITagRepo TagRepo
 @inject NavigationManager Navigator
 @using System.IO
 @using Sukhdari_Server.Service.IService
@@ -313,7 +316,14 @@
         <label class="col-md-7 control-label" for="store_type">STORE TYPE</label>
         <div class="col-md-7">
             @*change inputfield with input select when you done with backend*@
-            <InputText @bind-Value="StoreDetails.Type" id="store_type" name="store_type" placeholder="e.g. Technology,General" class="form-control input-md" />
+            <select @onchange="DoStuff" id="store_type" name="store_type" class="form-control">
+                <option>Select Tag</option> 
+                @foreach (var type in TagType)
+                    {
+                        <option value="@type.id">@type.name</option>
+                        
+                    }
+            </select>
             <ValidationMessage For="()=>StoreDetails.Type"></ValidationMessage>
         </div>
     </div>
@@ -321,11 +331,25 @@
     <div class="form-group">
         <label class="col-md-7 control-label" for="tags">Tags</label>
         <div class="col-md-7">
-            <textarea id="tags" name="tags" class="form-control input-md"></textarea>
-            <div>
-                <a class="badge rounded-pill badge-secondary">tag 1</a>
-                <a class="badge rounded-pill badge-secondary">long tag</a>
-            </div>    
+            @*<textarea id="tags" name="tags" class="form-control input-md"></textarea>*@
+            <SfChip Selection="SelectionType.Multiple">
+                <ChipItems>
+                    @if (Tags != null && Tags.Any())
+                    {
+                        @foreach (var tag in Tags)
+                        {
+                            <ChipItem Text="@tag.Name"></ChipItem>
+                        }
+                    }
+                </ChipItems>
+            </SfChip>
+            @*<div>
+                
+                    <a class="badge rounded-pill badge-secondary">@tag.Name</a>
+                }
+                }
+                
+            </div> *@   
         </div>
     </div>
 
@@ -368,12 +392,13 @@
     public bool StoreAvailability { get; set; } = true;
     public bool ShowButton { get; set; } = false;
     private List<string> DeleteImagesName { get; set; } = new List<string>();
-
+    public IEnumerable<TagTypeDTO> TagType { get; set; }
+    public IEnumerable<TagDTO> Tags { get; set; }
     [CascadingParameter]
     public Task<AuthenticationState> AuthenticationState { get; set; }
     private StoreDTO StoreDetails { get; set; } = new StoreDTO();
     private StoreImageDTO StoreImage { get; set; } = new StoreImageDTO();
-
+    int typeID;
     protected override async Task OnInitializedAsync()
     {
         var authState = await AuthenticationState;
@@ -391,6 +416,7 @@
             StoreDetails.AdminName = authState.User.Identity.Name;
         }
         StoreDetails.AdminName = adminName;
+        TagType = await TagTypeRepo.GetAllTagsType();
     }
     private async Task AddStoreImage(StoreDTO store)
     {
@@ -526,4 +552,12 @@
             ShowButton = true;
         }
     }
+    private async Task DoStuff(ChangeEventArgs e)
+    {
+        var selectedString = e.Value.ToString();
+        typeID = Convert.ToInt32(selectedString);
+        Tags = await TagRepo.getTypeTags(typeID);
+
+    }
+ 
 }

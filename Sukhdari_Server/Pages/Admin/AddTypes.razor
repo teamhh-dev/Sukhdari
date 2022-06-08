@@ -4,6 +4,8 @@
 @using Sukhdari_Server.Service.IService
 @inject IJSRuntime JsRuntime
 @layout StoreAdminLayoutT
+@inject ITagTypeRepo TagType
+@inject ITagRepo Tag
 @attribute [Authorize(Roles = Common.StaticDetails.Role_Admin)]
 
 <div class="card card-info">
@@ -15,37 +17,36 @@
     
     @*use editform below if you want to use with modal else next is simple from is given*@
 
-   @* <EditForm Model="" OnValidSubmit="SaveType" class="form-horizontal">
+    <EditForm Model="TagTypeDetails" OnValidSubmit="SaveType" class="form-horizontal">
         <div class="card-body">
             <DataAnnotationsValidator></DataAnnotationsValidator>
 
             <div class="form-group">
-                <label class="col-md-7 control-label" for="product_name">TYPE NAME</label>
+                <label class="col-md-7 control-label" for="product_name">Type Name</label>
                 <div class="col-md-7">
-                    <InputText placeholder="TYPE NAME" class="form-control input-md" />
+                    <InputText @bind-Value="TagTypeDetails.name" placeholder="TYPE NAME" class="form-control input-md" />
                 </div>
             </div>
 
 
             <div class="form-group">
-                <label class="col-md-7 control-label" for="tags">TYPE TAGS</label>
+                <label class="col-md-7 control-label" for="tags">Type Tags</label>
                 <div class="col-md-7">
-                    <InputTextArea class="form-control" name="tags" placeholer="enter comma seprated tags for this type">
+                    <InputTextArea @bind-Value="tags" class="form-control input-md" name="tags" placeholer="Enter comma seprated tags">
                     </InputTextArea>
 
                 </div>
             </div>
-
             <div class="form-group">
                 <div class="col-md-7">
                     <button type="submit" class="btn btn-info">@btnName</button>
                 </div>
             </div>
         </div>
-    </EditForm>*@
+    </EditForm>
 
 
-    <form class="form-horizontal m-3">
+    @*<form class="form-horizontal m-3">
         <div class="form-group">
             <div class="col-md-7">
                 <label class="col-md-7 control-label" for="product_name">TYPE NAME</label>
@@ -71,7 +72,7 @@
          </div>
          
 
-    </form>
+    </form>*@
 </div>
 
 
@@ -79,16 +80,33 @@
     private string Title { get; set; } = "Add Type";
     private string btnName { get; set; } = "Save Type";
     private string message { get; set; } = "Type Added Successfully";
+    public string tags { get; set; } = "";
     [Parameter]
     public int? Id { get; set; }
     [CascadingParameter]
     public Task<AuthenticationState> AuthenticationState { get; set; }
-
-   
+    public TagTypeDTO TagTypeDetails { get; set; } = new TagTypeDTO();
 
     private async void SaveType()
     {
-        await JsRuntime.ToastrSuccess(message);
+        await TagType.createTagType(TagTypeDetails);
+        int id = TagType.GetTagType(TagTypeDetails.name);
+        string tag="";
+        foreach(var str in tags)
+        {
+            if(str != ',')
+            {
+                tag = tag + str;
+            }
+            else
+            {
+                TagDTO TagNew = new TagDTO();
+                TagNew.Name = tag;
+                TagNew.tagTypeId = id;
+                await Tag.createTag(TagNew);
+                tag = "";
+            }
+        }
         return;
     }
 }

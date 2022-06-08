@@ -14,5 +14,6 @@ namespace Business.IRepo
         public Task<int> updateTagType(TagTypeDTO tag);
         public Task<IEnumerable<TagTypeDTO>> GetAllTagsType();
         public Task<TagTypeDTO> GetTagType(int id);
+        public int GetTagType(string name);
     }
 }

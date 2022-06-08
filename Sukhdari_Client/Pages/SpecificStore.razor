@@ -9,7 +9,7 @@
 @*search bar*@
 <div class="bg-light p-3 col-12">
     <div class="ml-4 row">
-        <input placeholder="Search products by their names" class="form-control col-7 shadow-none border-dark" />
+        <input @bind-value="SearchProduct" @bind-value:event="oninput" @onkeyup="@searchProductResults" class="form-control col-7 shadow-none border-dark"/>
         <a href="@($"stores/about/{Id}")" class="btn btn-primary col-2 ml-2">About</a>
         <a href="@($"stores/contact/{Id}")" class="btn btn-primary col-2 ml-2">Contact</a>
         
@@ -40,14 +40,14 @@
             <hr />
         <h5>Discount</h5>
         <div class="form-check ml-2">
-            <input class="form-check-input" type="checkbox" >
-            <label class="form-check-label">1% to 25%</label><br />
-            <input class="form-check-input" type="checkbox" >
-            <label class="form-check-label">25% to 50%</label><br />
-            <input class="form-check-input" type="checkbox" >
-            <label class="form-check-label">50% to 75%</label><br />
-            <input class="form-check-input" type="checkbox" >
-            <label class="form-check-label">75% to 100%</label><br />
+            <input type="radio" class="form-check-input"  @onclick="(() => { RadioButtonClicked(25); })" >
+                <label class="form-check-label">Upto 25%</label><br />
+            
+                <input class="form-check-input" type="radio" @onclick="(() => { RadioButtonClicked(50); })">
+                <label class="form-check-label">Upto 50%</label><br />
+            
+                <input class="form-check-input" type="radio" @onclick="(() => { RadioButtonClicked(75); })" >
+                <label class="form-check-label">Upto75%</label><br />
         </div>
         }
     </div>
@@ -143,6 +143,7 @@
 {
     [Parameter]
     public int Id { get; set; }
+    public string SearchProduct { get; set; } = "";
     public IEnumerable<ProductDTO> FilteredProducts { get; set; }
     public IEnumerable<CategoryDTO> allCategories { get; set; }
     public int caresoltag = 0;
@@ -171,6 +172,17 @@
         FilteredProducts = Products;
         allCategories = await Store.getStoreCategories(Id);
         Store.AddStoreClickCount(Id);
+    }
+    public void searchProductResults()
+    {
+        if (SearchProduct == "")
+        {
+            FilteredProducts = Products;
+        }
+        else
+        {
+            FilteredProducts = Products.Where(i => i.Name.ToLower().Contains(SearchProduct.ToLower())).ToList();
+        }
     }
     public async Task DiscountCheckboxClicked(object checkedValue)
     {
@@ -221,6 +233,21 @@
                     count++;
                 }
             }
+        }
+    }
+    public void RadioButtonClicked(float? discount)
+    {
+        if (discount == 25)
+        {
+           FilteredProducts = Products.Where(i => i.DiscountPercentage <= 25).ToList();
+        }
+        else if(discount == 50)
+        {
+            FilteredProducts = Products.Where(i => i.DiscountPercentage <= 50).ToList();
+        }
+        else if (discount == 75)
+        {
+            FilteredProducts = Products.Where(i => i.DiscountPercentage <= 75).ToList();
         }
     }
 }

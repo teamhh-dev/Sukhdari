@@ -21,6 +21,7 @@
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.3" />
     <PackageReference Include="MudBlazor" Version="6.0.10" />
     <PackageReference Include="Radzen.Blazor" Version="3.18.12" />
+    <PackageReference Include="Syncfusion.Blazor.Buttons" Version="20.1.0.59" />
   </ItemGroup>
 
   <ItemGroup>

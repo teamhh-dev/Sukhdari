@@ -49,6 +49,10 @@ namespace Business
         {
             return _mapper.Map<IEnumerable<Tag>, IEnumerable<TagDTO>>(_db.tags);
         }
+        public async Task<IEnumerable<TagDTO>> getTypeTags(int typeID)
+        {
+            return _mapper.Map<IEnumerable<Tag>, IEnumerable<TagDTO>>(_db.tags.Where(i=>i.tagTypeId == typeID).ToList());
+        }
 
         public async Task<IEnumerable<TagDTO>> getAllTagsByStoreId(int storeId)
         {
