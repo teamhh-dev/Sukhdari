@@ -4,6 +4,7 @@
 @using Syncfusion.Blazor.Buttons
 @inject IStoreRepo Store
 @inject ITagTypeRepo TagTypeRepo
+@inject IStoreTagRepo StoreTag
 @inject ITagRepo TagRepo
 @inject NavigationManager Navigator
 @using System.IO
@@ -13,6 +14,87 @@
 @inject IJSRuntime JsRuntime
 @attribute [Authorize(Roles = Common.StaticDetails.Role_StoreAdmin)]
 
+
+<style>
+    .container {
+    max-width: 640px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 13px;
+    }
+
+    ul.ks-cboxtags {
+        list-style: none;
+       /* padding: 20px;*/
+    }
+    ul.ks-cboxtags li{
+      display: inline;
+    }
+    ul.ks-cboxtags li label{
+        display: inline-block;
+        background-color: rgba(255, 255, 255, .9);
+        border: 2px solid rgba(139, 139, 139, .3);
+        color: #adadad;
+        border-radius: 25px;
+        white-space: nowrap;
+        margin: 3px 0px;
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        -webkit-tap-highlight-color: transparent;
+        transition: all .2s;
+    }
+
+    ul.ks-cboxtags li label {
+        padding: 8px 12px;
+        cursor: pointer;
+    }
+
+    ul.ks-cboxtags li label::before {
+        display: inline-block;
+        font-style: normal;
+        font-variant: normal;
+        text-rendering: auto;
+        -webkit-font-smoothing: antialiased;
+        font-family: "Font Awesome 5 Free";
+        font-weight: 900;
+        font-size: 12px;
+        padding: 2px 6px 2px 2px;
+        content: "\f067";
+        transition: transform .3s ease-in-out;
+    }
+
+    ul.ks-cboxtags li input[type="checkbox"]:checked + label::before {
+        content: "\f00c";
+        transform: rotate(-360deg);
+        transition: transform .3s ease-in-out;
+    }
+
+    ul.ks-cboxtags li input[type="checkbox"]:checked + label {
+        border: 2px solid #1bdbf8;
+        background-color: #12bbd4;
+        color: #fff;
+        transition: all .2s;
+    }
+
+    ul.ks-cboxtags li input[type="checkbox"] {
+      display: absolute;
+    }
+    ul.ks-cboxtags li input[type="checkbox"] {
+      position: absolute;
+      opacity: 0;
+    }
+    ul.ks-cboxtags li input[type="checkbox"]:focus + label {
+      border: 2px solid #e9a1ff;
+    }
+  
+</style>
+
+
+
+
+
 <h3 class="mt-3">@Title</h3>
 <EditForm Model="StoreDetails" OnValidSubmit="@CreateStoreWithDTO" class="form-horizontal mb-3">
     <DataAnnotationsValidator></DataAnnotationsValidator>
@@ -21,17 +103,6 @@
         <label class="col-md-7 control-label" for="store_name">STORE NAME</label>
         <div class="col-md-7 d-flex flex-row">
             <InputText @bind-Value="StoreDetails.Name" @oninput="CheckStoreAvailability" id="store_name" name="store_name" placeholder="STORE NAME" class="@(StoreAvailability?"form-control input-md is-valid":"form-control input-md  is-invalid")" />
-
-            @*@if (StoreAvailability)
-                {
-                <span class="oi oi-check" style="color:green" )></span>
-
-                }
-                else
-                {
-                <span class="oi oi-warning" style="color:red" )></span>
-
-                }*@
             <ValidationMessage For="()=>StoreDetails.Name"></ValidationMessage>
         </div>
     </div>
@@ -315,15 +386,36 @@
      <div class="form-group">
         <label class="col-md-7 control-label" for="store_type">STORE TYPE</label>
         <div class="col-md-7">
-            @*change inputfield with input select when you done with backend*@
-            <select @onchange="DoStuff" id="store_type" name="store_type" class="form-control">
-                <option>Select Tag</option> 
-                @foreach (var type in TagType)
+            @if(isFlag)
+            {
+                <select @onchange="DoStuff" id="store_type" name="store_type" class="form-control">
+                    @if(TagType != null && TagType.Any())
                     {
-                        <option value="@type.id">@type.name</option>
-                        
+                        @foreach (var type in TagType)
+                        {
+                            @if(type.name == StoreDetails.Type)
+                            {
+                                <option value="@type.id" selected>@type.name</option>
+                            }
+                            else
+                            {
+                                <option value="@type.id">@type.name</option>
+                            }
+                            
+                        }
                     }
-            </select>
+                </select>
+            }
+            else
+            {
+                 <select @onchange="DoStuff" id="store_type" name="store_type" class="form-control">
+                     <option value="select_tag" disabled>Select Type</option> 
+                     @foreach (var type in TagType)
+                     {
+                        <option value="@type.id">@type.name</option>
+                     }
+                 </select>
+            }
             <ValidationMessage For="()=>StoreDetails.Type"></ValidationMessage>
         </div>
     </div>
@@ -331,18 +423,50 @@
     <div class="form-group">
         <label class="col-md-7 control-label" for="tags">Tags</label>
         <div class="col-md-7">
-            @*<textarea id="tags" name="tags" class="form-control input-md"></textarea>*@
-            <SfChip Selection="SelectionType.Multiple">
-                <ChipItems>
-                    @if (Tags != null && Tags.Any())
+               <div class="container">
+                <ul class="ks-cboxtags">
+                    @if(isFlag)
                     {
-                        @foreach (var tag in Tags)
+                        @if (Tags != null && Tags.Any())
                         {
-                            <ChipItem Text="@tag.Name"></ChipItem>
+                            @foreach (var tag in Tags)
+                            {
+                                @if (storeTagsName.Contains(@tag.Id))
+                                {
+                                     <li>
+                                        <input type="checkbox" checked id="@tag.Id" @onchange="@(async (e) => await TagboxClicked(@tag, e.Value))">
+                                        <label for="@tag.Id">@tag.Name</label>
+                                    </li>
+                                }
+                                else
+                                {
+                                    <li>
+                                        <input type="checkbox" id="@tag.Id" value="@tag.Id" @onchange="@(async (e) => await TagboxClicked(@tag, e.Value))">
+                                        <label for="@tag.Id">@tag.Name</label>
+                                    </li>
+                                }
+                            }
                         }
                     }
-                </ChipItems>
-            </SfChip>
+                    else
+                    {
+                         @if (Tags != null && Tags.Any())
+                        {
+                            @foreach (var tag in Tags)
+                            {
+                                <li>
+                                    <input type="checkbox" id="@tag.Id" value="@tag.Id" @onchange="@(async (e) => await TagboxClicked(@tag, e.Value))">
+                                    <label for="@tag.Id">@tag.Name</label>
+                                </li>   
+                            }
+                        }
+                    }
+                </ul>
+            
+            </div> 
+            
+            
+            @*<textarea id="tags" name="tags" class="form-control input-md"></textarea>*@     
             @*<div>
                 
                     <a class="badge rounded-pill badge-secondary">@tag.Name</a>
@@ -388,19 +512,27 @@
 
 @code {
     public string Title = "Create Store";
+    public string typeStore = "";
+    bool isFlag = false;
+    TagTypeDTO storeType = new TagTypeDTO();
     public string SubmitBtnTxt = "Add";
     public bool StoreAvailability { get; set; } = true;
     public bool ShowButton { get; set; } = false;
     private List<string> DeleteImagesName { get; set; } = new List<string>();
     public IEnumerable<TagTypeDTO> TagType { get; set; }
     public IEnumerable<TagDTO> Tags { get; set; }
+    public List<int> selectedTags = new List<int>();
+    public IEnumerable<StoreTagDTO> storeTagsID { get; set; }
+    public List<int> storeTagsName = new List<int>();
     [CascadingParameter]
     public Task<AuthenticationState> AuthenticationState { get; set; }
     private StoreDTO StoreDetails { get; set; } = new StoreDTO();
     private StoreImageDTO StoreImage { get; set; } = new StoreImageDTO();
     int typeID;
+
     protected override async Task OnInitializedAsync()
     {
+        TagType = await TagTypeRepo.GetAllTagsType();
         var authState = await AuthenticationState;
         string adminName = authState.User.Identity.Name;
         var store = Store.GetStoreByAdminName(adminName);
@@ -412,11 +544,19 @@
             {
                 store.ImageUrls = store.StoreImages.Select(i => i.StoreImageUrl).ToList();
             }
+            isFlag = true;
+            storeTagsID = await StoreTag.getStoreTags(store.Id);
+            foreach(var sTag in storeTagsID)
+            {
+                var addTag = await TagRepo.getTag(sTag.tagId);
+                storeTagsName.Add(addTag.Id);
+            }
+            var typeID = TagTypeRepo.GetTagType(store.Type);
+            Tags = await TagRepo.getTypeTags(typeID);
             StoreDetails = store;
             StoreDetails.AdminName = authState.User.Identity.Name;
         }
         StoreDetails.AdminName = adminName;
-        TagType = await TagTypeRepo.GetAllTagsType();
     }
     private async Task AddStoreImage(StoreDTO store)
     {
@@ -464,6 +604,7 @@
     }
     private async void CreateStoreWithDTO()
     {
+
         string message = "Store Details Added Successfully";
         if (StoreDetails.Id != 0 && Title == "Store Details")
         {
@@ -480,12 +621,18 @@
         }
         var newStore = await Store.createStore(StoreDetails);
         await AddStoreImage(newStore);
+        var authState = await AuthenticationState;
+        var storeID = Store.GetStoreByAdminName(authState.User.Identity.Name).Id;
+        foreach(var tag in selectedTags)
+        {
+            await StoreTag.AddStoreTag(storeID, tag);
+        }
         StoreDetails = new StoreDTO();
         StateHasChanged();
         Navigator.NavigateTo("/store/dashboard");
         await JsRuntime.ToastrSuccess(message);
-        //var result = await Store.createStore(StoreDetails);
-        //Navigator.NavigateTo("/store/dashboard");
+        ////var result = await Store.createStore(StoreDetails);
+        ////Navigator.NavigateTo("/store/dashboard");
 
 
     }
@@ -554,10 +701,67 @@
     }
     private async Task DoStuff(ChangeEventArgs e)
     {
-        var selectedString = e.Value.ToString();
-        typeID = Convert.ToInt32(selectedString);
-        Tags = await TagRepo.getTypeTags(typeID);
-
+        if (e.Value.ToString() != "select_tag")
+        {
+            var selectedString = e.Value.ToString();
+            typeID = Convert.ToInt32(selectedString);
+            Tags = await TagRepo.getTypeTags(typeID);
+            var tagType = TagTypeRepo.GetTagTypeByName(typeID);
+            StoreDetails.Type = tagType;
+        }
     }
- 
+    //private void OnClick(Syncfusion.Blazor.Buttons.ChipEventArgs args)
+    //{
+    //    if (selectedTags.Count() == 0)
+    //    {
+    //        selectedTags.Add(args.Text);
+    //    }
+    //    else
+    //    {
+    //        if(selectedTags.Contains(args.Text))
+    //        {
+    //            selectedTags.Remove(args.Text);
+    //        }
+    //        else
+    //        {
+    //            selectedTags.Add(args.Text);
+    //        }
+    //    }
+    //}
+    public async Task TagboxClicked(TagDTO tagDTO, object checkedValue)
+    {
+        if (isFlag)
+        {
+            if ((bool)checkedValue)
+            {
+
+                await StoreTag.AddStoreTag(StoreDetails.Id, tagDTO.Id);
+
+            }
+            else
+            {
+                if (StoreTag.isTagAvailable(tagDTO.Id, StoreDetails.Id))
+                {
+                    await StoreTag.DeleteStoreTag(tagDTO.Id, StoreDetails.Id);
+                }
+            }
+        }
+        else
+        {
+            if ((bool)checkedValue)
+            {
+                if (!selectedTags.Contains(tagDTO.Id))
+                {
+                    selectedTags.Add(tagDTO.Id);
+                }
+            }
+            else
+            {
+                if (selectedTags.Contains(tagDTO.Id))
+                {
+                    selectedTags.Remove(tagDTO.Id);
+                }
+            }
+        }
+    }
 }

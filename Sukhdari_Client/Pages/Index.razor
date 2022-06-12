@@ -174,16 +174,16 @@
                 <p class="card-text m-0"><small class="text-muted">@store.Type</small></p>
             </div>
         </div>
-        <div class="justify-content-center col-12">
+       @* <div class="justify-content-center col-12">
     <a href="@($"stores/store/{store.Id}")" class="btn btn-primary m-2 col-11">Explore</a>
     <a href="@($"stores/about/{store.Id}")" class="btn btn-success m-2 col-11">Contact</a>
-    </div>
+    </div>*@
     
-    @*<div class="row d-flex justify-content-center col-12 m-0 p-0 ">
+    <div class="row d-flex flex-row justify-content-center col-12 m-0 p-0 ">
     <a href="@($"stores/store/{store.Id}")" class="btn btn-primary m-2 col-3"><span class="oi oi-magnifying-glass"></span></a>
-    <a href="@($"stores/about/{store.Id}")" class="btn btn-primary m-2 col-3"><span class="oi oi-phone"></span></a>
-    <a href="@($"stores/contact/{store.Id}")" class="btn btn-primary m-2 col-3"><span class="oi oi-info"></span></a>
-       </div> *@        
+    <a href="@($"stores/about/{store.Id}")" class="btn btn-secondary m-2 col-3"><span class="oi oi-phone"></span></a>
+    <a href="@($"stores/contact/{store.Id}")" class="btn btn-danger m-2 col-3"><span class="oi oi-info"></span></a>
+       </div>         
     @{caresoltag++;}
 </div>} 
         }

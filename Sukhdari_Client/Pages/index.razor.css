@@ -109,6 +109,12 @@
     overflow: hidden;
 }
 
+
+.storeCard
+{
+    max-width:20% !important;
+}
+
 .storeCard:hover {
     transform: scale(1.1);
     background-color:gainsboro;

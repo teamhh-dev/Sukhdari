@@ -59,10 +59,16 @@ namespace Business
         {
             return _mapper.Map<TagType, TagTypeDTO>(await _db.tagTypes.FirstOrDefaultAsync(i => i.id == id));
         }
+        
         public int GetTagType(string name)
         {
             var tagType = _db.tagTypes.FirstOrDefault(i => i.name == name);
             return tagType.id;
+        }
+        public string GetTagTypeByName(int typeID)
+        {
+            var tagType = _db.tagTypes.FirstOrDefault(i => i.id == typeID);
+            return tagType.name;
         }
 
         public async Task<int> updateTagType(TagTypeDTO tag)

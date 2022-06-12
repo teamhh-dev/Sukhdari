@@ -63,6 +63,10 @@ namespace Business
         {
             return _mapper.Map<Tag, TagDTO>(await _db.tags.FirstOrDefaultAsync(i => i.Id == id));
         }
+        public async Task<TagDTO> getTag(string tagName)
+        {
+            return _mapper.Map<Tag, TagDTO>(await _db.tags.FirstOrDefaultAsync(i => i.Name == tagName));
+        }
 
         public async Task<TagDTO> getTagByStoreId(int id, int storeId)
         {

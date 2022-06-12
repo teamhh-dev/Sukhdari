@@ -20,6 +20,7 @@ namespace DataAccess.Data
         public DbSet<StoreImage> storeImages { get; set; }
         public DbSet<TagType> tagTypes { get; set; }
         public DbSet<Tag> tags { get; set; }
+        public DbSet<StoreTags> storeTags { get; set; }
 
         //protected override void OnModelCreating(ModelBuilder builder)
         //{
