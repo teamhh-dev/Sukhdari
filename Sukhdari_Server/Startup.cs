@@ -36,7 +36,7 @@ namespace Sukhdari_Server
         {
             services.AddDbContext<ApplicationDbContext>(options =>
 
-            options.UseSqlServer(Configuration.GetConnectionString("NehaConnection")));
+            options.UseSqlServer(Configuration.GetConnectionString("IrhaConnection")));
 
             services.AddIdentity<IdentityUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders()
