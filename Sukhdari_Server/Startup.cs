@@ -52,14 +52,16 @@ namespace Sukhdari_Server
             services.AddScoped<IStoreImageRepo, StoreImageRepo>();
             services.AddScoped<ITagRepo, TagRepo>();
             services.AddScoped<ITagTypeRepo, TagTypeRepo>();
+            services.AddScoped<IStoreTagRepo, StoreTagRepo>();
                  
             services.AddHttpContextAccessor();
             services.AddRazorPages();
+            services.AddSyncfusionBlazor(options => { options.IgnoreScriptIsolation = true; });
             services.AddHttpContextAccessor();
             services.AddServerSideBlazor();
             services.AddSingleton<WeatherForecastService>();
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-            services.AddSyncfusionBlazor(options => { options.IgnoreScriptIsolation = true; });
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
