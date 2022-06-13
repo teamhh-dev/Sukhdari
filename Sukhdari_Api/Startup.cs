@@ -69,14 +69,20 @@ namespace Sukhdari_Api
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseSwagger();
+                app.UseSwaggerUI(c =>
                 
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Sukhdari_Api v1")
+                    //c.RoutePrefix = string.Empty;
+                );
+
             }
-            app.UseSwagger();
-            app.UseSwaggerUI(c =>
-            {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Sukhdari_Api v1");
-                c.RoutePrefix = string.Empty;
-            });
+            //app.UseSwagger();
+            //app.UseSwaggerUI(c =>
+            //{
+            //    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Sukhdari_Api v1");
+            //    c.RoutePrefix = string.Empty;
+            //});
 
             app.UseHttpsRedirection();
             app.UseCors("Sukhdari");

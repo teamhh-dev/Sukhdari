@@ -73,6 +73,10 @@ namespace Business
             return _mapper.Map<Tag, TagDTO>(await _db.tags.FirstOrDefaultAsync(i => i.Id == id && i.storeId == storeId));
         }
 
+        public async Task<IEnumerable<TagDTO>> getAllTagsWithSpecificType(int typeId)
+        {
+            return _mapper.Map<IEnumerable<Tag>, IEnumerable<TagDTO>>(_db.tags.Where(i => i.tagTypeId == typeId).ToList());
+        }
         public async Task<int> updateTag(TagDTO tag)
         {
             Tag oldTag = await _db.tags.FindAsync(tag.Id);
