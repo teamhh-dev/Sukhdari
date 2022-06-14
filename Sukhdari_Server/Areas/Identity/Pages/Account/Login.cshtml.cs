@@ -74,17 +74,7 @@ namespace Sukhdari_Server.Areas.Identity.Pages.Account
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
             var currentUser = _userManager.Users.FirstOrDefault(i => i.Email == Input.Email);
-            bool isInRoleAdmin = await _userManager.IsInRoleAsync(currentUser, Common.StaticDetails.Role_Admin);
-            if (!isInRoleAdmin)
-            {
-                returnUrl ??= Url.Content("~/store/dashboard");
-
-            }
-            else
-            {
-                returnUrl ??= Url.Content("~/admin/dashboard");
-
-            }
+            
 
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 
@@ -95,6 +85,17 @@ namespace Sukhdari_Server.Areas.Identity.Pages.Account
                 var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
                 if (result.Succeeded)
                 {
+                    bool isInRoleAdmin = await _userManager.IsInRoleAsync(currentUser, Common.StaticDetails.Role_Admin);
+                    if (!isInRoleAdmin)
+                    {
+                        returnUrl ??= Url.Content("~/store/dashboard");
+
+                    }
+                    else
+                    {
+                        returnUrl ??= Url.Content("~/admin/dashboard");
+
+                    }
                     _logger.LogInformation("User logged in.");
                     return LocalRedirect(returnUrl);
                 }
