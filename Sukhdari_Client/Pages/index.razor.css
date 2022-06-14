@@ -63,10 +63,10 @@
     z-index: 1;
 }
 
-.card__arc path {
-    fill: #fff;
-    d: path("M 40 80 c 22 0 40 -22 40 -40 v 40 Z");
-}
+    .card__arc path {
+        fill: #fff;
+        d: path("M 40 80 c 22 0 40 -22 40 -40 v 40 Z");
+    }
 
 .cardcomponent:hover .card__header {
     transform: translateY(0);
@@ -110,19 +110,39 @@
 }
 
 
-.storeCard
-{
-    max-width:20% !important;
+.storeCard {
+    max-width: 23% !important;
 }
 
-.storeCard:hover {
-    transform: scale(1.1);
-    background-color:gainsboro;
+    .storeCard img {
+        width: 100%;
+        object-fit: cover;
+    }
+
+    .storeCard:hover {
+        transform: scale(1.05);
+        background-color: gainsboro;
+    }
+
+.card-batch {
+    position: absolute;
+    z-index: 2;
+    left: 0;
+    background-color: #f4ff00;
+    width: 45%;
+    font-size: 0.6rem;
+    padding: 2px;
+    border-bottom-right-radius: 9px;
 }
 
-@media(max-width: 840px)
-{
-    .filterDiv{
-        display:none;
+@media(max-width: 840px) {
+    .filterDiv {
+        display: none;
+    }
+    .storeCard {
+        max-width: 100% !important;
+    }
+    .row {
+        justify-content: center !important;
     }
 }
