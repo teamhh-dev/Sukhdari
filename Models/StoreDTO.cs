@@ -17,7 +17,7 @@ namespace Models
         public string Type { get; set; }
         [Required(ErrorMessage = "Enter Country Name")]
         public string Country { get; set; }
-
+        public float? maxDiscount { get; set; }
         [Required]
         public string AdminName { get; set; }
         public string Image { get; set; }
