@@ -714,17 +714,31 @@
     {
         if (isFlag)
         {
+            //if ((bool)checkedValue)
+            //{
+
+            //    await StoreTag.AddStoreTag(StoreDetails.Id, tagDTO.Id);
+
+            //}
+            //else
+            //{
+            //    if (StoreTag.isTagAvailable(tagDTO.Id, StoreDetails.Id))
+            //    {
+            //        await StoreTag.DeleteStoreTag(tagDTO.Id, StoreDetails.Id);
+            //    }
+            //}
             if ((bool)checkedValue)
             {
-
-                await StoreTag.AddStoreTag(StoreDetails.Id, tagDTO.Id);
-
+                if (!selectedTags.Contains(tagDTO.Id))
+                {
+                    selectedTags.Add(tagDTO.Id);
+                }
             }
             else
             {
-                if (StoreTag.isTagAvailable(tagDTO.Id, StoreDetails.Id))
+                if (selectedTags.Contains(tagDTO.Id))
                 {
-                    await StoreTag.DeleteStoreTag(tagDTO.Id, StoreDetails.Id);
+                    selectedTags.Remove(tagDTO.Id);
                 }
             }
         }

@@ -13,6 +13,7 @@ namespace Business.IRepo
         public Task<IEnumerable<StoreTagDTO>> getStoreTags(int storeID);
         public bool isTagAvailable(int tagID, int storeID);
         public Task<int> DeleteStoreTag(int tagID, int storeID);
-
+        public Task<IEnumerable<StoreDTO>> getStoresWithTags(string storeTag);
+        public Task<IEnumerable<StoreTagDTO>> getAllStoreTags();
     }
 }

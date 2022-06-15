@@ -33,7 +33,7 @@
             <option value="category">Category</option>
             <option value="product">Product</option>
         </select>
-        <input @bind-value="SearchTerm" @bind-value:event="oninput" @onkeyup="@searchResults"  class="form-control col-9 shadow-none border-dark ml-2 mr-2" />
+        <input @bind-value="SearchTerm" @bind-value:event="oninput" @onkeyup="@searchResults" class="form-control col-9 shadow-none border-dark ml-2 mr-2" />
         
     </div>
 </div>
@@ -198,6 +198,7 @@
     public string selectedFilter = "store";
     public string SearchTerm { get; set; } = "";
     public IEnumerable<StoreDTO> FilteredStores { get; set; }
+    public IEnumerable<StoreTagDTO> AllTags { get; set; }
     public IEnumerable<StoreDTO> Stores { get; set; }
     public IEnumerable<StoreDTO> AllStores { get; set; }
     public IEnumerable<StoreDTO> test { get; set; }
@@ -211,6 +212,7 @@
         Stores = await Store.getAllStores();
         AllStores = await Store.getAllStores();
         FilteredStores = Stores;
+        AllTags = await Store.getAllStoreTags();
     }
     public async Task searchByRange()
     {
@@ -275,10 +277,24 @@
             if (SearchTerm == "")
             {
                 FilteredStores = Stores;
+                AllTags = await Store.getAllStoreTags();
             }
             else
             {
                 FilteredStores = Stores.Where(i => i.Name.ToLower().Contains(SearchTerm.ToLower())).ToList();
+                AllTags = AllTags.Where(i => i.tagName.ToLower().Contains(SearchTerm.ToLower())).ToList();
+                foreach (var tagStore in AllTags)
+                {
+                    var store = Stores.FirstOrDefault(i => i.Id == tagStore.storeId);
+                    if (!FilteredStores.Contains(store))
+                    {
+                        @*IEnumerable<StoreDTO> tag = new List<StoreDTO>();
+                        tag = tag.Append(store);
+                        List<StoreDTO> stores = new List<StoreDTO>();
+                        stores.Add(store);*@
+                        FilteredStores = FilteredStores.Append(store);
+                    }
+                }
             }
         }
         else if (selectedFilter == "product")
@@ -303,5 +319,7 @@
                 FilteredStores = await Store.SearchStoreByCategory(SearchTerm);
             }
         }
+        
+        
     }
 }

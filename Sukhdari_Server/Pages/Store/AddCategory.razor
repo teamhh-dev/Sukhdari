@@ -59,14 +59,15 @@
             await JsRuntime.ToastrWarning(message);
             return;
         }
-        
+
         else if(CategoryDetails.Id !=0)
         {
             message = "Category Updated Successfully"; 
         }
-        CategoryDetails = new CategoryDTO();
+        CategoryDetails.Name = "";
+        CategoryDetails.Description = "";
         StateHasChanged();
-        Navigator.NavigateTo("/category");
+        //Navigator.NavigateTo("/category");
         await JsRuntime.ToastrSuccess(message);
 
     }

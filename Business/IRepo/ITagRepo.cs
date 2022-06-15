@@ -19,5 +19,6 @@ namespace Business.IRepo
         public Task<IEnumerable<TagDTO>> getTypeTags(int typeID);
         public Task<TagDTO> getTag(string tagName);
         public Task<IEnumerable<TagDTO> >getAllTagsWithSpecificType(int typeId);
+       
     }
 }

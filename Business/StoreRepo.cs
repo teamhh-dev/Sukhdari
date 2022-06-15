@@ -27,7 +27,19 @@ namespace Business
             {
                 Store oldStore = await _db.Stores.FindAsync(store.Id);
                 oldStore.Name = store.Name;
-                oldStore.Type = store.Type;
+                
+                if (oldStore.Type != store.Type)
+                {
+                    var storeTags = _db.storeTags.Where(i => i.storeId == store.Id).ToList();
+                    if(storeTags.Any())
+                    {
+                        foreach(var tag in storeTags)
+                        {
+                            _db.storeTags.Remove(tag);
+                        }
+                    }
+                    oldStore.Type = store.Type;
+                }
                 oldStore.Country = store.Country;
                 oldStore.Image = store.Image;
                 if(oldStore.ClickCount != null)

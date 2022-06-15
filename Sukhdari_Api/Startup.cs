@@ -34,14 +34,16 @@ namespace Sukhdari_Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("IrhaConnection")));
+                options.UseSqlServer(Configuration.GetConnectionString("NehaConnection")));
 
             services.AddIdentity<IdentityUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
             services.AddScoped<IStoreRepo, StoreRepo>();
             services.AddScoped<ICategoryRepo, CategoryRepo>();
             services.AddScoped<IProductRepo, ProductRepo>();
-
+            services.AddScoped<ITagRepo, TagRepo>();
+            services.AddScoped<ITagTypeRepo, TagTypeRepo>();
+            services.AddScoped<IStoreTagRepo, StoreTagRepo>();
             services.AddScoped<IUserIPRepo, UserIPRepo>();
             
             services.AddCors(o => o.AddPolicy("Sukhdari", builder =>

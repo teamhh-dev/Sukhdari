@@ -10,6 +10,7 @@ namespace Models
     public class StoreTagDTO
     {
         public int tagId { get; set; }
+        public string tagName { get; set; }
         public int storeId { get; set; }
     }
 }

@@ -65,7 +65,7 @@ namespace Business
         }
         public async Task<TagDTO> getTag(string tagName)
         {
-            return _mapper.Map<Tag, TagDTO>(await _db.tags.FirstOrDefaultAsync(i => i.Name == tagName));
+            return _mapper.Map<Tag, TagDTO>(await _db.tags.FirstOrDefaultAsync(i => i.Name.ToLower() == tagName.ToLower()));
         }
 
         public async Task<TagDTO> getTagByStoreId(int id, int storeId)
@@ -77,6 +77,8 @@ namespace Business
         {
             return _mapper.Map<IEnumerable<Tag>, IEnumerable<TagDTO>>(_db.tags.Where(i => i.tagTypeId == typeId).ToList());
         }
+
+        
         public async Task<int> updateTag(TagDTO tag)
         {
             Tag oldTag = await _db.tags.FindAsync(tag.Id);
@@ -84,5 +86,7 @@ namespace Business
             _db.tags.Update(newTag);
             return await _db.SaveChangesAsync();
         }
+
+        
     }
 }

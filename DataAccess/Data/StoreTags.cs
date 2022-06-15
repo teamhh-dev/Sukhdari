@@ -14,6 +14,7 @@ namespace DataAccess.Data
         public int Id { get; set; }
         [ForeignKey("tagId")]
         public int tagId { get; set; }
+        public string tagName { get; set; }
         [ForeignKey("storeId")]
         public int storeId { get; set; }
     }

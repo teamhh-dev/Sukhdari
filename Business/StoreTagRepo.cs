@@ -28,6 +28,8 @@ namespace Business
                 StoreTags addTags = new StoreTags();
                 addTags.storeId = storeID;
                 addTags.tagId = tagID;
+                var tag = await _db.tags.FirstOrDefaultAsync(i=>i.Id == tagID);
+                addTags.tagName = tag.Name;
                 await _db.storeTags.AddAsync(addTags);
             }
             return await _db.SaveChangesAsync();
@@ -53,6 +55,34 @@ namespace Business
                 return true;
             }
             return false;
+        }
+        public async Task<IEnumerable<StoreDTO>> getStoresWithTags(string storeTag)
+        {
+            //var tagsList = _db.storeTags.Where(i => i.tagName.ToLower().Contains(tag.ToLower())).ToList();
+            //List<Store> stores = new List<Store>();
+            //foreach(var tags in tagsList)
+            //{
+            //    stores.Add( await _db.Stores.FirstOrDefaultAsync(i => i.Id == tags.storeId));
+            //}
+            //return _mapper.Map<IEnumerable<Store>, IEnumerable<StoreDTO>>(stores);
+            List<Store> stores = new List<Store>();
+            if (storeTag != "")
+            {
+                var allStoreTags = _db.storeTags.Where(i => i.tagName.ToLower().Contains(storeTag.ToLower())).ToList();
+                foreach (var tag in allStoreTags)
+                {
+                    var id = _db.Stores.FirstOrDefault(i => i.Id == tag.storeId);
+                    if (!stores.Contains(id))
+                    {
+                        stores.Add(await _db.Stores.Include(i => i.StoreImages).FirstOrDefaultAsync(i => i.Id == tag.storeId));
+                    }
+                }
+            }
+            return _mapper.Map<IEnumerable<Store>, IEnumerable<StoreDTO>>(stores);
+        }
+        public async Task<IEnumerable<StoreTagDTO>> getAllStoreTags()
+        {
+            return _mapper.Map<IEnumerable<StoreTags>, IEnumerable<StoreTagDTO>>(_db.storeTags).ToList();
         }
     }
 }

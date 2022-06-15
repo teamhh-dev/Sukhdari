@@ -88,10 +88,10 @@
     public TagTypeDTO TagTypeDetails { get; set; } = new TagTypeDTO();
     public IEnumerable<TagDTO> Tags { get; set; }
     public List<string> tagsName = new List<string>();
-    
+
     protected override async Task OnInitializedAsync()
     { 
-        
+
         if (Id != null)
         {
             //updating
@@ -106,12 +106,12 @@
                 tagsName.Add(tag.Name);
             }
         }
-       
+
     }
 
     private async void SaveType()
     {
-        
+
         await TagType.createTagType(TagTypeDetails);
         int id = TagType.GetTagType(TagTypeDetails.name);
         string tag="";
@@ -125,10 +125,14 @@
             }
             else
             {
-                TagDTO TagNew = new TagDTO();
-                TagNew.Name = tag;
-                TagNew.tagTypeId = id;
-                await Tag.createTag(TagNew);
+                if (!tagsName.Contains(tag))
+                {
+                    TagDTO TagNew = new TagDTO();
+                    TagNew.Name = tag;
+                    TagNew.tagTypeId = id;
+                    await Tag.createTag(TagNew);
+                    
+                }
                 tag = "";
             }
 

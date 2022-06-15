@@ -121,5 +121,19 @@ namespace Sukhdari_Client.Service
         {
             var response = await _httpClient.GetAsync($"api/Product/AddProductClickCount/{productID}");
         }
+        public async Task<IEnumerable<StoreDTO>> getStoresByTags(string tagName)
+        {
+            var response = await _httpClient.GetAsync($"api/StoreTag/GetStoresByTags/{tagName}");
+            var content = await response.Content.ReadAsStringAsync();
+            var stores = JsonConvert.DeserializeObject<IEnumerable<StoreDTO>>(content);
+            return stores;
+        }
+        public async Task<IEnumerable<StoreTagDTO>> getAllStoreTags()
+        {
+            var response = await _httpClient.GetAsync($"api/StoreTag/getAllStoreTags");
+            var content = await response.Content.ReadAsStringAsync();
+            var stores = JsonConvert.DeserializeObject<IEnumerable<StoreTagDTO>>(content);
+            return stores;
+        }
     }
 }
