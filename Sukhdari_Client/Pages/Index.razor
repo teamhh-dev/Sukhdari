@@ -81,15 +81,38 @@
         <h5>Discount</h5>
         <div class="form-check ml-2">
 
-
-            <input type="radio" class="form-check-input"  @onclick="(() => { RadioButtonClicked(25); })" ></input>
-            <label class="form-check-label">Upto 25%</label><br />
-            
-            <input class="form-check-input" type="radio" @onclick="(() => { RadioButtonClicked(50); })">
-            <label class="form-check-label">Upto 50%</label><br />
-            
-            <input class="form-check-input" type="radio" @onclick="(() => { RadioButtonClicked(75); })" >
-            <label class="form-check-label">Upto75%</label><br />
+            @if(checkBoxIndex[0] == 0)
+            {
+                <input type="checkbox" class="form-check-input" @onchange="@((e) => DiscountCheckboxClicked(25, 0, e.Value))" >
+                <label class="form-check-label">Upto 25%</label><br />
+            }
+            else if(checkBoxIndex[0] == 1)
+            {
+                <input type="checkbox" class="form-check-input" @onchange="@((e) => DiscountCheckboxClicked(25, 0, e.Value))" checked>
+                <label class="form-check-label">Upto 25%</label><br />
+            }
+                
+            @if(checkBoxIndex[1] == 0)
+            {
+                <input class="form-check-input" type="checkbox" @onchange="@((e) => DiscountCheckboxClicked(50, 1, e.Value))">
+                <label class="form-check-label">Upto 50%</label><br />
+            }
+            else if(checkBoxIndex[1] == 1)
+            {
+                <input class="form-check-input" type="checkbox" @onchange="@((e) => DiscountCheckboxClicked(50, 1, e.Value))" checked>
+                <label class="form-check-label">Upto 50%</label><br />
+            }
+            @if(checkBoxIndex[2] == 0)
+            {
+                <input class="form-check-input" type="checkbox" @onchange="@((e) => DiscountCheckboxClicked(75, 2, e.Value))" >
+                <label class="form-check-label">Upto 75%</label><br />
+                    
+            }
+            else if(checkBoxIndex[2] == 1)
+            {
+                <input class="form-check-input" type="checkbox" @onchange="@((e) => DiscountCheckboxClicked(75, 2, e.Value))" checked>
+                <label class="form-check-label">Upto 75%</label><br />
+            }
             
         </div>
       
@@ -211,6 +234,7 @@
     public IEnumerable<StoreDTO> test { get; set; }
     public List<string> countries = new List<string>();
     public float[] array = new float[100];
+    int[] checkBoxIndex = new int[3]{ 0, 0, 0 };
     public int[] discountList = { 25, 50, 75 };
     int min = 0;
     int max = 10000;
@@ -346,19 +370,31 @@
             }
         }  
     }
-    public void RadioButtonClicked(float? discount)
+    public void DiscountCheckboxClicked(int discount, int index, object checkedValue )
     {
-        if (discount == 25)
+        if ((bool)checkedValue)
         {
-           FilteredStores = Stores.Where(i => i.maxDiscount <= 25 && i.maxDiscount >= 1).ToList();
+            checkBoxIndex[0] = 0;
+            checkBoxIndex[1] = 0;
+            checkBoxIndex[2] = 0;
+            checkBoxIndex[index] = 1;
+            if (discount == 25)
+            {
+               FilteredStores = Stores.Where(i => i.maxDiscount <= 25 && i.maxDiscount >= 1).ToList();
+            }
+            else if(discount == 50)
+            {
+                FilteredStores = Stores.Where(i => i.maxDiscount <= 50 && i.maxDiscount >= 1).ToList();
+            }
+            else if (discount == 75)
+            {
+                FilteredStores = Stores.Where(i => i.maxDiscount <= 75 && i.maxDiscount >= 1).ToList();
+            }
         }
-        else if(discount == 50)
+        else
         {
-            FilteredStores = Stores.Where(i => i.maxDiscount <= 50 && i.maxDiscount >= 1).ToList();
-        }
-        else if (discount == 75)
-        {
-            FilteredStores = Stores.Where(i => i.maxDiscount <= 75 && i.maxDiscount >= 1).ToList();
+            checkBoxIndex[index] = 0;
+            FilteredStores = Stores;
         }
     }
 }
