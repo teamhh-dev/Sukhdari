@@ -373,7 +373,7 @@
     <div class="form-group">
         <label class="col-md-7 control-label" for="ph_no">Phone No.</label>
         <div class="col-md-7">
-            <input type="tel" id="ph_no" name="ph_no" placeholder="03xx xxxxxxx" class="form-control input-md" /> @*change input with inputtext when bind-value is available*@
+            <InputText type="tel" id="ph_no" name="ph_no" placeholder="xxxx-xxxxxxx" class="form-control input-md" pattern="[0-9]{4}-[0-9]{7}" @bind-Value="StoreDetails.phoneNo" />
         </div>
     </div>
 

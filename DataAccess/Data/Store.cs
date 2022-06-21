@@ -25,8 +25,8 @@ namespace DataAccess.Data
         public DateTime timeNow { get; set; }
 
         public string Address { get; set; }
-        [MaxLength(11)]
-        public int phoneNo { get; set; }
+        [MaxLength(12)]
+        public string phoneNo { get; set; }
         public int ClickCount { get; set; }
         public virtual ICollection<StoreImage> StoreImages { get; set; }
     }

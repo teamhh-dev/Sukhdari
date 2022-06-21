@@ -90,11 +90,10 @@
                         storeTypes.Add(type.Type);
                     }
                 }
-                
             }
             @foreach (var type in storeTypes)
                 {
-                    <input class="form-check-input" type="checkbox" @onchange="@(async (e) => await StorTypeCheckbox(type, e.Value))">
+                    <input class="form-check-input" type="checkbox" @onchange="@(async (e) => await StoreTypeCheckbox(type, e.Value))">
                     <label class="form-check-label" for="flexCheckDefault">
                         @type
                     </label>
@@ -105,15 +104,38 @@
         <h5>Discount</h5>
         <div class="form-check ml-2">
 
-
-            <input type="radio" class="form-check-input"  @onclick="(() => { RadioButtonClicked(25); })" ></input>
-            <label class="form-check-label">Upto 25%</label><br />
-            
-            <input class="form-check-input" type="radio" @onclick="(() => { RadioButtonClicked(50); })">
-            <label class="form-check-label">Upto 50%</label><br />
-            
-            <input class="form-check-input" type="radio" @onclick="(() => { RadioButtonClicked(75); })" >
-            <label class="form-check-label">Upto75%</label><br />
+           @if(checkBoxIndex[0] == 0)
+            {
+                <input type="checkbox" class="form-check-input" @onchange="@((e) => DiscountCheckboxClicked(25, 0, e.Value))" >
+                <label class="form-check-label">Upto 25%</label><br />
+            }
+            else if(checkBoxIndex[0] == 1)
+            {
+                <input type="checkbox" class="form-check-input" @onchange="@((e) => DiscountCheckboxClicked(25, 0, e.Value))" checked>
+                <label class="form-check-label">Upto 25%</label><br />
+            }
+                
+            @if(checkBoxIndex[1] == 0)
+            {
+                <input class="form-check-input" type="checkbox" @onchange="@((e) => DiscountCheckboxClicked(50, 1, e.Value))">
+                <label class="form-check-label">Upto 50%</label><br />
+            }
+            else if(checkBoxIndex[1] == 1)
+            {
+                <input class="form-check-input" type="checkbox" @onchange="@((e) => DiscountCheckboxClicked(50, 1, e.Value))" checked>
+                <label class="form-check-label">Upto 50%</label><br />
+            }
+            @if(checkBoxIndex[2] == 0)
+            {
+                <input class="form-check-input" type="checkbox" @onchange="@((e) => DiscountCheckboxClicked(75, 2, e.Value))" >
+                <label class="form-check-label">Upto 75%</label><br />
+                    
+            }
+            else if(checkBoxIndex[2] == 1)
+            {
+                <input class="form-check-input" type="checkbox" @onchange="@((e) => DiscountCheckboxClicked(75, 2, e.Value))" checked>
+                <label class="form-check-label">Upto 75%</label><br />
+            }
             
         </div>
       
@@ -158,10 +180,10 @@
                                  {
                                     <div class="carousel-item active">
                                         <img class="card-img-top" src="@image.StoreImageUrl" onerror="this.src = '/Images/store.jpg';" alt="Product image cap" />
-                                        @*@if (array[store.Id] != null)
+                                        @if (array[store.Id] != 0)
                                         {
                                             <span class="card-batch">Upto @array[store.Id]%</span>
-                                        }*@
+                                        }
 
                                     </div> 
                                  }
@@ -235,9 +257,9 @@
     public IEnumerable<StoreDTO> test { get; set; }
     public List<string> countries = new List<string>();
     public List<string> storeTypes = new List<string>();
-    @*public float[] array;
-    int getId;
-    *@
+    public List<string> storeTypeList = new List<string>();
+    int[] checkBoxIndex = new int[3]{ 0, 0, 0 };
+    public float[] array;
     public int[] discountList = { 25, 50, 75 };
     int min = 0;
     int max = 10000;
@@ -246,28 +268,32 @@
     protected override async Task OnInitializedAsync()
     {
         Stores = await Store.getAllStores();
-        //getId = Stores.OrderByDescending(i => i.Id).FirstOrDefault().Id;
         AllStores = await Store.getAllStores();
         FilteredStores = Stores;
         AllTags = await Store.getAllStoreTags();
-        
-        //array = new float[getId];
-        foreach(var store in Stores)
-        {
-            float? maxDiscount = 0;
-            var products = await Store.GetStoreProducts(store.Id);
-            foreach(var product in products)
-            {
-                if(maxDiscount<product.DiscountPercentage)
-                {
-                    maxDiscount = product.DiscountPercentage;
-                }
 
+        if(Stores != null && Stores.Any())
+        {
+             var storeID = Stores.OrderByDescending(i => i.Id).FirstOrDefault().Id;
+            storeID = storeID + 1;
+            array = new float[storeID];
+            foreach(var store in Stores)
+            {
+                float? maxDiscount = 0;
+                var products = await Store.GetStoreProducts(store.Id);
+                foreach(var product in products)
+                {
+                    if(maxDiscount<product.DiscountPercentage)
+                    {
+                        maxDiscount = product.DiscountPercentage;
+                    }
+                }
+                store.maxDiscount = maxDiscount.Value;
+                array[store.Id] = maxDiscount.Value;
             }
-            store.maxDiscount = maxDiscount.Value;
-            //maxDiscounts[store.Id]= maxDiscount.Value;
-            //array[store.Id] = maxDiscount.Value;
         }
+       
+        
     }
     public async Task searchByRange()
     {
@@ -304,8 +330,8 @@
                 {
                     if (count != 1)
                     {
-                        test = await Store.SearchStoreByCountry(country);
-                        FilteredStores = Stores.Union(test);
+                        var test = AllStores.Where(i => i.Country.ToLower().Contains(country.ToLower())).ToList();
+                        FilteredStores = FilteredStores.Union(test);
                     }
                     count++;
                 }
@@ -375,31 +401,70 @@
             }
         }  
     }
-    public void RadioButtonClicked(float? discount)
-    {
-        if (discount == 25)
-        {
-            FilteredStores = Stores.Where(i => i.maxDiscount <= 25 && i.maxDiscount >= 1).ToList();
-        }
-        else if(discount == 50)
-        {
-            FilteredStores = Stores.Where(i => i.maxDiscount <= 50 && i.maxDiscount >= 1).ToList();
-        }
-        else if (discount == 75)
-        {
-            FilteredStores = Stores.Where(i => i.maxDiscount <= 75 && i.maxDiscount >= 1).ToList();
-        }
-    }
-
-    public async Task StorTypeCheckbox(string StoreType, object checkedValue)
+    public void DiscountCheckboxClicked(int discount, int index, object checkedValue )
     {
         if ((bool)checkedValue)
         {
-            FilteredStores = Stores.Where(i => i.Type == StoreType).ToList();
+            checkBoxIndex[0] = 0;
+            checkBoxIndex[1] = 0;
+            checkBoxIndex[2] = 0;
+            checkBoxIndex[index] = 1;
+            if (discount == 25)
+            {
+                FilteredStores = Stores.Where(i => i.maxDiscount <= 25 && i.maxDiscount >= 1).ToList();
+                FilteredStores = Stores.Where(i => i.maxDiscount <= 25 && i.maxDiscount >= 1).ToList();
+            }
+            else if(discount == 50)
+            {
+                FilteredStores = Stores.Where(i => i.maxDiscount <= 50 && i.maxDiscount >= 1).ToList();
+            }
+            else if (discount == 75)
+            {
+                FilteredStores = Stores.Where(i => i.maxDiscount <= 75 && i.maxDiscount >= 1).ToList();
+            }
         }
         else
         {
-            FilteredStores = AllStores;
+            checkBoxIndex[index] = 0;
+            FilteredStores = Stores;
+        }
+    }
+    public async Task StoreTypeCheckbox(string storeTypeStr, object checkedValue)
+    {
+        if ((bool)checkedValue)
+        {
+            if (!storeTypeList.Contains(storeTypeStr))
+            {
+                storeTypeList.Add(storeTypeStr);
+            }
+        }
+        else
+        {
+            if (storeTypeList.Contains(storeTypeStr))
+            {
+                storeTypeList.Remove(storeTypeStr);
+            }
+        }
+        if (!storeTypeList.Any())
+        {
+            await ResetStores();
+        }
+        else
+        {
+            if (storeTypeList != null && storeTypeList.Any())
+            {
+                FilteredStores = AllStores.Where(i => i.Type == storeTypeList[0]).ToList();
+                int count = 0;
+                foreach (var type in storeTypeList)
+                {   
+                    if (count != 0)
+                    {
+                        var testStore = AllStores.Where(i => i.Type == type).ToList();
+                        FilteredStores = FilteredStores.Union(testStore); 
+                    }
+                    count++;
+                }
+            }
         }
     }
 
