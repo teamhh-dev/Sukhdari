@@ -27,7 +27,9 @@ namespace Business
             {
                 Store oldStore = await _db.Stores.FindAsync(store.Id);
                 oldStore.Name = store.Name;
-                
+                oldStore.Address = store.Address;
+               
+                oldStore.phoneNo = store.phoneNo;
                 if (oldStore.Type != store.Type)
                 {
                     var storeTags = _db.storeTags.Where(i => i.storeId == store.Id).ToList();
@@ -57,6 +59,8 @@ namespace Business
             Store newStore = _mapper.Map<StoreDTO, Store>(store);
             newStore.UserId = storeAdminId;
             newStore.ClickCount = 0;
+            newStore.timeNow = DateTime.UtcNow.Date;
+            
             await _db.Stores.AddAsync(newStore);
             await _db.SaveChangesAsync();
             return _mapper.Map<Store, StoreDTO>(newStore);

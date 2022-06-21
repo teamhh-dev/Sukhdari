@@ -22,6 +22,7 @@ namespace Business.Mapper
             CreateMap<TagType, TagTypeDTO>().ReverseMap();
             CreateMap<Tag, TagDTO>().ReverseMap();
             CreateMap<StoreTags, StoreTagDTO>().ReverseMap();
+            CreateMap<CountDetails, CountDetailsDTO>().ReverseMap();
         }
     }
 }

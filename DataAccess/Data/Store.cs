@@ -22,7 +22,11 @@ namespace DataAccess.Data
         //[ForeignKey("UserId")]
         public string UserId { get; set; }
         public string Image { get; set; }
-        
+        public DateTime timeNow { get; set; }
+
+        public string Address { get; set; }
+        [MaxLength(11)]
+        public int phoneNo { get; set; }
         public int ClickCount { get; set; }
         public virtual ICollection<StoreImage> StoreImages { get; set; }
     }
