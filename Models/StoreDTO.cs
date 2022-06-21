@@ -24,8 +24,9 @@ namespace Models
         public int ClickCount { get; set; }
 
         public string Address { get; set; }
-        [MaxLength(11)]
-        public int phoneNo { get; set; }
+        [MaxLength(12)]
+        public string phoneNo { get; set; }
+        public string description { get; set; }
         public virtual ICollection<StoreImageDTO> StoreImages { get; set; }
         public List<string> ImageUrls { get; set; }
 

@@ -373,16 +373,18 @@
     <div class="form-group">
         <label class="col-md-7 control-label" for="ph_no">Phone No.</label>
         <div class="col-md-7">
-            <input type="tel" id="ph_no" name="ph_no" placeholder="03xx xxxxxxx" class="form-control input-md" /> @*change input with inputtext when bind-value is available*@
+            <InputText @bind-Value="StoreDetails.phoneNo" type="tel" id="ph_no" name="ph_no" placeholder="03xx-xxxxxxx" class="form-control input-md" pattern="[0-9]{4}-[0-9]{7}" /> @*change input with inputtext when bind-value is available*@
         </div>
-    </div>
+        </div>
+    
 
     <div class="form-group">
-        <label class="col-md-7 control-label" for="store_description">STORE DESCRIPTION</label>
-        <div class="col-md-7">
-            <textarea id="store_description" name="store_description" placeholder="Write brief introduction of your store" class="form-control input-md" /> @*change textarea with inputtextarea when bind-value is available*@
-        </div>
-    </div>
+                <label class="col-md-7 control-label" for="category_description">Store DESCRIPTION</label>
+                <div class="col-md-7">
+                    <InputTextArea @bind-Value="StoreDetails.description" class="form-control" />
+
+                </div>
+            </div>
 
      <div class="form-group">
         <label class="col-md-7 control-label" for="store_type">STORE TYPE</label>
@@ -530,7 +532,7 @@
     private StoreDTO StoreDetails { get; set; } = new StoreDTO();
     private StoreImageDTO StoreImage { get; set; } = new StoreImageDTO();
     int typeID;
-
+    string storeContact;
     protected override async Task OnInitializedAsync()
     {
         TagType = await TagTypeRepo.GetAllTagsType();
@@ -605,7 +607,8 @@
     }
     private async void CreateStoreWithDTO()
     {
-
+        
+        
         string message = "Store Details Added Successfully";
         if (StoreDetails.Id != 0 && Title == "Store Details")
         {

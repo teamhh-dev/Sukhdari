@@ -46,10 +46,11 @@ namespace Business
             {
                 int clickCount = 0;
                 List<CountDetails> temp = new List<CountDetails>();
-                for (int day = 5; day >= 1; day--)
-                {
-                    temp = _db.countDetails.Where(j => j.StoreId == stores[i].Id && j.date >= DateTime.Now.Date.AddDays(-(day + 1)) && j.date <= DateTime.Now.Date.AddDays(-day)).ToList();
-                }
+                temp = _db.countDetails.Where(j => j.StoreId == stores[i].Id && j.date >= DateTime.Now.AddDays(-7)).ToList();
+                //for (int day = 5; day >= 1; day--)
+                //{
+                //    temp = _db.countDetails.Where(j => j.StoreId == stores[i].Id && j.date >= DateTime.Now.Date.AddDays(-(day + 1)) && j.date <= DateTime.Now.Date.AddDays(-day)).ToList();
+                //}
                 for(int j=0;j<temp.Count();i++)
                 {
                     clickCount = clickCount + temp[j].clicks;
@@ -59,13 +60,8 @@ namespace Business
                 data.ClickCount = clickCount;
                 stores.Add(data);
             }
-            stores = stores.OrderBy(i=>i.ClickCount).ToList();
-            List<StoreDTO> final = new List<StoreDTO>();
-            for(int i =0; i<5;i++)
-            {
-                final.Add(stores[i]);
-            }
-            return final;
+            stores = stores.OrderByDescending(i => i.ClickCount).Take(5).ToList();
+            return stores;
         }
     }
 }

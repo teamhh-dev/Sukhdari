@@ -15,12 +15,14 @@ namespace Sukhdari_Api.Controllers
         private readonly IStoreRepo _storeRepo;
         private readonly IProductRepo _productRepo;
         private readonly ICategoryRepo _categoryRepo;
-        public StoreController(IStoreRepo storeRepo, IProductRepo productRepo, ICategoryRepo categoryRepo)
+        private readonly ICountDetailsRepo _countDetailsRepo;
+        public StoreController(IStoreRepo storeRepo, IProductRepo productRepo, ICategoryRepo categoryRepo, ICountDetailsRepo countRepo)
         {
 
             _storeRepo = storeRepo;
             _productRepo = productRepo;
             _categoryRepo = categoryRepo;
+            _countDetailsRepo = countRepo;
         }
 
         [HttpGet]
@@ -76,6 +78,12 @@ namespace Sukhdari_Api.Controllers
             var res = await _storeRepo.clickStoreCount(StoreID);
             return Ok();
         }
-        
+
+        [HttpGet]
+        public async Task<IActionResult> getTopWeeklyStores()
+        {
+            var res = await _countDetailsRepo.getWeeklyTopStores();
+            return Ok(res);
+        }
     }
 }
