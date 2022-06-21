@@ -151,14 +151,28 @@ namespace Business
         }
         public async Task<int> clickStoreCount(int storeID)
         {
-            var store = _db.Stores.FirstOrDefault(i => i.Id == storeID);
-            if (store.ClickCount == null)
+            //var store = _db.Stores.FirstOrDefault(i => i.Id == storeID);
+            var StoreCount = _db.countDetails.FirstOrDefault(i => i.StoreId == storeID && i.date.Date == DateTime.Today.Date);
+
+
+            if (StoreCount != null)
             {
-                store.ClickCount = 1;
+                if (StoreCount.clicks == 0)
+                {
+                    StoreCount.clicks = 1;
+                }
+                else
+                {
+                    StoreCount.clicks++;
+                }
             }
             else
             {
-                store.ClickCount++;
+                CountDetails data = new CountDetails();
+                data.clicks = 1;
+                data.StoreId = storeID;
+                data.date = DateTime.Now.Date;
+                _db.countDetails.Add(data);
             }
             return await _db.SaveChangesAsync();
         }
