@@ -157,11 +157,10 @@
                                  {
                                     <div class="carousel-item active">
                                         <img class="card-img-top" src="@image.StoreImageUrl" onerror="this.src = '/Images/store.jpg';" alt="Product image cap" />
-                                        @if (array[store.Id] != null)
+                                        @if (array[store.Id] != 0)
                                         {
                                             <span class="card-batch">Upto @array[store.Id]%</span>
                                         }
-
                                     </div> 
                                  }
                                  else
@@ -233,7 +232,8 @@
     public IEnumerable<StoreDTO> AllStores { get; set; }
     public IEnumerable<StoreDTO> test { get; set; }
     public List<string> countries = new List<string>();
-    public float[] array = new float[100];
+    public List<string> storeType = new List<string>();
+    public float[] array;
     int[] checkBoxIndex = new int[3]{ 0, 0, 0 };
     public int[] discountList = { 25, 50, 75 };
     int min = 0;
@@ -246,21 +246,21 @@
         AllStores = await Store.getAllStores();
         FilteredStores = Stores;
         AllTags = await Store.getAllStoreTags();
-
+        var storeID = Stores.OrderByDescending(i => i.Id).FirstOrDefault().Id;
+        storeID = storeID + 1;
+        array = new float[storeID];
         foreach(var store in Stores)
         {
             float? maxDiscount = 0;
             var products = await Store.GetStoreProducts(store.Id);
             foreach(var product in products)
             {
-                if(maxDiscount<product.DiscountPercentage)
+                if (maxDiscount < product.DiscountPercentage)
                 {
                     maxDiscount = product.DiscountPercentage;
                 }
-
             }
             store.maxDiscount = maxDiscount.Value;
-            //maxDiscounts[store.Id]= maxDiscount.Value;
             array[store.Id] = maxDiscount.Value;
         }
     }
@@ -380,7 +380,7 @@
             checkBoxIndex[index] = 1;
             if (discount == 25)
             {
-               FilteredStores = Stores.Where(i => i.maxDiscount <= 25 && i.maxDiscount >= 1).ToList();
+                FilteredStores = Stores.Where(i => i.maxDiscount <= 25 && i.maxDiscount >= 1).ToList();
             }
             else if(discount == 50)
             {
@@ -395,6 +395,46 @@
         {
             checkBoxIndex[index] = 0;
             FilteredStores = Stores;
+        }
+    }
+
+    public async Task StoreTypeCheckbox(string storeTypeStr, object checkedValue)
+    {
+        if ((bool)checkedValue)
+        {
+            if (!storeType.Contains(storeTypeStr))
+            {
+                storeType.Add(storeTypeStr);
+            }
+        }
+        else
+        {
+            if (storeType.Contains(storeTypeStr))
+            {
+                storeType.Remove(storeTypeStr);
+            }
+        }
+        if (!storeType.Any())
+        {
+            await ResetStores();
+        }
+        else
+        {
+            if (storeType != null && storeType.Any())
+            {
+                FilteredStores = AllStores.Where(i => i.Type == storeTypeStr).ToList();
+                int count = 1;
+                foreach (var type in storeType)
+                {
+                    if (count != 1)
+                    {
+                        test = test.Append(AllStores.FirstOrDefault(i => i.Type == storeTypeStr));
+                        FilteredStores = Stores.Union(test);
+                        test = new List<StoreDTO>();
+                    }
+                    count++;
+                }
+            }
         }
     }
 }
