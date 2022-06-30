@@ -1,0 +1,26 @@
+﻿@page "/stores/contact/{StoreId:int}"
+@layout StoreLayout
+@inject IStoreService Store
+
+<div class="col-11 card m-5">
+    <div class="col-12 m-2">
+        <a href="@($"stores/store/{StoreId}")">
+            <h1 class="text-dark oi oi-circle-x"></h1>
+        </a>
+    </div>
+
+    <div class="">
+        <h1>Phone #</h1>
+        <p>0300 0000000</p>
+        <h1>Email</h1>
+        <p>sukhdariinfo@gmail.com</p>
+        <h1>Location</h1>
+        <p>and here we will show the store address</p>
+    </div>
+</div>
+
+@code
+{
+    [Parameter]
+    public int StoreId { get; set; }
+}

@@ -1,3 +1,5 @@
+using Business;
+using Business.IRepo;
 using DataAccess.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Components;
@@ -14,8 +16,9 @@ using Sukhdari_Server.Service.IService;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using AutoMapper;
 using System.Threading.Tasks;
-
+using Syncfusion.Blazor;
 namespace Sukhdari_Server
 {
     public class Startup
@@ -32,13 +35,34 @@ namespace Sukhdari_Server
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<ApplicationDbContext>(options =>
-            options.UseSqlServer(Configuration.GetConnectionString("HamzaConnection")));
 
-            services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
+            options.UseSqlServer(Configuration.GetConnectionString("NehaConnection")));
+
+            services.AddIdentity<IdentityUser, IdentityRole>()
+                .AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders()
+                .AddDefaultUI();
             services.AddScoped<IDbInitializer, DbInitializer>();
+
+            services.AddScoped<IStoreRepo, StoreRepo>();
+            services.AddScoped<ICategoryRepo,CategoryRepo>();
+            services.AddScoped<IProductRepo,ProductRepo>();
+            services.AddScoped<IProductImageRepo, ProductImageRepo>();
+            services.AddScoped<IImageUpload, ImageUpload>();
+            services.AddScoped<IUserIPRepo, UserIPRepo>();
+            services.AddScoped<IStoreImageRepo, StoreImageRepo>();
+            services.AddScoped<ITagRepo, TagRepo>();
+            services.AddScoped<ITagTypeRepo, TagTypeRepo>();
+            services.AddScoped<IStoreTagRepo, StoreTagRepo>();
+            services.AddScoped<ICountDetailsRepo, CountDetailsRepo>();
+
+            services.AddHttpContextAccessor();
             services.AddRazorPages();
+            services.AddSyncfusionBlazor(options => { options.IgnoreScriptIsolation = true; });
+            services.AddHttpContextAccessor();
             services.AddServerSideBlazor();
             services.AddSingleton<WeatherForecastService>();
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -62,8 +86,8 @@ namespace Sukhdari_Server
 
             app.UseAuthentication();
             app.UseAuthorization();
-            dbInitializer.Initalize();
 
+            dbInitializer.Initalize();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapRazorPages();
